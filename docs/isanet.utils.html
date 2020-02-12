@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>isanet.utils &mdash; IsaNet ML Lib 0.1 beta documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="isanet.optimizer" href="isanet.optimizer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> IsaNet ML Lib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Package Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="isanet.activation.html">isanet.activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.datasets.html">isanet.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.metrics.html">isanet.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.model.html">isanet.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.model_selection.html">isanet.model_selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.neural_network.html">isanet.neural_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.optimizer.html">isanet.optimizer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">isanet.utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IsaNet ML Lib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>isanet.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/isanet.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-isanet.utils.model_utils">
+<span id="isanet-utils"></span><h1>isanet.utils<a class="headerlink" href="#module-isanet.utils.model_utils" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="isanet.utils.model_utils.load_data">
+<code class="sig-prename descclassname">isanet.utils.model_utils.</code><code class="sig-name descname">load_data</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.utils.model_utils.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deserialize and load an object from a specific path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>string</em>) – Specifies the name of the file to load to.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the deserialized object returns</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>objct</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="isanet.utils.model_utils.plotHistory">
+<code class="sig-prename descclassname">isanet.utils.model_utils.</code><code class="sig-name descname">plotHistory</code><span class="sig-paren">(</span><em class="sig-param">history</em>, <em class="sig-param">loss='MSE'</em>, <em class="sig-param">orientation='horizontal'</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.utils.model_utils.plotHistory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the learning curve for the training and the validation
+for for a specific loss and accuracy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>history</strong> (<em>dict</em>) – It contains for each epoch the values of mse, mee and accuracy for
+training and validation and the time.</p></li>
+<li><p><strong>loss</strong> (<em>string</em><em>, </em><em>accepted value ==</em><em> (</em><em>&quot;MSE&quot;</em><em>, </em><em>&quot;MEE&quot;</em><em>)</em>) – Specifies what type of loss to use.</p></li>
+<li><p><strong>orientation</strong> (<em>None</em><em>, </em><em>&quot;horizontal&quot;</em><em>, </em><em>&quot;vertical&quot;</em>) – Indicates the orientation of the two plots.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="isanet.utils.model_utils.plotMse">
+<code class="sig-prename descclassname">isanet.utils.model_utils.</code><code class="sig-name descname">plotMse</code><span class="sig-paren">(</span><em class="sig-param">history</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.utils.model_utils.plotMse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the learning curve for the training and the validation
+for for MSE.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>history</strong> (<em>dict</em>) – It contains for each epoch the values of mse, mee and accuracy for
+training and validation and the time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="isanet.utils.model_utils.printAcc">
+<code class="sig-prename descclassname">isanet.utils.model_utils.</code><code class="sig-name descname">printAcc</code><span class="sig-paren">(</span><em class="sig-param">y_pred</em>, <em class="sig-param">y_true</em>, <em class="sig-param">type=''</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.utils.model_utils.printAcc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print to the stout the MSE value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em>) – Ground truth (correct) target values.</p></li>
+<li><p><strong>y_pred</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em>) – Estimated target values.</p></li>
+<li><p><strong>type</strong> (<em>string</em>) – Useful to specify what kind of mse you are going to print.
+E.g. Train, Test or Val.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="isanet.utils.model_utils.printMEE">
+<code class="sig-prename descclassname">isanet.utils.model_utils.</code><code class="sig-name descname">printMEE</code><span class="sig-paren">(</span><em class="sig-param">y_pred</em>, <em class="sig-param">y_true</em>, <em class="sig-param">type=''</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.utils.model_utils.printMEE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print to the stout the MEE value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em>) – Ground truth (correct) target values.</p></li>
+<li><p><strong>y_pred</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em>) – Estimated target values.</p></li>
+<li><p><strong>type</strong> (<em>string</em>) – Useful to specify what kind of mse you are going to print.
+E.g. Train, Test or Val.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="isanet.utils.model_utils.printMSE">
+<code class="sig-prename descclassname">isanet.utils.model_utils.</code><code class="sig-name descname">printMSE</code><span class="sig-paren">(</span><em class="sig-param">y_pred</em>, <em class="sig-param">y_true</em>, <em class="sig-param">type=''</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.utils.model_utils.printMSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print to the stout the MSE value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em>) – Ground truth (correct) target values.</p></li>
+<li><p><strong>y_pred</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em>) – Estimated target values.</p></li>
+<li><p><strong>type</strong> (<em>string</em>) – Useful to specify what kind of mse you are going to print.
+E.g. Train, Test or Val.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="isanet.utils.model_utils.save_data">
+<code class="sig-prename descclassname">isanet.utils.model_utils.</code><code class="sig-name descname">save_data</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.utils.model_utils.save_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize and save the past object on file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>object</em>) – Data to serialize.</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – Specifies the name of the file to save to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="isanet.optimizer.html" class="btn btn-neutral float-left" title="isanet.optimizer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Alessandro Cudazzo, Giulia Volpi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

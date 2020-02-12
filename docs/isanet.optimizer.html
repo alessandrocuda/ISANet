@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>isanet.optimizer &mdash; IsaNet ML Lib 0.1 beta documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="isanet.utils" href="isanet.utils.html" />
+    <link rel="prev" title="isanet.neural_network" href="isanet.neural_network.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> IsaNet ML Lib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Package Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="isanet.activation.html">isanet.activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.datasets.html">isanet.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.metrics.html">isanet.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.model.html">isanet.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.model_selection.html">isanet.model_selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.neural_network.html">isanet.neural_network</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">isanet.optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.utils.html">isanet.utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IsaNet ML Lib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>isanet.optimizer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/isanet.optimizer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-isanet.optimizer">
+<span id="isanet-optimizer"></span><h1>isanet.optimizer<a class="headerlink" href="#module-isanet.optimizer" title="Permalink to this headline">¶</a></h1>
+<p>Optimizer Module.</p>
+<dl class="class">
+<dt id="isanet.optimizer.EarlyStopping">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.</code><code class="sig-name descname">EarlyStopping</code><span class="sig-paren">(</span><em class="sig-param">eps</em>, <em class="sig-param">patience</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.EarlyStopping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stop training when a the MSE (Mean squared error) on validation
+(generalization error) is increasing and exceeds a certain threshold
+for a finite number of epochs.</p>
+<p class="rubric">Notes</p>
+<p>The class define the generalization loss at epoch t to be the relative
+increase of the validation error over the minimum-so-far (in percent):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GL</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">mse_val</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="n">min_mse_val</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then it will stop the optimization when the generatilization loss exceeds
+a certain thresold for a finite number of epochs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">G</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">eps</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eps</strong> (<em>float</em>) – Threshold that is used to decide whether to stop the
+fitting of the model (it stops if this is true and after
+a number of epoch &gt; ‘patience’).</p></li>
+<li><p><strong>patience</strong> (<em>integer</em>) – Number of epochs that mse should be worse after which training
+will be stopped.</p></li>
+<li><p><strong>verbose</strong> (<em>boolean</em><em>, </em><em>default=False</em>) – Whether to print progress messages to stdout.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="isanet.optimizer.EarlyStopping.check_early_stop">
+<code class="sig-name descname">check_early_stop</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">epoch</em>, <em class="sig-param">history</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.EarlyStopping.check_early_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if Early Stopping criteria has occurred.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – </p></li>
+<li><p><strong>epoch</strong> (<em>integer</em>) – Current number of epoch (epoch == 0 is the first epoch).</p></li>
+<li><p><strong>history</strong> (<em>dict</em>) – Contains, for the current epoch, the values of mse, mee and accuracy
+for training and validation and the time taken to compute that epoch.
+This parameter is used to check the value of current MSE (Mean squared
+error) on validation (generalization error).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the Early stopping has occurred, else False</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.optimizer.EarlyStopping.get_min_val">
+<code class="sig-name descname">get_min_val</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.EarlyStopping.get_min_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the min mse on validation if a minimum of the generalization
+has been reached after overfitting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Min of the mse on validation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.optimizer.EarlyStopping.get_weights_backup">
+<code class="sig-name descname">get_weights_backup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.EarlyStopping.get_weights_backup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the weights’s backup if a minimum of the generalization
+has been reached after overfitting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Weights’s backup.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of arrays-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="isanet.optimizer.SGD">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param">lr=0.1</em>, <em class="sig-param">momentum=0</em>, <em class="sig-param">nesterov=False</em>, <em class="sig-param">sigma=None</em>, <em class="sig-param">tol=None</em>, <em class="sig-param">n_iter_no_change=None</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.SGD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>default=0.1</em>) – Learning rate schedule for weight updates (delta rule).</p></li>
+<li><p><strong>momentum</strong> (<em>float</em><em>, </em><em>default=0</em>) – Momentum for gradient descent update.</p></li>
+<li><p><strong>nesterov</strong> (<em>boolean</em><em>, </em><em>default=False</em>) – Whether to use Nesterov’s momentum.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>default=None</em>) – Parameter of the Super Accelerated Nesterov’s momentum.
+If ‘nesterov’ is True and ‘sigma’ equals to ‘momentum’, then we have the
+simple Nesterov momentum. Instead, if ‘sigma’ is different from
+‘momentum’, we have the super accelerated Nesterov.</p></li>
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>default=None</em>) – Tolerance for the optimization. When the loss on training is
+not improving by at least tol for ‘n_iter_no_change’ consecutive
+iterations convergence is considered to be reached and training stops.</p></li>
+<li><p><strong>n_iter_no_change</strong> (<em>integer</em><em>, </em><em>default=None</em>) – Maximum number of epochs with no improvements &gt; tol.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="isanet.optimizer.SGD.optimize">
+<code class="sig-name descname">optimize</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">epochs</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">validation_data=None</em>, <em class="sig-param">batch_size=None</em>, <em class="sig-param">es=None</em>, <em class="sig-param">verbose=0</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.SGD.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – Specify the Multilayer Perceptron object to optimize</p></li>
+<li><p><strong>epochs</strong> (<em>integer</em>) – Maximum number of epochs.</p></li>
+<li><p><strong>X_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+<li><p><strong>Y_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_output</em><em>)</em>) – The target values.</p></li>
+<li><p><strong>validation_data</strong> (<em>list of arrays-like</em><em>, </em><em>[</em><em>X_val</em><em>, </em><em>Y_val</em><em>]</em><em>, </em><em>optional</em>) – Validation set.</p></li>
+<li><p><strong>batch_size</strong> (<em>integer</em><em>, </em><em>optional</em>) – Size of minibatches for the optimizer.
+When set to “none”, the optimizer will performe a full batch.</p></li>
+<li><p><strong>es</strong> (<em>isanet.callbacks.EarlyStopping</em><em>, </em><em>optional</em>) – When set to None it will only use the <code class="docutils literal notranslate"><span class="pre">epochs</span></code> to finish training.
+Otherwise, an EarlyStopping type object has been passed and will stop
+training if the model goes overfitting after a number of consecutive iterations.
+See docs in optimizier module for the EarlyStopping Class.</p></li>
+<li><p><strong>verbose</strong> (<em>integer</em><em>, </em><em>default=0</em>) – Controls the verbosity: the higher, the more messages.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="isanet.utils.html" class="btn btn-neutral float-right" title="isanet.utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="isanet.neural_network.html" class="btn btn-neutral float-left" title="isanet.neural_network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Alessandro Cudazzo, Giulia Volpi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,539 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>isanet.activation &mdash; IsaNet ML Lib 0.1 beta documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="isanet.datasets" href="isanet.datasets.html" />
+    <link rel="prev" title="Welcome to IsaNet ML Lib’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> IsaNet ML Lib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Package Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">isanet.activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.datasets.html">isanet.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.metrics.html">isanet.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.model.html">isanet.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.model_selection.html">isanet.model_selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.neural_network.html">isanet.neural_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.optimizer.html">isanet.optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.utils.html">isanet.utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IsaNet ML Lib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>isanet.activation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/isanet.activation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-isanet.activation">
+<span id="isanet-activation"></span><h1>isanet.activation<a class="headerlink" href="#module-isanet.activation" title="Permalink to this headline">¶</a></h1>
+<p>Activation Functions Module.</p>
+<dl class="class">
+<dt id="isanet.activation.Activation">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.activation.</code><code class="sig-name descname">Activation</code><a class="headerlink" href="#isanet.activation.Activation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for the activation function.</p>
+<p>Warning: This class should not be used directly.
+Use derived classes instead.</p>
+<dl class="method">
+<dt id="isanet.activation.Activation.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Activation.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the value of activation function on x.</p>
+<p>Warning: empty method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.activation.Activation.derivative">
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Activation.derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the derivative of the activation function on x.</p>
+<p>Warning: empty method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the derivative of an activation function on x.</p>
+<p>Warning: Overrides this method in order to
+implement the derivative of an activation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the activation function on x.</p>
+<p>Warning: Overrides this method in order to
+implement the activation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
+x = np.dot(A*W), where A is the input matrix to a layer
+and W is the weight matrix.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="isanet.activation.Identity">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.activation.</code><code class="sig-name descname">Identity</code><a class="headerlink" href="#isanet.activation.Identity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
+<p>This class provide the identity function and its derivative.</p>
+<dl class="method">
+<dt id="isanet.activation.Identity.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Identity.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the value of activation function on x: f(x)=x.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.activation.Identity.derivative">
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Identity.derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the derivative of the activation function on x:
+f’(x) = 1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the derivative of an activation function on x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>return the derivative of the activation function on x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the activation function on x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
+x = np.dot(A*W), where A is the input matrix to a layer
+and W is the weight matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The value of activation function on x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="isanet.activation.Relu">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.activation.</code><code class="sig-name descname">Relu</code><a class="headerlink" href="#isanet.activation.Relu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
+<p>This class provide the rectified linear unit function and its derivative.</p>
+<dl class="method">
+<dt id="isanet.activation.Relu.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Relu.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the value of activation function on x:
+f(x) = max(0,x)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.activation.Relu.derivative">
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Relu.derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the derivative of the activation function on x:
+if x &gt; 0 return 1 else 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the derivative of an activation function on x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>return the derivative of the activation function on x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the activation function on x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
+x = np.dot(A*W), where A is the input matrix to a layer
+and W is the weight matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The value of activation function on x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="isanet.activation.Sigmoid">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.activation.</code><code class="sig-name descname">Sigmoid</code><span class="sig-paren">(</span><em class="sig-param">a=1</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Sigmoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
+<p>This class provide the logistic sigmoid function and its derivative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>a</strong> (<em>float</em><em>,</em>) – <dl class="simple">
+<dt>a value usede to dilate and shrink the sigmoid:</dt><dd><p>1 / (1 + exp(-a*x)).</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="isanet.activation.Sigmoid.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Sigmoid.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the value of activation function on x:
+f(x) = 1 / (1 + exp(-a*x)).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.activation.Sigmoid.derivative">
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Sigmoid.derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the derivative of the activation function on x:
+f’(x) = a*f(x)*(1-f(x)).</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the derivative of an activation function on x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>return the derivative of the activation function on x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the activation function on x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
+x = np.dot(A*W), where A is the input matrix to a layer
+and W is the weight matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The value of activation function on x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="isanet.activation.Softmax">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.activation.</code><code class="sig-name descname">Softmax</code><a class="headerlink" href="#isanet.activation.Softmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
+<p>Softmax activation function.</p>
+<p>Warning: this class has not been fully implemented.</p>
+<dl class="method">
+<dt id="isanet.activation.Softmax.derivative">
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Softmax.derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the derivative of an activation function on x.</p>
+<p>Warning: Overrides this method in order to
+implement the derivative of an activation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.activation.Softmax.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Softmax.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the activation function on x.</p>
+<p>Warning: Overrides this method in order to
+implement the activation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
+x = np.dot(A*W), where A is the input matrix to a layer
+and W is the weight matrix.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="isanet.activation.Tanh">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.activation.</code><code class="sig-name descname">Tanh</code><span class="sig-paren">(</span><em class="sig-param">a=2</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Tanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
+<p>This class provide the hyperbolic tan function and its derivative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>a</strong> (<em>float</em><em>,</em>) – a value usede to dilate and shrink the tanh: tanh(a*x/2).</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="isanet.activation.Tanh.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Tanh.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the value of activation function on x:
+f(x) = tanh(a*x/2).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.activation.Tanh.derivative">
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Tanh.derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the derivative of the activation function on x:
+f’(x) = 1 - tanh(a*x/2)^2</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the derivative of an activation function on x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>return the derivative of the activation function on x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span></dt>
+<dd><p>Compute the activation function on x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
+x = np.dot(A*W), where A is the input matrix to a layer
+and W is the weight matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The value of activation function on x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="isanet.datasets.html" class="btn btn-neutral float-right" title="isanet.datasets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to IsaNet ML Lib’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Alessandro Cudazzo, Giulia Volpi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

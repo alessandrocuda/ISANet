@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>isanet.model &mdash; IsaNet ML Lib 0.1 beta documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="isanet.model_selection" href="isanet.model_selection.html" />
+    <link rel="prev" title="isanet.metrics" href="isanet.metrics.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> IsaNet ML Lib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Package Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="isanet.activation.html">isanet.activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.datasets.html">isanet.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.metrics.html">isanet.metrics</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">isanet.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.model_selection.html">isanet.model_selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.neural_network.html">isanet.neural_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.optimizer.html">isanet.optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="isanet.utils.html">isanet.utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IsaNet ML Lib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>isanet.model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/isanet.model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-isanet.model">
+<span id="isanet-model"></span><h1>isanet.model<a class="headerlink" href="#module-isanet.model" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="isanet.model.Mlp">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.model.</code><code class="sig-name descname">Mlp</code><a class="headerlink" href="#isanet.model.Mlp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class implements the Multi-layer Perceptron.</p>
+<dl class="attribute">
+<dt id="isanet.model.Mlp.weights">
+<code class="sig-name descname">weights</code><a class="headerlink" href="#isanet.model.Mlp.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of arrays, the ith array represents all the
+weights of each neuron in the ith layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="isanet.model.Mlp.activations">
+<code class="sig-name descname">activations</code><a class="headerlink" href="#isanet.model.Mlp.activations" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of Activation class, the ith Activation represents
+the activation function for that layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="isanet.model.Mlp.kernel_regularizer">
+<code class="sig-name descname">kernel_regularizer</code><a class="headerlink" href="#isanet.model.Mlp.kernel_regularizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of float value where ith element represents the
+l2 norm regularitation term for the ith layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="isanet.model.Mlp.n_layers">
+<code class="sig-name descname">n_layers</code><a class="headerlink" href="#isanet.model.Mlp.n_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents the total number of layers - 1
+(hidden layers + output layer)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="isanet.model.Mlp.history">
+<code class="sig-name descname">history</code><a class="headerlink" href="#isanet.model.Mlp.history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save for each epoch the values of mse, mee and accuracy for
+training and validation and the time taken to compute that epoch.</p>
+<dl class="simple">
+<dt>Dictionary’s keys:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">loss_mse</span></code></dt><dd><p>The mean square error on training for each epochs.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">loss_mee</span></code></dt><dd><p>The mean euclidean error on training for each epochs.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">val_loss_mse</span></code></dt><dd><p>The mean square error on validation for each epochs.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">val_loss_mee</span></code></dt><dd><p>The mean euclidean error on validation for each epochs.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">acc</span></code></dt><dd><p>The accuracy on training for each epochs.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">val_acc</span></code></dt><dd><p>The accuracy on validation for each epochs.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">epoch_time</span></code></dt><dd><p>The time elapsed for compute for each epochs.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>A dict with keys as column headers and values as columns, that can be imported into a pandas DataFrame.
+For instance the below given table:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-------------------------+---------------+----------------+---------------+---+-----------------+</span>
+<span class="o">|</span>         <span class="n">loss_mse</span>        <span class="o">|</span>   <span class="n">loss_mee</span>    <span class="o">|</span>  <span class="n">val_loss_mse</span>  <span class="o">|</span> <span class="n">val_loss_mee</span>  <span class="o">|...|</span>   <span class="n">epoch_time</span>    <span class="o">|</span>
+<span class="o">+=========================+===============+================+===============+===+=================+</span>
+<span class="o">|</span>          <span class="mf">0.985</span>          <span class="o">|</span>     <span class="mf">0.992</span>     <span class="o">|</span>      <span class="mf">1.00</span>      <span class="o">|</span>      <span class="mf">1.00</span>     <span class="o">|...|</span>     <span class="mf">0.0030</span>      <span class="o">|</span>
+<span class="o">+-------------------------+---------------+----------------+---------------+---+-----------------+</span>
+<span class="o">|</span>          <span class="mf">0.984</span>          <span class="o">|</span>     <span class="mf">0.991</span>     <span class="o">|</span>      <span class="mf">1.00</span>      <span class="o">|</span>      <span class="mf">1.00</span>     <span class="o">|...|</span>     <span class="mf">0.0029</span>      <span class="o">|</span>
+<span class="o">+-------------------------+---------------+----------------+---------------+---+-----------------+</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>Mlp trains iteratively since at each time step the partial derivatives of the loss function with
+respect to the model parameters are computed to update the parameters. It can also have a regularization
+term added to the loss function that shrinks model parameters to prevent overfitting.</p>
+<dl class="method">
+<dt id="isanet.model.Mlp.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">n_units</em>, <em class="sig-param">input=None</em>, <em class="sig-param">activation='sigmoid'</em>, <em class="sig-param">kernel_initializer=0.6</em>, <em class="sig-param">kernel_regularizer=0</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a hidden layer to the Multi-layer Perceptron.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_units</strong> (<em>integer</em>) – Number of neurons in the hidden layer.</p></li>
+<li><p><strong>input</strong> (<em>integer</em><em> , </em><em>optional</em>) – Number of inputs.</p></li>
+<li><p><strong>activation</strong> (<em>string</em><em>, </em><em>default=&quot;sigmoid&quot;</em>) – <p>Activation function of the hidden layer.</p>
+<ul>
+<li><p>’identity’, no-op activation, useful to implement linear bottleneck, returns f(x) = x</p></li>
+<li><p>’sigmoid’, the logistic sigmoid function, returns f(x) = 1 / (1 + exp(-x)).</p></li>
+<li><p>’tanh’, the hyperbolic tan function, returns f(x) = tanh(x).</p></li>
+<li><p>’relu’, the rectified linear unit function, returns f(x) = max(0, x)</p></li>
+</ul>
+</p></li>
+<li><p><strong>kernel_initializer</strong> (<em>float</em><em>, </em><em>default=0.6</em>) – Defines the standard deviation value for the uniform distributed
+distribution used to generate the weights of that layer.</p></li>
+<li><p><strong>kernel_regularizer</strong> (<em>float</em><em>, </em><em>default=0</em>) – Tikhonov regularization term, L2 penalty parameter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Warning</strong> – this is your first hidden layer: If you are not inserting the first hidden layer but you are still specifying the number of inputs.</p></li>
+<li><p><strong>Warning</strong> – First hidden layer already added: If you are inserting the first hidden layer without specifying the number of inputs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.model.Mlp.append_history">
+<code class="sig-name descname">append_history</code><span class="sig-paren">(</span><em class="sig-param">history</em>, <em class="sig-param">is_validation_set</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.append_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds results on the training and validation sets to the history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>history</strong> (<em>dict</em>) – Save for each epoch the values of mse, mee and accuracy for
+training and validation and the time taken to compute that epoch.</p></li>
+<li><p><strong>validation</strong> (<em>boolean</em>) – True to append validation history, False do not.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.model.Mlp.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">epochs=0</em>, <em class="sig-param">batch_size=None</em>, <em class="sig-param">validation_data=None</em>, <em class="sig-param">es=False</em>, <em class="sig-param">verbose=0</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model to data matrix X_train and target(s) Y_train and evaluates it on the validation set (if there is one).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+<li><p><strong>Y_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The target values.</p></li>
+<li><p><strong>epochs</strong> (<em>integer</em><em>, </em><em>default=0</em>) – Maximum number of epochs.</p></li>
+<li><p><strong>batch_size</strong> (<em>integer</em><em>, </em><em>optional</em>) – Size of minibatches for the optimizers.
+When set to “none”, the optimizer will performe a full batch.</p></li>
+<li><p><strong>validation_data</strong> (<em>list of arrays-like</em><em>, </em><em>[</em><em>X_val</em><em>, </em><em>Y_val</em><em>]</em><em>, </em><em>optional</em>) – Validation set.</p></li>
+<li><p><strong>es</strong> (<em>bool</em><em> or </em><em>isanet.callbacks.EarlyStopping</em><em>, </em><em>default=False</em>) – When set to False it will only use the <code class="docutils literal notranslate"><span class="pre">epochs</span></code> to finish training.
+Otherwise, an EarlyStopping type object has been passed and will stop
+training if the model goes overfitting after a number of consecutive iterations.
+See docs in optimizier module.</p></li>
+<li><p><strong>verbose</strong> (<em>integer</em><em>, </em><em>default=0</em>) – Controls the verbosity: the higher, the more messages.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Error when checking input</strong> – If the number of columns in the input matrix differs from the number of rows
+    in the first weight matrix (weights[0]).</p></li>
+<li><p><strong>Error when checking output</strong> – If the number of columns in the target matrix differs from the number of rows
+    in the last weight matrix (weights[-1]).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.model.Mlp.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict using the multi-layer perceptron classifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>a</strong> – The predicted classes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray, shape (n_samples,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="isanet.model.Mlp.set_optimizer">
+<code class="sig-name descname">set_optimizer</code><span class="sig-paren">(</span><em class="sig-param">optimizer</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.set_optimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the optimizer of the ‘Mlp’ used in the learning phase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>optimizer</strong> (<em>'isanet.optimizer.SGD' object</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="isanet.model.random_weights_layer">
+<code class="sig-prename descclassname">isanet.model.</code><code class="sig-name descname">random_weights_layer</code><span class="sig-paren">(</span><em class="sig-param">size</em>, <em class="sig-param">std=0.06</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.random_weights_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes neural net weights with a uniformly
+distributed over the half-open interval [-std, std)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> (<em>tuple</em>) – This tuple represents the matrix size of a given layer of the neural network.
+E.g. dimension = (dim_input_layer, n_units), where ‘dim_input_layer’ is the number
+of input at that level and ‘n_units’ is the number of neurons in that level.</p></li>
+<li><p><strong>std</strong> (<em>float</em><em>, </em><em>default = 0.06</em>) – Defines the standard deviation value for the distribution.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Where each column represents the input weights to each neuron.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="isanet.model_selection.html" class="btn btn-neutral float-right" title="isanet.model_selection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="isanet.metrics.html" class="btn btn-neutral float-left" title="isanet.metrics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Alessandro Cudazzo, Giulia Volpi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
