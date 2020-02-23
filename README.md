@@ -9,7 +9,7 @@
 <!-- PROJECT LOGO -->
 <p align="center">
   <a href="https://github.com/alessandrocuda/ISANet">
-    <img src="logo/Logo.png" alt="Logo" width=100% height=auto>
+    <img src="logo/Logo.png" alt="Logo" width=auto height=auto>
   </a>
 
   <p align="center">
