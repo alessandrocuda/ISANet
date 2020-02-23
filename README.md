@@ -26,7 +26,7 @@
 
 
 
-ISANet library provides a flexible and modular neural network library. It was entirely developed in Python using Numpy as a package for scientific computation and it is the result of the machine learning course held by Professor Alessio Micheli at the University of Pisa. ISANet is composed of low (Keras-like) and high-level (Scikit-learn-like) APIs divided into modules. The idea is to provide an easy but powerfull implementation of a Neural Network library to allow everyone to understand it from the theory to practice. More importat, the library leave open any kind of future work: extend to [JAX](https://github.com/google/jax), CNN layer or optimizer, and so on. In addition the library provides some datasets and a module for model selection (Grid Search and Cross Validation API).
+ISANet library provides a flexible and modular neural network library. It was entirely developed in Python using Numpy as a package for scientific computation and it is the result of the machine learning course held by Professor Alessio Micheli at [Department of Computer Science](https://www.di.unipi.it/en/) of [University of Pisa](https://www.unipi.it/index.php/english). ISANet is composed of low (Keras-like) and high-level (Scikit-learn-like) APIs divided into modules. The idea is to provide an easy but powerfull implementation of a Neural Network library to allow everyone to understand it from the theory to practice. More importat, the library leave open any kind of future work: extend to [JAX](https://github.com/google/jax), CNN layer or optimizer, and so on. In addition the library provides some datasets and a module for model selection (Grid Search and Cross Validation API).
 
 NOTE: ISANet only support SGD with MSE (Mean Square Error) as LOSS function.
 
