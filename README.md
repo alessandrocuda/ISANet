@@ -9,7 +9,7 @@
 <!-- PROJECT LOGO -->
 <p align="center">
   <a href="https://github.com/alessandrocuda/ISANet">
-    <img src="Logo/Logo.png" alt="Logo" width="554" height="165">
+    <img src="logo/Logo.png" alt="Logo" width=100% height=auto>
   </a>
 
   <p align="center">
@@ -26,13 +26,9 @@
 
 
 
-ISANet library provides a flexible and modular neural network library. 
+ISANet library provides a flexible and modular neural network library. It was entirely developed in Python using Numpy as a package for scientific computation and it is the result of the machine learning course held by Professor Alessio Micheli at the University of Pisa. ISANet is composed of low (Keras-like) and high-level (Scikit-learn-like) APIs divided into modules. The idea is to provide an easy but powerfull implementation of a Neural Network library to allow everyone to understand it from the theory to practice. More importat, the library leave open any kind of future work: extend to [JAX](https://github.com/google/jax), CNN layer or optimizer, and so on. In addition the library provides some datasets and a module for model selection (Grid Search and Cross Validation API).
 
-## Project Structure
-
- - **isanet**: library src code
- 
- - **docs**: contains the library documentation. The main file to browse the documentation is docs/index.html
+NOTE: ISANet only support SGD with MSE (Mean Square Error) as LOSS function.
 
 ## Details
 For more details about the library <a href="https://alessandrocudazzo.it/ISANet"><strong>explore the docs</strong></a>.
@@ -41,57 +37,64 @@ For more details about the library <a href="https://alessandrocudazzo.it/ISANet"
 - [Usage](#usage)
 - [Example](#example)
 - [Todo](#todo)
-- [Support](#contributing)
+- [Contributing](#contributing)
 - [License](#license)
 
-
-<!--
-
-We called it IsaNet. We wrote the library entirely in Python using Numpy as a package for scientific computation. All the main operations of a neural network, as the feed-forward and the back-propagation algorithms, are performed by using matrices, and layers of nodes are stored in a list of matrices where columns are the weights of a single node (the bias is the first element). This implementation allowed us to speed up the computation compared to an object-oriented structure (layers, nodes views as object); this was possible thanks to Numpy that can efficiently perform matrix operation by parallelization under the hood. Numpy uses optimized math routines, written in C or Fortran, for linear algebra operation as Blas, OpenBlas or Intel Math Kernel Library (MKL). IsaNet is composed of low and high-level APIs divided into modules.
-
 ## Usage
-You need to install [swi-prolog](https://www.swi-prolog.org/): a Prolog interpreter 
 
-```bash
-# Clone ISA Project
-git clone https://github.com/alessandrocuda/ISA.git
-cd ISA
+An example with the **low level api (keras-like)**:
 
-# Start swi-prolog
-swipl
+```python
+# ...
+from isanet.model import Mlp
+from isanet.optimizer import SGD, EarlyStopping
+from isanet.datasets.monk import load_monk
+import numpy as np
 
-#Welcome to SWI-Prolog...
-?- [start_isa].
+X_train, Y_train = load_monk("1", "train")
+X_test, Y_test = load_monk("1", "test")
+
+#create the model
+model = Mlp()
+# Specify the range for the weights and lambda for regularization
+# Of course can be different for each layer
+kernel_initializer = 0.003 
+kernel_regularizer = 0.001
+
+# Add many layers with different number of units
+model.add(4, input= 17, kernel_initializer, kernel_regularizer)
+model.add(1, kernel_initializer, kernel_regularizer)
+
+es = EarlyStopping(0.00009, 20) # eps_GL and s_UP
+
+#fix which optimizer you want to use in the learning phase
+model.setOptimizer(
+    SGD(lr = 0.83,          # learning rate
+        momentum = 0.9,     # alpha for the momentum
+        nesterov = True,    # Specify if you want to use Nesterov
+        sigma = None        # sigma for the Acc. Nesterov
+    ))
+
+#start the learning phase
+model.fit(X_train,
+          Y_train, 
+          epochs=600, 
+          #batch_size=31,
+          validation_data = [X_test, Y_test],
+          es = es,
+          verbose=0) 
+            
+# after trained the model the prediction operation can be
+# perform with the predict method
+outputNet = model.predict(X_test)
 ```
-or
 
-```bash
-# Start swi-prolog
-swipl -s start_isa.pl
-```
+what's next? look to [USE_CASES.md](https://github.com/alessandrocuda/ISANet/blob/master/examples/USE_CASES.md) for more example with the **High-Level API (Scikit-learn-like)** and the **Model Selection API**. Instead, [here](https://github.com/alessandrocuda/ISANet/blob/master/examples/README.md) you can find some example scripts.
 
-
-
-## Example
-    Hi, I'm ISA your personal assistant for movies and TV show!
-    > hi
-
-    Hi, type "help" if you need help
-    yes i need help
-
-    Sure, I'm your personal assistant for movies and tv shows!
-    For example you can ask me "what movie do you suggest me?" or "i want to watch a tv show"
-    > i would like to watch a movie
-
-    Oh, let me think ... maybe "Your Name"?
-    > oh thanks
-
-    Your Welcome!
-    > 
-or if you want to read some other examples: [USE_CASES.md](https://github.com/alessandrocuda/ISA/blob/master/USE_CASES.md)
--->
 
 ## TODO
+- [ ] Separate bias from the weight matrix for more clarity.
+- [ ] Extend with JAX for GPU support.
 - [ ] Add Conjugate Gradient Method.
 - [ ] Add Quasi Newton method. 
 
@@ -103,15 +106,22 @@ or if you want to read some other examples: [USE_CASES.md](https://github.com/al
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request :D
 
-or write an email to:
-- [alessandro@cudazzo.com](mailto:alessandro@cudazzo.com)
-- <giuliavolpi25.93@gmail.com>
+<!-- CONTACT -->
+## Contact
 
+Alessandro Cudazzo - [@alessandrocuda](https://twitter.com/alessandrocuda) - alessandro@cudazzo.com
+
+Giulia Volpi - giuliavolpi25.93@gmail.com
+
+Project Link: [https://github.com/alessandrocuda/ISANet](https://github.com/alessandrocuda/ISANet)
+
+
+<!-- LICENSE -->
 ## License
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 This library is free software; you can redistribute it and/or modify it under
-the terms of the MIT license. 
+the terms of the MIT license.
 
 - **[MIT license](LICENSE)**
 - Copyright 2019 ©  <a href="https://alessandrocudazzo.it" target="_blank">Alessandro Cudazzo</a> - <a href="mailto:giuliavolpi25.93@gmail.com">Giulia Volpi</a>

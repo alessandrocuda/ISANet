@@ -223,7 +223,15 @@ class MLPClassifier(__BaseMLP):
     get_weights(self)
         Returns the weights of the multi-layer perceptron.
     """
-
+    def __init__(self, input_dim, out_dim, n_layer_units = [100], activation = "relu",
+                      kernel_regularizer = 0.0001, batch_size = None, max_epoch = 1000,
+                      learning_rate = 0.1, momentum = 0.9, nesterov = False, sigma = None, early_stop = False,
+                      random_state = None,verbose = 0):
+                      
+        super().__init__('c', input_dim, out_dim, n_layer_units, activation,
+                         kernel_regularizer, batch_size, max_epoch,
+                         learning_rate, momentum, nesterov, sigma, early_stop, 
+                         random_state, verbose)
 
 class MLPRegressor(__BaseMLP):
     """Multi-layer Perceptron regressor.

@@ -51,7 +51,4 @@ def load_iris():
     X = X.astype(float)
     Y = Y_ohe.astype(int)
 
-    print(X)
-    print(Y)
-
     return X, Y

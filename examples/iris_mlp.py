@@ -28,14 +28,14 @@ model.add(3, kernel_initializer = 1/np.sqrt(6), kernel_regularizer = 0.006)
 
 model.set_optimizer(
     SGD(
-        lr = 0.69,
+        lr = 0.39,
         momentum = 0.8,
         nesterov = True
     ))
 
 start_time = time.time()
 model.fit(X_train, Y_train, validation_data = [X_val, Y_val],
-            epochs=1000, 
+            epochs=1500, 
             #batch_size=31,
             verbose=1) 
 print("--- %s seconds ---" % (time.time() - start_time))
