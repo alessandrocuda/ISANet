@@ -179,6 +179,100 @@
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+<div class="section" id="tutorial">
+<h3>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h3>
+<p>An example with the <strong>low level api (keras-like)</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="kn">from</span> <span class="nn">isanet.model</span> <span class="kn">import</span> <span class="n">Mlp</span>
+<span class="kn">from</span> <span class="nn">isanet.optimizer</span> <span class="kn">import</span> <span class="n">SGD</span><span class="p">,</span> <span class="n">EarlyStopping</span>
+<span class="kn">from</span> <span class="nn">isanet.datasets.monk</span> <span class="kn">import</span> <span class="n">load_monk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span> <span class="o">=</span> <span class="n">load_monk</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">)</span>
+<span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">load_monk</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+
+<span class="c1">#create the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Mlp</span><span class="p">()</span>
+<span class="c1"># Specify the range for the weights and lambda for regularization</span>
+<span class="c1"># Of course can be different for each layer</span>
+<span class="n">kernel_initializer</span> <span class="o">=</span> <span class="mf">0.003</span>
+<span class="n">kernel_regularizer</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="c1"># Add many layers with different number of units</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span> <span class="mi">17</span><span class="p">,</span> <span class="n">kernel_initializer</span><span class="p">,</span> <span class="n">kernel_regularizer</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">kernel_initializer</span><span class="p">,</span> <span class="n">kernel_regularizer</span><span class="p">)</span>
+
+<span class="n">es</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="mf">0.00009</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span> <span class="c1"># eps_GL and s_UP</span>
+
+<span class="c1">#fix which optimizer you want to use in the learning phase</span>
+<span class="n">model</span><span class="o">.</span><span class="n">setOptimizer</span><span class="p">(</span>
+    <span class="n">SGD</span><span class="p">(</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.83</span><span class="p">,</span>          <span class="c1"># learning rate</span>
+        <span class="n">momentum</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>     <span class="c1"># alpha for the momentum</span>
+        <span class="n">nesterov</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>    <span class="c1"># Specify if you want to use Nesterov</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="kc">None</span>        <span class="c1"># sigma for the Acc. Nesterov</span>
+    <span class="p">))</span>
+
+<span class="c1">#start the learning phase</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span>
+          <span class="n">Y_train</span><span class="p">,</span>
+          <span class="n">epochs</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+          <span class="c1">#batch_size=31,</span>
+          <span class="n">validation_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">],</span>
+          <span class="n">es</span> <span class="o">=</span> <span class="n">es</span><span class="p">,</span>
+          <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># after trained the model the prediction operation can be</span>
+<span class="c1"># perform with the predict method</span>
+<span class="n">outputNet</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An example with the <strong>high level API (sklearn like)</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">isanet.neural_network</span> <span class="kn">import</span> <span class="n">MLPClassifier</span>
+<span class="kn">from</span> <span class="nn">isanet.datasets.monk</span> <span class="kn">import</span> <span class="n">load_monk</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span> <span class="o">=</span> <span class="n">load_monk</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">)</span>
+<span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">load_monk</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+
+<span class="n">mlp_c</span> <span class="o">=</span> <span class="n">MLPClassifier</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>             <span class="c1"># input dim</span>
+                      <span class="n">Y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>             <span class="c1"># out dim</span>
+                      <span class="n">n_layer_units</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>            <span class="c1"># topology</span>
+                      <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>         <span class="c1"># activation hidden layer</span>
+                      <span class="n">kernel_regularizer</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>     <span class="c1"># l2 regularization term</span>
+                      <span class="n">max_epoch</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>                <span class="c1"># Max number of Epoch</span>
+                      <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.83</span><span class="p">,</span>           <span class="c1"># learning rate</span>
+                      <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>                 <span class="c1"># momentum term</span>
+                      <span class="n">nesterov</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                <span class="c1"># if Nesterov</span>
+                      <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                   <span class="c1"># sigma Acc. Nesterov</span>
+                      <span class="n">early_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>              <span class="c1"># define the early stop</span>
+                      <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>                    <span class="c1"># verbosity</span>
+<span class="n">mlp_c</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">)</span>
+<span class="n">outputNet</span> <span class="o">=</span> <span class="n">mlp_c</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An example with the <strong>Model Selection Module</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">isanet.model_selection</span> <span class="kn">import</span> <span class="n">Kfold</span><span class="p">,</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span> <span class="nn">isanet.neural_network</span> <span class="kn">import</span> <span class="n">MLPRegressor</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="s1">&#39;CUP/ML-CUP19-TR_tr_vl.csv&#39;</span><span class="p">,</span><span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">dataset</span><span class="p">[:,</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n_layer_units&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">38</span><span class="p">],</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">32</span><span class="p">]],</span> <span class="c1">#[20, 32] means two hidden layer</span>
+         <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.014</span><span class="p">,</span> <span class="mf">0.017</span><span class="p">],</span>
+         <span class="s2">&quot;max_epoch&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
+         <span class="s2">&quot;momentum&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+         <span class="s2">&quot;nesterov&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+         <span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+         <span class="s2">&quot;kernel_regularizer&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0001</span><span class="p">],</span>
+         <span class="s2">&quot;activation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">],</span>
+         <span class="s2">&quot;early_stop&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">EarlyStopping</span><span class="p">(</span><span class="mf">0.00009</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="mf">0.09</span><span class="p">,</span> <span class="mi">200</span><span class="p">)]}</span>
+
+<span class="n">mlp_r</span> <span class="o">=</span> <span class="n">MLPRegressor</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">kf</span> <span class="o">=</span> <span class="n">Kfold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">mlp_r</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">grid</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="n">kf</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">gs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span> <span class="c1"># dict with keys as column headers and values as columns</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
