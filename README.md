@@ -16,7 +16,7 @@
     <a href="https://alessandrocudazzo.it/ISANet"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/alessandrocuda/ISANet">View Demo</a>
+    <a href="https://github.com/alessandrocuda/ISANet/blob/master/examples/README.md">View Demo</a>
     ·
     <a href="https://github.com/alessandrocuda/ISANet/issues">Report Bug</a>
     ·
@@ -35,9 +35,9 @@ For more details about the library <a href="https://alessandrocudazzo.it/ISANet"
 
 ## Table of Contents 
 - [Usage](#usage)
-- [Example](#example)
 - [Todo](#todo)
 - [Contributing](#contributing)
+- [Contact](#contact)
 - [License](#license)
 
 ## Usage
