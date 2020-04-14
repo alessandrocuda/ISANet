@@ -5,6 +5,7 @@ import time
 import copy
 from . import metrics
 
+
 class EarlyStopping():
     """Stop training when a the MSE (Mean squared error) on validation
     (generalization error) is increasing and exceeds a certain threshold
@@ -112,49 +113,10 @@ class EarlyStopping():
         return self.__min_val
         
 
-class SGD():
-    """
-    Parameters
-    ----------
-    lr : float, default=0.1
-        Learning rate schedule for weight updates (delta rule).
+class Optimizer(object):
 
-    momentum : float, default=0
-        Momentum for gradient descent update.
-
-    nesterov : boolean, default=False
-        Whether to use Nesterov’s momentum.
-
-    sigma : float, default=None
-        Parameter of the Super Accelerated Nesterov's momentum.
-        If 'nesterov' is True and 'sigma' equals to 'momentum', then we have the
-        simple Nesterov momentum. Instead, if 'sigma' is different from 
-        'momentum', we have the super accelerated Nesterov.
-
-    tol : float, default=None
-        Tolerance for the optimization. When the loss on training is
-        not improving by at least tol for 'n_iter_no_change' consecutive 
-        iterations convergence is considered to be reached and training stops.
-
-    n_iter_no_change : integer, default=None
-        Maximum number of epochs with no improvements > tol. 
-    """
-    def __init__(self, lr=0.1, momentum=0, nesterov=False, sigma = None, tol = None, n_iter_no_change = None):
-        self.lr = lr
-        self.momentum = momentum
-        self.nesterov = nesterov
-        self.tol = tol
-        self.n_iter_no_change = n_iter_no_change
-        if n_iter_no_change is None:
-            self.n_iter_no_change = 1
-
-        self.sigma = sigma
-        if sigma is None and nesterov is True:
-            self.sigma = momentum
-
-        self.__batch_size = None
-        self.__es_count = 0
-        self.__no_change_count = 0
+    def __init__(self):
+        self.epoch = 0
 
     def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
         """
@@ -193,61 +155,62 @@ class SGD():
         integer
 
         """
-        tot_n_patterns = X_train.shape[0]
-        old_delta_w = {i: 0 for i in range(0, len(model.weights))}
+        self.tot_n_patterns = X_train.shape[0]
         self.__batch_size = batch_size
+
         if batch_size is None:
-            self.__batch_size = tot_n_patterns
+            self.__batch_size = self.tot_n_patterns
         is_validation_set = True
         if validation_data is None:
             is_validation_set = False
 
-        for epoch in range(epochs):
+
+        #for epoch in range(epochs):
+        while self.epoch < epochs:
             start_time = time.time()
-            batchs = self.__get_batch(X_train, Y_train, self.__batch_size)
+            batchs = self.get_batch(X_train, Y_train, self.__batch_size)
 
             for current_batch in batchs:
                 X = batchs[current_batch]["batch_x_train"]
                 Y = batchs[current_batch]["batch_y_train"]
-                current_batch_size = X.shape[0]
-                lr = self.lr/current_batch_size
-
-                weights = copy.deepcopy(model.weights)
-                if self.nesterov == True:
-                    for i in range(0, len(model.weights)): 
-                        weights[i] += self.sigma*old_delta_w[i] 
-
-                nabla_w  = self.__backpropagation(model, weights, X, Y)
-
-                #      Delta Rule Update
-                #  w_i = w_i + eta*nabla_W_i
-                for i in range(0, len(model.weights)):
-                    delta_w = lr*nabla_w[i] + self.momentum*old_delta_w[i]   
-                    old_w = model.weights[i].copy()
-                    old_w[0,:] = 0
-                    regularizer = model.kernel_regularizer[i]*current_batch_size/tot_n_patterns
-                    model.weights[i] += (delta_w - regularizer*old_w)
-                    old_delta_w[i] = delta_w
+                
+                # Performs a single optimization step (parameter update).
+                self.step(model, X, Y)
 
             end_time = (time.time() - start_time)
             
             # Update history with MSE, MEE, Accuracy, Time after each Epoach 
-            history = self.__get_epoch_history(model, X_train, Y_train, validation_data, end_time)
+            history = self.get_epoch_history(model, X_train, Y_train, validation_data, end_time)
             model.append_history(history, is_validation_set)
 
-            if verbose and (epoch + 1) % verbose == 0:
-                print("Epoch: {} - time: {:4.4f} - loss_train: {} - loss_val: {}".format(epoch + 1, history["time"], history["mse_train"], history["mse_val"]))
+            if verbose and (self.epoch + 1) % verbose == 0:
+                print("Epoch: {} - time: {:4.4f} - loss_train: {} - loss_val: {}".format(self.epoch + 1, history["time"], history["mse_train"], history["mse_val"]))
 
             # Check Early Stopping 1: avoid overfitting
-            if es and es.check_early_stop(model, epoch, history):
+            if  is_validation_set and es and es.check_early_stop(model, self.epoch, history):
                 return 0
             
             # Check Early Stopping 2: no change on training error
-            if self.tol and self.__no_change_in_training(model, epoch, es, verbose):
+            if self.tol and self.__no_change_in_training(model, epoch, is_validation_set, es, verbose):
                 return 0
 
+            self.epoch+=1
 
-    def __backpropagation(self, model, weights, X, Y):
+    def update_weights(self, weights, alpha, d):
+        for i in range(0, len(weights)):
+            weights[i] += alpha*d[i]
+        return weights
+
+    def forward(self, model, weights, X):
+        a = X.copy()
+        for layer in range(0, model.n_layers):
+            z = np.dot(np.insert(a, 0, 1, 1), weights[layer])
+            a = model.activations[layer].f(z)
+        return a
+
+
+
+    def backpropagation(self, model, weights, X, Y):
         """
         Parameters
         ----------
@@ -307,7 +270,7 @@ class SGD():
         
         return nabla_w 
 
-    def __get_batch(self, X_train, Y_train, batch_size):
+    def get_batch(self, X_train, Y_train, batch_size):
         """ 
         Parameters
         ----------
@@ -357,7 +320,7 @@ class SGD():
                 batchs[mb] = {"batch_x_train": xbr, "batch_y_train": ybr}
             return batchs
 
-    def __get_epoch_history(self, model, X_train, Y_train, validation_data, time):
+    def get_epoch_history(self, model, X_train, Y_train, validation_data, time):
         """Given the model, training data, validation data and time returns a dictionary
         that contains: 
 
@@ -390,7 +353,7 @@ class SGD():
                 "time": time
                 }
 
-    def __no_change_in_training(self, model, epoch, es, verbose):
+    def __no_change_in_training(self, model, epoch, is_validation_set, es, verbose):
         """Check if there are no improvements in optimizations for a given 
         epsilon 'self.eps' and for a given number of consecutive epochs 
         'self.patience'.
@@ -421,7 +384,7 @@ class SGD():
                 if verbose: 
                     print(" - Improv Info - delta_improv_train: {}, epoch count {}".format(delta_improv_train, self.__no_change_count))
                 if self.__no_change_count >= self.n_iter_no_change:
-                    if es and model.history["val_loss_mse"][-1] > es.get_min_val():
+                    if is_validation_set and es and model.history["val_loss_mse"][-1] > es.get_min_val(): # controllare che sia stato passato il validation
                         model.weights = es.get_weights_backup()
                         print(" - Model gone overfitting: restore weights")
                     print(" - Stop: no improvement in training error")
@@ -431,3 +394,218 @@ class SGD():
             else:
                 self.__no_change_count = 0
                 return False
+
+    def norm(self, g):
+        return np.sqrt(np.sum([np.sum(np.square(g[i])) for i in range(0, len(g))]))
+
+    def scalar_product(self, g, d):
+        return np.sum([np.sum(np.multiply(-g[i], d[i])) for i in range(0, len(g))])
+
+    def armijo_wolfe_ls(self, model, X, Y, g, d, c_1, c_2, max_iter = 10):
+        alpha_prev, alpha_i, alpha_max = 0., 1., 1.
+        error_zero = metrics.mse(Y, model.predict(X))
+        d_error_zero = self.scalar_product(g, d)
+        error_prev = 0
+        iter = 0
+
+        while iter < max_iter:
+            # Evaluate phi(alpha)
+            weight_zero = copy.deepcopy(model.weights)
+            for i in range(0, len(model.weights)):
+                weight_zero[i] += alpha_i*d[i]
+            error_i = metrics.mse(Y, model.predict(X))
+
+            if error_i > error_zero + c_1*alpha_i*d_error_zero or (error_i >= error_prev and iter > 0):
+                return self.zoom(alpha_prev, alpha_i, error_zero, d_error_zero, c_1, c_2, model, X, Y, d)
+
+            g_alpha_i = self.backpropagation(model, weight_zero, X, Y)
+            d_error_i = self.scalar_product(g_alpha_i, d)
+
+            if np.abs(d_error_i) <= -c_2*d_error_zero:
+                return alpha_i
+
+            if d_error_i >= 0:
+                return self.zoom(alpha_i, alpha_prev, error_zero, d_error_zero, c_1, c_2, model, X, Y, d)
+            
+            alpha_prev = alpha_i
+            error_prev = error_i
+
+            alpha_i = alpha_prev*1.1
+            if alpha_i > alpha_max:
+                alpha_i = alpha_max
+
+            iter += 1
+
+    def zoom(self, alpha_lo, alpha_hi, error_zero, d_error_zero, c_1, c_2, model, X, Y, d, max_iter=10):
+        weights_lo = self.update_weights(copy.deepcopy(model.weights), alpha_lo, d)
+        weights_hi = self.update_weights(copy.deepcopy(model.weights), alpha_hi, d)
+        
+        error_lo = metrics.mse(Y, self.forward(model, weights_lo, X))
+        error_hi = metrics.mse(Y, self.forward(model, weights_hi, X))
+
+        g_lo = self.backpropagation(model, weights_lo, X, Y)
+        d_error_lo = self.scalar_product(g_lo, d)
+
+        i = 0
+        
+        while i < max_iter:
+            # quadratic interpolation
+            alpha_j = - ((d_error_lo*(alpha_hi**2))/(2*(error_hi - error_lo - d_error_lo*alpha_hi )))
+            # safeguarded
+            #a = max( [ am + ( as - am ) * sfgrd, min( [ as - ( as - am ) * sfgrd,  a ] ) ])
+            alpha_j = np.max( [ alpha_lo + (alpha_hi - alpha_lo)*self.sfgrd, 
+                            np.min([ alpha_hi - (alpha_hi - alpha_lo)*self.sfgrd, alpha_j])])
+                                            
+            weights_j = self.update_weights(copy.deepcopy(model.weights), alpha_j, d)
+            error_j = metrics.mse(Y, self.forward(model, weights_j, X))
+
+            if error_j > error_zero + c_1*alpha_j*d_error_zero or error_j >= error_lo:
+                alpha_hi = alpha_j
+                error_hi = error_j
+            else:
+                g_alpha_j = self.backpropagation(model, weights_j, X, Y)
+                d_error_j = self.scalar_product(g_alpha_j, d)
+                if np.abs(d_error_j) <= -c_2*d_error_zero:
+                    return alpha_j
+                if d_error_j*(alpha_hi - alpha_lo) >= 0:
+                    alpha_hi = alpha_lo
+                alpha_lo = alpha_j
+
+                error_hi = error_lo
+                error_lo = error_j
+                d_error_lo = d_error_j
+            
+            i += 1
+        return alpha_j
+
+
+class SGD(Optimizer):
+    """
+    Parameters
+    ----------
+    lr : float, default=0.1
+        Learning rate schedule for weight updates (delta rule).
+
+    momentum : float, default=0
+        Momentum for gradient descent update.
+
+    nesterov : boolean, default=False
+        Whether to use Nesterov’s momentum.
+
+    sigma : float, default=None
+        Parameter of the Super Accelerated Nesterov's momentum.
+        If 'nesterov' is True and 'sigma' equals to 'momentum', then we have the
+        simple Nesterov momentum. Instead, if 'sigma' is different from 
+        'momentum', we have the super accelerated Nesterov.
+
+    tol : float, default=None
+        Tolerance for the optimization. When the loss on training is
+        not improving by at least tol for 'n_iter_no_change' consecutive 
+        iterations convergence is considered to be reached and training stops.
+
+    n_iter_no_change : integer, default=None
+        Maximum number of epochs with no improvements > tol. 
+    """
+    def __init__(self, lr=0.1, momentum=0, nesterov=False, sigma = None, tol = None, n_iter_no_change = None):
+        super().__init__()
+        self.lr = lr
+        self.momentum = momentum
+        self.nesterov = nesterov
+        self.tol = tol
+        self.n_iter_no_change = n_iter_no_change
+        if n_iter_no_change is None:
+            self.n_iter_no_change = 1
+
+        self.sigma = sigma
+        if sigma is None and nesterov is True:
+            self.sigma = momentum
+
+        self.__batch_size = None
+        self.__es_count = 0
+        self.__no_change_count = 0
+
+        
+    def optimize(self, model, epochs, X_train, Y_train, validation_data=None, batch_size=None, es=None, verbose=0):
+        if ~model.is_fitted:
+            self.old_delta_w = [0]*len(model.weights)
+        super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
+
+
+    def step(self, model, X, Y):
+
+        current_batch_size = X.shape[0]
+        lr = self.lr/current_batch_size
+
+        weights = copy.deepcopy(model.weights)
+        if self.nesterov == True:
+            for i in range(0, len(model.weights)): 
+                weights[i] += self.sigma*self.old_delta_w[i] 
+
+        nabla_w  = self.backpropagation(model, weights, X, Y)
+
+        #      Delta Rule Update
+        #  w_i = w_i + eta*nabla_W_i
+        for i in range(0, len(model.weights)):
+            delta_w = lr*nabla_w[i] + self.momentum*self.old_delta_w[i]   
+            old_w = copy.deepcopy(model.weights[i])
+            old_w[0,:] = 0
+            regularizer = model.kernel_regularizer[i]*current_batch_size/self.tot_n_patterns
+            model.weights[i] += (delta_w - regularizer*old_w)
+            self.old_delta_w[i] = delta_w
+
+
+
+class NCG(Optimizer):
+
+    def __init__(self, beta_method = "pr", d_method='standard', c_1=1e-4, c_2=.9, sfgrd = 0.01, tol = None, n_iter_no_change = None):
+        super().__init__()
+        self.tol = tol
+        self.c_1 = c_1
+        self.c_2 = c_2
+        self.sfgrd = sfgrd
+        self.past_g = 0
+        self.past_d = 0
+        self.past_norm_g = 0
+        self.model_backup = 0
+        self.beta_function = self.get_beta_function(beta_method)
+
+    def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
+        super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
+
+    def step(self, model, X, Y):
+        d = {}
+        g = self.backpropagation(model, model.weights, X, Y)
+    
+        if ~model.is_fitted and self.epoch == 0:
+            d = g
+        else:
+            # calcolo del beta
+            beta = self.beta_function(g, self.past_g, self.past_norm_g)
+            print("Beta: {}".format(beta))
+            if beta != 0:
+                for i in range(0, len(model.weights)):
+                    d[i] = g[i] + beta * self.past_d[i]
+            else:
+                d = g
+        
+        self.past_g = g
+        self.past_d = d
+        self.past_norm_g = self.norm(self.past_g)
+
+        alpha = self.armijo_wolfe_ls(model, X, Y, g, d, self.c_1, self.c_2)
+
+        print("Alpha: {}".format(alpha))
+        for i in range(0, len(model.weights)):
+            model.weights[i] += alpha*d[i]
+
+
+    def get_beta_function(self, beta_method):
+        if beta_method == "pr":
+            return self.beta_pr
+    
+    def beta_pr(self, g, past_g, past_norm_g):
+        diff = {}
+        for i in range(0,len(past_g)):
+            diff[i] =  -g[i] + past_g[i]
+        beta = self.scalar_product(g, diff)/past_norm_g
+        return max(0, beta)

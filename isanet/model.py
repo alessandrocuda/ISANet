@@ -95,6 +95,7 @@ class Mlp():
                         "acc":          [], 
                         "val_acc":      [], 
                         "epoch_time":   []}
+        self.is_fitted = False              # da commentare
 
         self.__optimizer = optimizer.SGD()
         self.__is_input_layer_set = False
@@ -155,6 +156,7 @@ class Mlp():
                                 Y_train=Y_train, 
                                 validation_data=validation_data,
                                 es=es)
+        self.is_fitted = True
                         
     def __forward(self, layer, input):
         """Does the dot product between the input and the weight matrix of the specified layer"""
