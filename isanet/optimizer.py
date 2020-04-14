@@ -402,7 +402,7 @@ class Optimizer(object):
         return np.sum([np.sum(np.multiply(-g[i], d[i])) for i in range(0, len(g))])
 
     def armijo_wolfe_ls(self, model, X, Y, g, d, c_1, c_2, max_iter = 10):
-        alpha_prev, alpha_i, alpha_max = 0., 1., 1.
+        alpha_prev, alpha_i, alpha_max = 0., 0.1, 1.
         error_zero = metrics.mse(Y, model.predict(X))
         d_error_zero = self.scalar_product(g, d)
         error_prev = 0
@@ -410,15 +410,13 @@ class Optimizer(object):
 
         while iter < max_iter:
             # Evaluate phi(alpha)
-            weight_zero = copy.deepcopy(model.weights)
-            for i in range(0, len(model.weights)):
-                weight_zero[i] += alpha_i*d[i]
-            error_i = metrics.mse(Y, model.predict(X))
+            weight_i = self.update_weights(copy.deepcopy(model.weights), alpha_i, d)
+            error_i = metrics.mse(Y, self.forward(model, weight_i, X))
 
             if error_i > error_zero + c_1*alpha_i*d_error_zero or (error_i >= error_prev and iter > 0):
                 return self.zoom(alpha_prev, alpha_i, error_zero, d_error_zero, c_1, c_2, model, X, Y, d)
 
-            g_alpha_i = self.backpropagation(model, weight_zero, X, Y)
+            g_alpha_i = self.backpropagation(model, weight_i, X, Y)
             d_error_i = self.scalar_product(g_alpha_i, d)
 
             if np.abs(d_error_i) <= -c_2*d_error_zero:
@@ -435,6 +433,8 @@ class Optimizer(object):
                 alpha_i = alpha_max
 
             iter += 1
+            
+        return alpha_i
 
     def zoom(self, alpha_lo, alpha_hi, error_zero, d_error_zero, c_1, c_2, model, X, Y, d, max_iter=10):
         weights_lo = self.update_weights(copy.deepcopy(model.weights), alpha_lo, d)
@@ -448,9 +448,10 @@ class Optimizer(object):
 
         i = 0
         
+        alpha_j = self._quadmin(alpha_lo, error_lo, d_error_lo, alpha_hi, error_hi)
+        
         while i < max_iter:
             # quadratic interpolation
-            alpha_j = - ((d_error_lo*(alpha_hi**2))/(2*(error_hi - error_lo - d_error_lo*alpha_hi )))
             # safeguarded
             #a = max( [ am + ( as - am ) * sfgrd, min( [ as - ( as - am ) * sfgrd,  a ] ) ])
             alpha_j = np.max( [ alpha_lo + (alpha_hi - alpha_lo)*self.sfgrd, 
@@ -469,14 +470,25 @@ class Optimizer(object):
                     return alpha_j
                 if d_error_j*(alpha_hi - alpha_lo) >= 0:
                     alpha_hi = alpha_lo
-                alpha_lo = alpha_j
+                    error_hi = error_lo
 
-                error_hi = error_lo
+                alpha_lo = alpha_j
                 error_lo = error_j
                 d_error_lo = d_error_j
             
+            alpha_j = self._quadmin(alpha_lo, error_lo, d_error_lo, alpha_hi, error_hi)
+            
             i += 1
+
         return alpha_j
+
+    def _quadmin(self, a, fa, fpa, b, fb):
+        D = fa
+        C = fpa
+        db = b - a * 1.0
+        B = (fb - D - C * db) / (db * db)
+        xmin = a - C / (2.0 * B)
+        return xmin
 
 
 class SGD(Optimizer):
@@ -607,5 +619,5 @@ class NCG(Optimizer):
         diff = {}
         for i in range(0,len(past_g)):
             diff[i] =  -g[i] + past_g[i]
-        beta = self.scalar_product(g, diff)/past_norm_g
+        beta = self.scalar_product(g, diff)/np.square(past_norm_g)
         return max(0, beta)

@@ -34,7 +34,7 @@ model.set_optimizer(
 print("Start to Fit:")
 model.fit(X_train,
             Y_train, 
-            epochs=1000, 
+            epochs=100, 
             #batch_size=31,
             #validation_data = [X_test, Y_test],
             verbose=1) 
