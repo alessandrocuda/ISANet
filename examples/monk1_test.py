@@ -24,12 +24,14 @@ model.set_optimizer(
     SGD(
         lr = 0.83,
         momentum = 0.9,
-         nesterov = True
+        nesterov = True
         # # gain = 0
     ))
+
 # model.set_optimizer(
 #     NCG()
 # )
+
 # Batch
 print("Start to Fit:")
 model.fit(X_train,

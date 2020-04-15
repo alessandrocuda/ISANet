@@ -562,8 +562,9 @@ class SGD(Optimizer):
         current_batch_size = X.shape[0]
         lr = self.lr/current_batch_size
 
-        weights = copy.deepcopy(model.weights)
+        weights = model.weights
         if self.nesterov == True:
+            weights = copy.deepcopy(model.weights)
             for i in range(0, len(model.weights)): 
                 weights[i] += self.sigma*self.delta_w[i] 
 
@@ -572,11 +573,11 @@ class SGD(Optimizer):
         #      Delta Rule Update
         #  w_i = w_i + eta*nabla_W_i
         for i in range(0, len(model.weights)):
-            delta_w = -lr*g[i] + self.momentum*self.delta_w[i]   
+            self.delta_w[i] = -lr*g[i] + self.momentum*self.delta_w[i]   
             old_w = copy.deepcopy(model.weights[i])
             old_w[0,:] = 0
             regularizer = model.kernel_regularizer[i]*current_batch_size/self.tot_n_patterns
-            model.weights[i] += (delta_w - regularizer*old_w)
+            model.weights[i] += (self.delta_w[i] - regularizer*old_w)
 
 
 class NCG(Optimizer):
