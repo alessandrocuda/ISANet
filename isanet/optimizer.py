@@ -208,8 +208,6 @@ class Optimizer(object):
             a = model.activations[layer].f(z)
         return a
 
-
-
     def backpropagation(self, model, weights, X, Y):
         """
         Parameters
@@ -233,42 +231,42 @@ class Optimizer(object):
                 E.g. 0 -> first hidden layer, ..., n+1 -> output layer
                 where n is the number of hidden layer in the net.
         """
-        A = []          # outputs after the activation functions of all layers ( input to output)
-        Z = []          # outputs before the activation functions of all layers ( hidden layers to output)
-        nabla_w = {}    # dictionary of gradient for each layer (hidden to output)
+        A = [0]*(model.n_layers+1)   # outputs after the activation functions of all layers ( input to output)
+        Z = [0]*(model.n_layers)                       # outputs before the activation functions of all layers ( hidden layers to output)
+        g = [0]*model.n_layers                 # dictionary of gradient for each layer (hidden to output)
 
         #####################
         # Feed Forward Phase
         ###################
-        A.append(np.insert(X, 0, 1, 1))
+        A[0] = np.insert(X, 0, 1, 1)
         for layer in range(0, model.n_layers):
             z = np.dot(A[layer], weights[layer])
-            Z.append(z)
-            outputLayer = model.activations[layer].f(z)
-            A.append(np.insert(outputLayer, 0, 1, 1))
-        outputNet = A[-1][:,1:]
-        zOutputNet = Z[-1]
+            Z[layer] = z
+            output = model.activations[layer].f(z)
+            A[layer+1] = np.insert(output, 0, 1, 1)
+        Y_pred = A[-1][:,1:]
+        Y_z_pred = Z[-1]
 
         #######################
-        # Output layer nabla_w
+        # Output layer K 
         #####################
-        delta = Y - outputNet  
-        derivates = model.activations[-1].derivative(zOutputNet)
-        deltaNodesK = delta*derivates
-        nabla_w[model.n_layers-1] = np.dot(A[-2].T, deltaNodesK)
+        loss_delta = Y - Y_pred  
+        derivates = model.activations[-1].derivative(Y_z_pred)
+        d_node_k = -loss_delta*derivates
+        g[model.n_layers-1] = np.dot(A[-2].T, d_node_k)
 
         ########################
-        # Hidden layers nabla_w
+        # Hidden layers H
         ######################
-        deltaNodeToProp = deltaNodesK
+        d_to_prop = d_node_k
         for l in range(2, model.n_layers+1):
-            d = np.dot(deltaNodeToProp, weights[-l+1].T)[:,1:]
-            derivatesH = model.activations[-l].derivative(Z[-l])
-            deltaNodesH = d*derivatesH
-            nabla_w[model.n_layers-l] = np.dot(A[-l-1].T, deltaNodesH)
-            deltaNodeToProp = deltaNodesH
+            d = np.dot(d_to_prop, weights[-l+1].T)[:,1:]
+            derivates_h = model.activations[-l].derivative(Z[-l])
+            d_node_h = d*derivates_h
+            g[model.n_layers-l] = np.dot(A[-l-1].T, d_node_h)
+            d_to_prop = d_node_h
         
-        return nabla_w 
+        return g 
 
     def get_batch(self, X_train, Y_train, batch_size):
         """ 
@@ -402,18 +400,25 @@ class Optimizer(object):
         return np.sum([np.sum(np.multiply(-g[i], d[i])) for i in range(0, len(g))])
 
     def armijo_wolfe_ls(self, model, X, Y, g, d, c_1, c_2, max_iter = 10):
-        alpha_prev, alpha_i, alpha_max = 0., 0.1, 1.
+        alpha_prev, alpha_i, alpha_max = 0., 0.1, 1
+
         error_zero = metrics.mse(Y, model.predict(X))
         d_error_zero = self.scalar_product(g, d)
         error_prev = 0
         iter = 0
 
         while iter < max_iter:
-            # Evaluate phi(alpha)
+            # # Evaluate phi(alpha)
+            if alpha_i == 0 or (alpha_max is not None and alpha_prev == alpha_max):
+                print("errore")
+            
             weight_i = self.update_weights(copy.deepcopy(model.weights), alpha_i, d)
             error_i = metrics.mse(Y, self.forward(model, weight_i, X))
 
             if error_i > error_zero + c_1*alpha_i*d_error_zero or (error_i >= error_prev and iter > 0):
+                print("faccio zoom: {0}, {1}".format(alpha_prev, alpha_i))
+                if alpha_prev == alpha_i:
+                     raise Exception("sono uguali")
                 return self.zoom(alpha_prev, alpha_i, error_zero, d_error_zero, c_1, c_2, model, X, Y, d)
 
             g_alpha_i = self.backpropagation(model, weight_i, X, Y)
@@ -423,20 +428,20 @@ class Optimizer(object):
                 return alpha_i
 
             if d_error_i >= 0:
+                print("faccio zoom")
                 return self.zoom(alpha_i, alpha_prev, error_zero, d_error_zero, c_1, c_2, model, X, Y, d)
             
             alpha_prev = alpha_i
             error_prev = error_i
-
-            alpha_i = alpha_prev*1.1
-            if alpha_i > alpha_max:
-                alpha_i = alpha_max
+            alpha_i = min(alpha_i*2, alpha_max)
 
             iter += 1
-            
+        print("iteration line search: {}".format(iter))
         return alpha_i
 
     def zoom(self, alpha_lo, alpha_hi, error_zero, d_error_zero, c_1, c_2, model, X, Y, d, max_iter=10):
+        delta2 = 0.1  # quadratic interpolant check
+
         weights_lo = self.update_weights(copy.deepcopy(model.weights), alpha_lo, d)
         weights_hi = self.update_weights(copy.deepcopy(model.weights), alpha_hi, d)
         
@@ -447,15 +452,27 @@ class Optimizer(object):
         d_error_lo = self.scalar_product(g_lo, d)
 
         i = 0
-        
-        alpha_j = self._quadmin(alpha_lo, error_lo, d_error_lo, alpha_hi, error_hi)
+        alpha_j = 0
         
         while i < max_iter:
             # quadratic interpolation
+            dalpha = alpha_hi - alpha_lo
+            if dalpha < 0:
+                a, b = alpha_hi, alpha_lo
+            else:
+                a, b = alpha_lo, alpha_hi
+
+            qchk = delta2 * dalpha
+
+            alpha_j = self._quadmin(alpha_lo, error_lo, d_error_lo, alpha_hi, error_hi)
+            if (alpha_j is None) or (alpha_j > b-qchk) or (alpha_j < a+qchk):
+                alpha_j = alpha_lo + 0.5*dalpha
+            
             # safeguarded
             #a = max( [ am + ( as - am ) * sfgrd, min( [ as - ( as - am ) * sfgrd,  a ] ) ])
-            alpha_j = np.max( [ alpha_lo + (alpha_hi - alpha_lo)*self.sfgrd, 
-                            np.min([ alpha_hi - (alpha_hi - alpha_lo)*self.sfgrd, alpha_j])])
+
+            # alpha_j = np.max( [ alpha_lo + (alpha_hi - alpha_lo)*self.sfgrd, 
+            #                 np.min([ alpha_hi - (alpha_hi - alpha_lo)*self.sfgrd, alpha_j])])
                                             
             weights_j = self.update_weights(copy.deepcopy(model.weights), alpha_j, d)
             error_j = metrics.mse(Y, self.forward(model, weights_j, X))
@@ -474,10 +491,7 @@ class Optimizer(object):
 
                 alpha_lo = alpha_j
                 error_lo = error_j
-                d_error_lo = d_error_j
-            
-            alpha_j = self._quadmin(alpha_lo, error_lo, d_error_lo, alpha_hi, error_hi)
-            
+                d_error_lo = d_error_j                   
             i += 1
 
         return alpha_j
@@ -539,7 +553,7 @@ class SGD(Optimizer):
         
     def optimize(self, model, epochs, X_train, Y_train, validation_data=None, batch_size=None, es=None, verbose=0):
         if ~model.is_fitted:
-            self.old_delta_w = [0]*len(model.weights)
+            self.delta_w = [0]*len(model.weights)
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
 
@@ -551,25 +565,23 @@ class SGD(Optimizer):
         weights = copy.deepcopy(model.weights)
         if self.nesterov == True:
             for i in range(0, len(model.weights)): 
-                weights[i] += self.sigma*self.old_delta_w[i] 
+                weights[i] += self.sigma*self.delta_w[i] 
 
-        nabla_w  = self.backpropagation(model, weights, X, Y)
+        g  = self.backpropagation(model, weights, X, Y)
 
         #      Delta Rule Update
         #  w_i = w_i + eta*nabla_W_i
         for i in range(0, len(model.weights)):
-            delta_w = lr*nabla_w[i] + self.momentum*self.old_delta_w[i]   
+            delta_w = -lr*g[i] + self.momentum*self.delta_w[i]   
             old_w = copy.deepcopy(model.weights[i])
             old_w[0,:] = 0
             regularizer = model.kernel_regularizer[i]*current_batch_size/self.tot_n_patterns
             model.weights[i] += (delta_w - regularizer*old_w)
-            self.old_delta_w[i] = delta_w
-
 
 
 class NCG(Optimizer):
 
-    def __init__(self, beta_method = "pr", d_method='standard', c_1=1e-4, c_2=.9, sfgrd = 0.01, tol = None, n_iter_no_change = None):
+    def __init__(self, beta_method = "pr", d_method='standard', c_1=1e-4, c_2=.1, sfgrd = 0.01, tol = None, n_iter_no_change = None):
         super().__init__()
         self.tol = tol
         self.c_1 = c_1
