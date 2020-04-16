@@ -3,8 +3,9 @@
 import numpy as np
 import time
 import copy
-from . import metrics
-
+import isanet.metrics as metrics
+from isanet.optimizer.linesearch import armijo_wolfe_ls
+from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class EarlyStopping():
     """Stop training when a the MSE (Mean squared error) on validation
@@ -117,6 +118,10 @@ class Optimizer(object):
 
     def __init__(self):
         self.epoch = 0
+        self.model = None
+        self.X_part = None
+        self.Y_part = None
+        self.d = None
 
     def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
         """
@@ -196,16 +201,21 @@ class Optimizer(object):
 
             self.epoch+=1
 
-    def update_weights(self, weights, alpha, d):
-        for i in range(0, len(weights)):
-            weights[i] += alpha*d[i]
-        return weights
+    def phi(self, w):
+        weights = restore_w_to_model(model, w)
+        y_pred = self.forward(weights, self.X_part)
+        return metrics.mse(self.Y_part, y_pred)
 
-    def forward(self, model, weights, X):
+    def derphi(self, w):
+        weights = restore_w_to_model(model, w)
+        g = make_vector(self.backpropagation(model, weights, self.X_part, self.Y_part))
+        derphi_a1 = np.asscalar(np.dot(g.T, self.d))
+
+    def forward(self, weights, X):
         a = X.copy()
-        for layer in range(0, model.n_layers):
+        for layer in range(self.model.n_layers):
             z = np.dot(np.insert(a, 0, 1, 1), weights[layer])
-            a = model.activations[layer].f(z)
+            a = self.model.activations[layer].f(z)
         return a
 
     def backpropagation(self, model, weights, X, Y):
@@ -393,117 +403,6 @@ class Optimizer(object):
                 self.__no_change_count = 0
                 return False
 
-    def norm(self, g):
-        return np.sqrt(np.sum([np.sum(np.square(g[i])) for i in range(0, len(g))]))
-
-    def scalar_product(self, g, d):
-        return np.sum([np.sum(np.multiply(-g[i], d[i])) for i in range(0, len(g))])
-
-    def armijo_wolfe_ls(self, model, X, Y, g, d, c_1, c_2, max_iter = 10):
-        alpha_prev, alpha_i, alpha_max = 0., 0.1, 1
-
-        error_zero = metrics.mse(Y, model.predict(X))
-        d_error_zero = self.scalar_product(g, d)
-        error_prev = 0
-        iter = 0
-
-        while iter < max_iter:
-            # # Evaluate phi(alpha)
-            if alpha_i == 0 or (alpha_max is not None and alpha_prev == alpha_max):
-                print("errore")
-            
-            weight_i = self.update_weights(copy.deepcopy(model.weights), alpha_i, d)
-            error_i = metrics.mse(Y, self.forward(model, weight_i, X))
-
-            if error_i > error_zero + c_1*alpha_i*d_error_zero or (error_i >= error_prev and iter > 0):
-                print("faccio zoom: {0}, {1}".format(alpha_prev, alpha_i))
-                if alpha_prev == alpha_i:
-                     raise Exception("sono uguali")
-                return self.zoom(alpha_prev, alpha_i, error_zero, d_error_zero, c_1, c_2, model, X, Y, d)
-
-            g_alpha_i = self.backpropagation(model, weight_i, X, Y)
-            d_error_i = self.scalar_product(g_alpha_i, d)
-
-            if np.abs(d_error_i) <= -c_2*d_error_zero:
-                return alpha_i
-
-            if d_error_i >= 0:
-                print("faccio zoom")
-                return self.zoom(alpha_i, alpha_prev, error_zero, d_error_zero, c_1, c_2, model, X, Y, d)
-            
-            alpha_prev = alpha_i
-            error_prev = error_i
-            alpha_i = min(alpha_i*2, alpha_max)
-
-            iter += 1
-        print("iteration line search: {}".format(iter))
-        return alpha_i
-
-    def zoom(self, alpha_lo, alpha_hi, error_zero, d_error_zero, c_1, c_2, model, X, Y, d, max_iter=10):
-        delta2 = 0.1  # quadratic interpolant check
-
-        weights_lo = self.update_weights(copy.deepcopy(model.weights), alpha_lo, d)
-        weights_hi = self.update_weights(copy.deepcopy(model.weights), alpha_hi, d)
-        
-        error_lo = metrics.mse(Y, self.forward(model, weights_lo, X))
-        error_hi = metrics.mse(Y, self.forward(model, weights_hi, X))
-
-        g_lo = self.backpropagation(model, weights_lo, X, Y)
-        d_error_lo = self.scalar_product(g_lo, d)
-
-        i = 0
-        alpha_j = 0
-        
-        while i < max_iter:
-            # quadratic interpolation
-            dalpha = alpha_hi - alpha_lo
-            if dalpha < 0:
-                a, b = alpha_hi, alpha_lo
-            else:
-                a, b = alpha_lo, alpha_hi
-
-            qchk = delta2 * dalpha
-
-            alpha_j = self._quadmin(alpha_lo, error_lo, d_error_lo, alpha_hi, error_hi)
-            if (alpha_j is None) or (alpha_j > b-qchk) or (alpha_j < a+qchk):
-                alpha_j = alpha_lo + 0.5*dalpha
-            
-            # safeguarded
-            #a = max( [ am + ( as - am ) * sfgrd, min( [ as - ( as - am ) * sfgrd,  a ] ) ])
-
-            # alpha_j = np.max( [ alpha_lo + (alpha_hi - alpha_lo)*self.sfgrd, 
-            #                 np.min([ alpha_hi - (alpha_hi - alpha_lo)*self.sfgrd, alpha_j])])
-                                            
-            weights_j = self.update_weights(copy.deepcopy(model.weights), alpha_j, d)
-            error_j = metrics.mse(Y, self.forward(model, weights_j, X))
-
-            if error_j > error_zero + c_1*alpha_j*d_error_zero or error_j >= error_lo:
-                alpha_hi = alpha_j
-                error_hi = error_j
-            else:
-                g_alpha_j = self.backpropagation(model, weights_j, X, Y)
-                d_error_j = self.scalar_product(g_alpha_j, d)
-                if np.abs(d_error_j) <= -c_2*d_error_zero:
-                    return alpha_j
-                if d_error_j*(alpha_hi - alpha_lo) >= 0:
-                    alpha_hi = alpha_lo
-                    error_hi = error_lo
-
-                alpha_lo = alpha_j
-                error_lo = error_j
-                d_error_lo = d_error_j                   
-            i += 1
-
-        return alpha_j
-
-    def _quadmin(self, a, fa, fpa, b, fb):
-        D = fa
-        C = fpa
-        db = b - a * 1.0
-        B = (fb - D - C * db) / (db * db)
-        xmin = a - C / (2.0 * B)
-        return xmin
-
 
 class SGD(Optimizer):
     """
@@ -582,46 +481,52 @@ class SGD(Optimizer):
 
 class NCG(Optimizer):
 
-    def __init__(self, beta_method = "pr", d_method='standard', c_1=1e-4, c_2=.1, sfgrd = 0.01, tol = None, n_iter_no_change = None):
+    def __init__(self, beta_method = "pr", d_method='standard', c1=1e-4, c2=.9, sfgrd = 0.01, tol = None, n_iter_no_change = None):
         super().__init__()
         self.tol = tol
-        self.c_1 = c_1
-        self.c_2 = c_2
+        self.c1 = c1
+        self.c2 = c2
         self.sfgrd = sfgrd
+        self.old_phi0 = None
         self.past_g = 0
         self.past_d = 0
-        self.past_norm_g = 0
-        self.model_backup = 0
-        self.beta_function = self.get_beta_function(beta_method)
+        self.past_ng = 0
+        self.w = 0
+        self.fbeta = self.get_beta_function(beta_method)
 
     def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
+        self.model = model
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
     def step(self, model, X, Y):
-        d = {}
-        g = self.backpropagation(model, model.weights, X, Y)
+        print()
+        w = make_vector(model.weights)
+        g = make_vector(self.backpropagation(model, model.weights, X, Y))
     
         if ~model.is_fitted and self.epoch == 0:
-            d = g
+            d = -g
+            phi0 = metrics.mse(Y, model.predict(X))
         else:
             # calcolo del beta
-            beta = self.beta_function(g, self.past_g, self.past_norm_g)
-            print("Beta: {}".format(beta))
+            beta = self.fbeta(g, self.past_g, self.past_ng)
+            print("Beta: {}".format(beta), end=" -> compute alpha: ")
             if beta != 0:
-                for i in range(0, len(model.weights)):
-                    d[i] = g[i] + beta * self.past_d[i]
+                d = - g + beta*self.past_d 
             else:
-                d = g
-        
+                d = - g
+            phi0 = model.history["loss_mse"][-1]
+
+        self.past_ng = np.linalg.norm(g)        
         self.past_g = g
         self.past_d = d
-        self.past_norm_g = self.norm(self.past_g)
 
-        alpha = self.armijo_wolfe_ls(model, X, Y, g, d, self.c_1, self.c_2)
+        alpha = armijo_wolfe_ls(self, model, w, X, Y, phi0, self.old_phi0, g, d, self.c1, self.c2)
 
         print("Alpha: {}".format(alpha))
-        for i in range(0, len(model.weights)):
-            model.weights[i] += alpha*d[i]
+        self.old_phi0 = phi0
+        w += alpha*d
+        model.weights = restore_w_to_model(model, w)
+
 
 
     def get_beta_function(self, beta_method):
@@ -629,8 +534,8 @@ class NCG(Optimizer):
             return self.beta_pr
     
     def beta_pr(self, g, past_g, past_norm_g):
-        diff = {}
-        for i in range(0,len(past_g)):
-            diff[i] =  -g[i] + past_g[i]
-        beta = self.scalar_product(g, diff)/np.square(past_norm_g)
+        A = g.T
+        B = g-past_g
+        C = np.square(past_norm_g)
+        beta = np.asscalar(np.dot(A,B)/C)
         return max(0, beta)
