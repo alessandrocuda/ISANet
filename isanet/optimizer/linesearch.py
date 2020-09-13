@@ -4,145 +4,181 @@ import copy
 import isanet.metrics as metrics
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
-def line_search_wolfe(f, myfprime, xk, pk, gfk=None, old_fval=None,
-                       old_old_fval=None, args=(), c1=1e-4, c2=0.4, amax=None, maxiter=10):
+def line_search_wolfe_f(phi, derphi, phi0=None, c1=1e-4, c2=0.9):
+    """ a fast strong Wolfe line search 
+    """
+    phip0 = derphi(0)
+    a_s = 1
+    feval = 0
+    mina = 1e-16
+    sfgrd = 0.01
+    while feval <= 1000:
+        feval+=1
+        phia  = phi(a_s)
+        phips = derphi(a_s)
+
+        if ( phia <= phi0 + c1 * a_s * phip0) & (np.abs( phips ) <= - c2 * phip0):
+            return a_s
+         
+        if phips >= 0:
+            print("derivative is positive", end=" - ")
+            break
+        a_s = a_s / 0.9
     
-    raise NotImplementedError
+    am = 0
+    a = a_s
+    phipm = phip0
+    while ( feval <= 1000 ) & ( ( a_s - am )  > mina) & ( phips > 1e-12 ):
+        
+        # compute the new value by safeguarded quadratic interpolation
+        a = ( am * phips - a_s * phipm ) / ( phips - phipm )
+        a = max( [ am + ( a_s - am ) * sfgrd,
+                 min( [ a_s - ( a_s - am ) * sfgrd,  a ] ) ] )
+    
+        # compute phi( a )
+        phia = phi(a)
+        phip = derphi(a)
+        feval+=1
+        if ( phia <= phi0 + c1 * a * phip0 ) & ( np.abs( phip ) <= - c2 * phip0 ):
+            # Armijo + strong Wolfe satisfied, we are done
+            return a
+    
+       # restrict the interval based on sign of the derivative in a
+        if phip < 0:
+           am = a
+           phipm = phip
+        else:
+           a_s = a
+           if a_s <= mina:
+              break
+           phips = phip
+
+    if a <= mina:
+        print("error")
+        exit
+    else:
+        return a
+
+class phi_function(object):
+    def __init__(self, model, optimizer, w, X, Y, d):
+        self.optimizer = optimizer
+        self.model = model
+        self.w = w
+        self.X = X
+        self.Y = Y
+        self.d = d
+
+    def phi(self, a):
+        w_a = restore_w_to_model(self.model, self.w+a*self.d)
+        phia = metrics.mse(self.Y, self.optimizer.forward(w_a, self.X))
+        return phia
+        
+    def derphi(self, a):
+        w_a = restore_w_to_model(self.model, self.w+a*self.d)
+        g_a = make_vector(self.optimizer.backpropagation(self.model, w_a, self.X, self.Y))
+        phips = np.asscalar(np.dot(g_a.T, self.d))
+        return phips
 
 
+def line_search_wolfe(phi, derphi, phi0=None,
+                         old_phi0=None, derphi0=None,
+                         c1=1e-4, c2=0.9, amax=None, maxiter=10):
+    """Find alpha that satisfies strong Wolfe conditions.
+    alpha > 0 is assumed to be a descent direction.
+    Parameters
+    ----------
+    phi : callable phi(alpha)
+        Objective scalar function.
+    derphi : callable phi'(alpha)
+        Objective function derivative. Returns a scalar.
+    phi0 : float, optional
+        Value of phi at 0.
+    old_phi0 : float, optional
+        Value of phi at previous point.
+    derphi0 : float, optional
+        Value of derphi at 0
+    c1 : float, optional
+        Parameter for Armijo condition rule.
+    c2 : float, optional
+        Parameter for curvature condition rule.
+    amax : float, optional
+        Maximum step size.
+    maxiter : int, optional
+        Maximum number of iterations to perform.
+    Returns
+    -------
+    alpha_star : float or None
+        Best alpha, or last alpha if the line search algorithm did not converge.
+    Notes
+    -----
+    Uses the line search algorithm to enforce strong Wolfe
+    conditions. See Wright and Nocedal, 'Numerical Optimization',
+    1999, pp. 59-61.
+    """
 
-def armijo_wolfe_ls(o, model, w, X, Y, phi0, old_phi0, g, d, c1, c2, max_iter = 10):
+    if phi0 is None:
+        phi0 = phi(0.)
 
-    derphi0 = np.asscalar(np.dot(g.T,d))
+    if derphi0 is None:
+        derphi0 = derphi(0.)
 
-    alpha0 = 0.
-    amax = 100000000000.
-    alpha1 = 0.1
-    # if old_phi0 is not None and derphi0 != 0:
-    #     alpha1 = min(1.0, 1.01*2*(phi0 - old_phi0)/derphi0)
-    # else:
-    #     alpha1 = 1.0
+    alpha0 = 0
 
-    # if alpha1 < 0.000000000000001:
-    #     alpha1 = 1.0
+    alpha1 = 1.0
 
-    # if amax is not None:
-    #     alpha1 = min(alpha1, amax)
+    if alpha1 < 0:
+        alpha1 = 1.0
+
+    if amax is not None:
+        alpha1 = min(alpha1, amax)
+
+    phi_a1 = phi(alpha1)
 
     phi_a0 = phi0
+    derphi_a0 = derphi0
 
-    iter = 1
 
-    while iter <= 1000000:
-        #print(iter)
-        # Evaluate phi(alpha)
-        if alpha1 == 0 or (alpha0 == amax):
-            print("errro? why? frangio help us")
-        
-        w1 = restore_w_to_model(model, w+alpha1*d)
-        phi_a1 = metrics.mse(Y, o.forward( w1, X))
-        if (phi_a1 > phi0 + c1 * alpha1 * derphi0) or ((phi_a1 >= phi_a0) and (iter > 1)):
-            print("zoom1: {0}, {1}".format(alpha0, alpha1), end=", ")
-            return zoom(o, w, alpha0, alpha1, phi0, derphi0, c1, c2, model, X, Y, d)
+    for i in range(maxiter):
 
-        g_a1 = make_vector(o.backpropagation(model, w1, X, Y))
-        derphi_a1 = np.asscalar(np.dot(g_a1.T, d))
+        if (phi_a1 > phi0 + c1 * alpha1 * derphi0) or \
+           ((phi_a1 >= phi_a0) and (i > 1)):
+            alpha_star = _zoom(alpha0, alpha1, phi_a0,
+                              phi_a1, derphi_a0, phi, derphi,
+                              phi0, derphi0, c1, c2)
+            break
 
-        if (np.abs(derphi_a1) <= (-c2*derphi0)):
-            print("f-w-verified", end=", ")
-            return alpha1
+        derphi_a1 = derphi(alpha1)
+        if (abs(derphi_a1) <= -c2*derphi0):
+            alpha_star = alpha1
+            break
 
         if (derphi_a1 >= 0):
-            print("dev > 0, zoom2: {0}, {1}".format(alpha1, alpha0), end=", ")
-            return zoom(o, w, alpha1, alpha0, phi0, derphi0, c1, c2, model, X, Y, d)
-        
-        alpha2 = 2 * alpha1  
-        if amax is not None:
-            alpha2 = min(alpha2, amax)
+            alpha_star = _zoom(alpha1, alpha0, phi_a1,
+                              phi_a0, derphi_a1, phi, derphi,
+                              phi0, derphi0, c1, c2)
+            break
+
         alpha0 = alpha1
-        alpha1 = alpha2
+        alpha1 = 2 * alpha1  # increase by factor of two on each iteration
+        if amax is not None:
+            alpha1 = min(alpha1, amax)
         phi_a0 = phi_a1
+        phi_a1 = phi(alpha1)
+        derphi_a0 = derphi_a1
 
-        iter += 1
-    print("Max iter reached", end=", ")
-    return alpha1
+    else:
+        # stopping test maxiter reached
+        alpha_star = alpha1
+        print('The line search algorithm did not converge')
 
-def zoom(o, w, a_lo, a_hi, phi0, derphi0, c1, c2, model, X, Y, d, maxiter=10):
-    delta1 = 0.2  # cubic interpolant check
-    delta2 = 0.1  # quadratic interpolant check
-    phi_rec = phi0
-    a_rec = 0
+    return alpha_star
 
-
-    w_lo = restore_w_to_model(model, w + a_lo * d)
-    w_hi = restore_w_to_model(model, w + a_hi * d)
-    
-    phi_lo = metrics.mse(Y, o.forward(w_lo, X))
-    phi_hi = metrics.mse(Y, o.forward( w_hi, X))
-
-    g_lo = make_vector(o.backpropagation(model, w_lo, X, Y))
-    derphi_lo = np.asscalar(np.dot(g_lo.T, d))
-
-    i = 0
-    alpha_j = 0
-    
-    while i < maxiter:
-        # quadratic interpolation
-        dalpha = a_hi - a_lo
-        if dalpha < 0:
-            a, b = a_hi, a_lo
-        else:
-            a, b = a_lo, a_hi
-
-        if (i > 0):
-            cchk = delta1 * dalpha
-            a_j = _cubicmin(a_lo, phi_lo, derphi_lo, a_hi, phi_hi,
-                            a_rec, phi_rec)
-        if (i == 0) or (a_j is None) or (a_j > b - cchk) or (a_j < a + cchk):
-            qchk = delta2 * dalpha
-            a_j = _quadmin(a_lo, phi_lo, derphi_lo, a_hi, phi_hi)
-            if (a_j is None) or (a_j > b-qchk) or (a_j < a+qchk):
-                a_j = a_lo + 0.5*dalpha
-        
-        # safeguarded
-        #a = max( [ am + ( as - am ) * sfgrd, min( [ as - ( as - am ) * sfgrd,  a ] ) ])
-
-        # alpha_j = np.max( [ alpha_lo + (alpha_hi - alpha_lo)*self.sfgrd, 
-        #                 np.min([ alpha_hi - (alpha_hi - alpha_lo)*self.sfgrd, alpha_j])])
-                                        
-        w_j = restore_w_to_model(model, w + a_j * d)
-        phi_aj = metrics.mse(Y, o.forward(w_j, X))
-
-        if (phi_aj > phi0 + c1*a_j*derphi0) or (phi_aj >= phi_lo):
-            phi_rec = phi_hi
-            a_rec = a_hi
-            a_hi = a_j
-            phi_hi = phi_aj
-        else:
-            g_aj = make_vector(o.backpropagation(model, w_j, X, Y))
-            derphi_aj = np.asscalar(np.dot(g_aj.T,d))
-            if abs(derphi_aj) <= -c2*derphi0:
-                return a_j
-            if derphi_aj*(a_hi - a_lo) >= 0:
-                phi_rec = phi_hi
-                a_rec = a_hi
-                a_hi = a_lo
-                phi_hi = phi_lo
-            else:
-                phi_rec = phi_lo
-                a_rec = a_lo
-            a_lo = a_j
-            phi_lo = phi_aj
-            derphi_lo = derphi_aj                 
-        i += 1
-
-    return alpha_j
 
 def _cubicmin(a, fa, fpa, b, fb, c, fc):
     """
     Finds the minimizer for a cubic polynomial that goes through the
     points (a,fa), (b,fb), and (c,fc) with derivative at a of fpa.
-    If no minimizer can be found return None
+    If no minimizer can be found, return None.
     """
     # f(x) = A *(x-a)^3 + B*(x-a)^2 + C*(x-a) + D
 
@@ -169,10 +205,11 @@ def _cubicmin(a, fa, fpa, b, fb, c, fc):
         return None
     return xmin
 
+
 def _quadmin(a, fa, fpa, b, fb):
     """
     Finds the minimizer for a quadratic polynomial that goes through
-    the points (a,fa), (b,fb) with derivative at a of fpa,
+    the points (a,fa), (b,fb) with derivative at a of fpa.
     """
     # f(x) = B*(x-a)^2 + C*(x-a) + D
     with np.errstate(divide='raise', over='raise', invalid='raise'):
@@ -187,3 +224,82 @@ def _quadmin(a, fa, fpa, b, fb):
     if not np.isfinite(xmin):
         return None
     return xmin
+
+
+def _zoom(a_lo, a_hi, phi_lo, phi_hi, derphi_lo,
+          phi, derphi, phi0, derphi0, c1, c2):
+    """Zoom stage of approximate linesearch satisfying strong Wolfe conditions.
+    
+    Part of the optimization algorithm in `scalar_search_wolfe2`.
+    
+    Notes
+    -----
+    Implements Algorithm 3.6 (zoom) in Wright and Nocedal,
+    'Numerical Optimization', 1999, pp. 61.
+    """
+
+    maxiter = 10
+    i = 0
+    delta1 = 0.2  # cubic interpolant check
+    delta2 = 0.1  # quadratic interpolant check
+    phi_rec = phi0
+    a_rec = 0
+    while i < maxiter:
+        # interpolate to find a trial step length between a_lo and
+        # a_hi Need to choose interpolation here. Use cubic
+        # interpolation and then if the result is within delta *
+        # dalpha or outside of the interval bounded by a_lo or a_hi
+        # then use quadratic interpolation, if the result is still too
+        # close, then use bisection
+
+        dalpha = a_hi - a_lo
+        if dalpha < 0:
+            a, b = a_hi, a_lo
+        else:
+            a, b = a_lo, a_hi
+
+        # minimizer of cubic interpolant
+        # (uses phi_lo, derphi_lo, phi_hi, and the most recent value of phi)
+        #
+        # if the result is too close to the end points (or out of the
+        # interval), then use quadratic interpolation with phi_lo,
+        # derphi_lo and phi_hi if the result is still too close to the
+        # end points (or out of the interval) then use bisection
+
+        if (i > 0):
+            cchk = delta1 * dalpha
+            a_j = _cubicmin(a_lo, phi_lo, derphi_lo, a_hi, phi_hi,
+                            a_rec, phi_rec)
+        if (i == 0) or (a_j is None) or (a_j > b - cchk) or (a_j < a + cchk):
+            qchk = delta2 * dalpha
+            a_j = _quadmin(a_lo, phi_lo, derphi_lo, a_hi, phi_hi)
+            if (a_j is None) or (a_j > b-qchk) or (a_j < a+qchk):
+                a_j = a_lo + 0.5*dalpha
+
+        # Check new value of a_j
+
+        phi_aj = phi(a_j)
+        if (phi_aj > phi0 + c1*a_j*derphi0) or (phi_aj >= phi_lo):
+            phi_rec = phi_hi
+            a_rec = a_hi
+            a_hi = a_j
+            phi_hi = phi_aj
+        else:
+            derphi_aj = derphi(a_j)
+            if abs(derphi_aj) <= -c2*derphi0:
+                return a_j
+            if derphi_aj*(a_hi - a_lo) >= 0:
+                phi_rec = phi_hi
+                a_rec = a_hi
+                a_hi = a_lo
+                phi_hi = phi_lo
+            else:
+                phi_rec = phi_lo
+                a_rec = a_lo
+            a_lo = a_j
+            phi_lo = phi_aj
+            derphi_lo = derphi_aj
+        i += 1
+    # Failed to find a conforming step size
+    # return last a_j
+    return a_j

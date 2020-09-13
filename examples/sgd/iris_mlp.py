@@ -1,17 +1,15 @@
 import sys
 from os import path
 
-sys.path.insert(0, "../")
+sys.path.insert(0, "../../")
 sys.path.insert(0, "./")
 
 from isanet.model import Mlp
-from isanet.optimizer import SGD, NCG
+from isanet.optimizer import SGD
 from isanet.datasets.iris import load_iris
 from isanet.utils.model_utils import printMSE, printAcc, plotHistory
 import numpy as np
 import time
-
-np.random.seed(seed=42)
 
 X, Y = load_iris()
 
@@ -28,16 +26,12 @@ model = Mlp()
 model.add(6, input= 4, kernel_initializer = 1/np.sqrt(4), kernel_regularizer = 0.006)
 model.add(3, kernel_initializer = 1/np.sqrt(6), kernel_regularizer = 0.006)
 
-# model.set_optimizer(
-#     SGD(
-#         lr = 0.39,
-#         momentum = 0.8,
-#         nesterov = True
-#     ))
-
 model.set_optimizer(
-    NCG()
-)
+    SGD(
+        lr = 0.39,
+        momentum = 0.8,
+        nesterov = True
+    ))
 
 start_time = time.time()
 model.fit(X_train, Y_train, validation_data = [X_val, Y_val],
