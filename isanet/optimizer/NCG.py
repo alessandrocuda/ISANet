@@ -10,7 +10,7 @@ from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class NCG(Optimizer):
 
-    def __init__(self, beta_method = "hs", c1=1e-4, c2=.9, restart = None, sfgrd = 0.01, tol = None, n_iter_no_change = None):
+    def __init__(self, beta_method = "hs", c1=1e-4, c2=.9, restart = None, sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None):
         super().__init__()
         self.tol = tol
         self.n_iter_no_change = n_iter_no_change
@@ -27,6 +27,7 @@ class NCG(Optimizer):
         self.fbeta = self.get_beta_function(beta_method)
         self.restart = 0
         self.max_restart = restart
+        self.ln_maxiter = ln_maxiter
 
     def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
         self.model = model
@@ -56,7 +57,9 @@ class NCG(Optimizer):
         self.past_d = d
 
         phi = phi_function(model, self, w, X, Y, d)
-        alpha = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, old_phi0 = self.old_phi0, c1=self.c1, c2=self.c2)
+        alpha = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
+                                  phi0 = phi0, old_phi0 = self.old_phi0, 
+                                  c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter)
         #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 
         print("Alpha: {}".format(alpha), end=" - ")

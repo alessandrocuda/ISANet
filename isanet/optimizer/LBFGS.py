@@ -10,7 +10,7 @@ from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class LBFGS(Optimizer):
 
-    def __init__(self, m = 3, c1=1e-4, c2=.9, tol = None, n_iter_no_change = None):
+    def __init__(self, m = 3, c1=1e-4, c2=.9, ln_maxiter = 10, tol = None, n_iter_no_change = None):
         super().__init__()
         self.tol = tol
         self.n_iter_no_change = n_iter_no_change
@@ -28,6 +28,7 @@ class LBFGS(Optimizer):
         self.s = []
         self.y = []
         self.m = m
+        self.ln_maxiter = ln_maxiter
 
     def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
         self.model = model
