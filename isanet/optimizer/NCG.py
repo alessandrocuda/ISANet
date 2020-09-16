@@ -45,6 +45,10 @@ class NCG(Optimizer):
         else:
             # calcolo del beta
             beta = self.fbeta(g, self.past_g, self.past_ng, self.past_d)
+            self.restart +=1
+            if self.max_restart is not None and (self.restart == self.max_restart):
+                self.restart = 0
+                beta = 0
             print("Beta: {}".format(beta), end=" -> compute alpha: ")
             if beta != 0:
                 d = - g + beta*self.past_d 
@@ -69,7 +73,6 @@ class NCG(Optimizer):
         model.weights = restore_w_to_model(model, w)
 
 
-
     def get_beta_function(self, beta_method):
         if beta_method == "fr":
             return self.beta_fr
@@ -77,15 +80,15 @@ class NCG(Optimizer):
             return self.beta_pr
         if beta_method == "hs":
             return self.beta_hs
+        if beta_method == "pr+":
+            return self.beta_pr_plus
+        if beta_method == "hs+":
+            return self.beta_hs_plus
 
     def beta_fr(self, g, past_g, past_norm_g, past_d):
         A = np.dot(g.T,g)
         B = np.dot(past_g.T,past_g)
         beta = np.asscalar(A/B)
-        self.restart +=1
-        if (self.restart == self.max_restart):
-            self.restart = 0
-            return 0
         return beta
 
     def beta_pr(self, g, past_g, past_norm_g, past_d):
@@ -93,11 +96,18 @@ class NCG(Optimizer):
         B = g-past_g
         C = np.square(past_norm_g)
         beta = np.asscalar(np.dot(A,B)/C)
-        return max(0, beta)
+        return beta
 
-    
     def beta_hs(self, g, past_g, past_norm_g, past_d):
         A = g.T
         B = g-past_g
         beta = np.asscalar(np.dot(A,B)/(np.dot(B.T, past_d)))
+        return beta 
+
+    def beta_pr_plus(self, g, past_g, past_norm_g, past_d):
+        beta = self.beta_pr(g, past_g, past_norm_g, past_d)
+        return max(0, beta)
+    
+    def beta_hs_plus(self, g, past_g, past_norm_g, past_d):
+        beta = self.beta_hs(g, past_g, past_norm_g, past_d)
         return max(0, beta)
