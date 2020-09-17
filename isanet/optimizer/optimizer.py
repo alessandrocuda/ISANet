@@ -116,14 +116,17 @@ class EarlyStopping():
 
 class Optimizer(object):
 
-    def __init__(self):
+    def __init__(self, tol = None, n_iter_no_change = None, debug = False):
         self.epoch = 0
         self.model = None
         self.X_part = None
         self.Y_part = None
-        self.d = None
-        self.tol = None
-        self.n_iter_no_change = None
+        self.tol = tol
+        self.n_iter_no_change = n_iter_no_change
+        if n_iter_no_change is None:
+            self.n_iter_no_change = 1
+        self.debug = debug
+
 
         self.__batch_size = None
         self.__es_count = 0
@@ -186,6 +189,9 @@ class Optimizer(object):
                 Y = batchs[current_batch]["batch_y_train"]
                 
                 # Performs a single optimization step (parameter update).
+                        # debug mode on/off
+                if self.debug is True:
+                    input()
                 self.step(model, X, Y)
 
             end_time = (time.time() - start_time)

@@ -10,12 +10,8 @@ from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class NCG(Optimizer):
 
-    def __init__(self, beta_method = "hs", c1=1e-4, c2=.9, restart = None, sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None):
-        super().__init__()
-        self.tol = tol
-        self.n_iter_no_change = n_iter_no_change
-        if n_iter_no_change is None:
-            self.n_iter_no_change = 1
+    def __init__(self, beta_method = "hs", c1=1e-4, c2=.9, restart = None, sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None, debug = False):
+        super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, debug = debug)
         self.c1 = c1
         self.c2 = c2
         self.sfgrd = sfgrd
@@ -34,7 +30,7 @@ class NCG(Optimizer):
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
     def step(self, model, X, Y):
-        #input()
+        # return code
         print()
         w = make_vector(model.weights)
         g = make_vector(self.backpropagation(model, model.weights, X, Y))
