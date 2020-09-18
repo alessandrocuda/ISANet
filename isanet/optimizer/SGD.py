@@ -5,6 +5,7 @@ import time
 import copy
 import isanet.metrics as metrics
 from isanet.optimizer import Optimizer
+from isanet.optimizer.utils import l_norm
 # from isanet.optimizer.linesearch import armijo_wolfe_ls
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
@@ -35,19 +36,18 @@ class SGD(Optimizer):
     n_iter_no_change : integer, default=None
         Maximum number of epochs with no improvements > tol. 
     """
-    def __init__(self, lr=0.1, momentum=0, nesterov=False, sigma = None, tol = None, n_iter_no_change = None):
-        super().__init__()
+    def __init__(self, lr=0.1, momentum=0, nesterov=False, sigma = None, 
+                 tol = None, n_iter_no_change = None, norm_g_eps = None, 
+                 l_eps = None, debug = False):
+        super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
         self.lr = lr
         self.momentum = momentum
         self.nesterov = nesterov
-        self.tol = tol
-        self.n_iter_no_change = n_iter_no_change
-        if n_iter_no_change is None:
-            self.n_iter_no_change = 1
-
         self.sigma = sigma
         if sigma is None and nesterov is True:
             self.sigma = momentum
+
+        self.history = {"norm_g":     []}
 
         
     def optimize(self, model, epochs, X_train, Y_train, validation_data=None, batch_size=None, es=None, verbose=0):
@@ -56,18 +56,20 @@ class SGD(Optimizer):
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
 
-    def step(self, model, X, Y):
+    def step(self, model, X, Y, verbose):
 
         current_batch_size = X.shape[0]
         lr = self.lr/current_batch_size
 
         weights = model.weights
+        g  = self.backpropagation(model, weights, X, Y)
+        norm_g = l_norm(g)
+
         if self.nesterov == True:
             weights = copy.deepcopy(model.weights)
             for i in range(0, len(model.weights)): 
                 weights[i] += self.sigma*self.delta_w[i] 
-
-        g  = self.backpropagation(model, weights, X, Y)
+            g  = self.backpropagation(model, weights, X, Y)
 
         #      Delta Rule Update
         #  w_i = w_i + eta*nabla_W_i
@@ -77,3 +79,8 @@ class SGD(Optimizer):
             weights_decay = regularizer*model.weights[i]
             weights_decay[0,:] = 0
             model.weights[i] += (self.delta_w[i] - weights_decay)
+
+        self.history["norm_g"].append(norm_g)
+        if verbose >= 2:
+            print("opt debug - | norm_g: {:4.4f} |".format(norm_g)) 
+        return norm_g

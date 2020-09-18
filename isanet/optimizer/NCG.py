@@ -10,8 +10,10 @@ from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class NCG(Optimizer):
 
-    def __init__(self, beta_method = "hs", c1=1e-4, c2=.9, restart = None, sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None, debug = False):
-        super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, debug = debug)
+    def __init__(self, beta_method = "hs", c1=1e-4, c2=.9, restart = None, 
+                 sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None, 
+                 norm_g_eps = None, l_eps = None, debug = False):
+        super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
         self.c1 = c1
         self.c2 = c2
         self.sfgrd = sfgrd
@@ -29,13 +31,13 @@ class NCG(Optimizer):
         self.model = model
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
-    def step(self, model, X, Y):
-        # return code
-        print()
+    def step(self, model, X, Y, verbose):
         w = make_vector(model.weights)
         g = make_vector(self.backpropagation(model, model.weights, X, Y))
-    
+        norm_g = np.linalg.norm(g)
+        
         if ~model.is_fitted and self.epoch == 0:
+            beta = 0
             d = -g
             phi0 = metrics.mse(Y, model.predict(X))
         else:
@@ -45,14 +47,13 @@ class NCG(Optimizer):
             if self.max_restart is not None and (self.restart == self.max_restart):
                 self.restart = 0
                 beta = 0
-            print("Beta: {}".format(beta), end=" -> compute alpha: ")
             if beta != 0:
                 d = - g + beta*self.past_d 
             else:
                 d = - g
             phi0 = model.history["loss_mse"][-1]
 
-        self.past_ng = np.linalg.norm(g)       
+        self.past_ng = norm_g
         self.past_g = g
         self.past_d = d
 
@@ -62,11 +63,13 @@ class NCG(Optimizer):
                                   c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter)
         #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 
-        print("Alpha: {}".format(alpha), end=" - ")
-        print("norm_g: {}".format(self.past_ng))
         self.old_phi0 = phi0
         w += alpha*d
         model.weights = restore_w_to_model(model, w)
+
+        if verbose >= 2:
+            print("Opt start -> | beta: {} | alpha: {} | norm_g: {} |".format(beta, alpha, norm_g)) 
+        return norm_g
 
 
     def get_beta_function(self, beta_method):

@@ -4,7 +4,6 @@ import numpy as np
 import time
 import copy
 import isanet.metrics as metrics
-#from isanet.optimizer.linesearch import armijo_wolfe_ls
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class EarlyStopping():
@@ -116,7 +115,7 @@ class EarlyStopping():
 
 class Optimizer(object):
 
-    def __init__(self, tol = None, n_iter_no_change = None, debug = False):
+    def __init__(self, tol = None, n_iter_no_change = None, norm_g_eps = None, l_eps = None, debug = False):
         self.epoch = 0
         self.model = None
         self.X_part = None
@@ -125,8 +124,9 @@ class Optimizer(object):
         self.n_iter_no_change = n_iter_no_change
         if n_iter_no_change is None:
             self.n_iter_no_change = 1
+        self.norm_g_eps = norm_g_eps
+        self.l_eps = l_eps
         self.debug = debug
-
 
         self.__batch_size = None
         self.__es_count = 0
@@ -192,7 +192,8 @@ class Optimizer(object):
                         # debug mode on/off
                 if self.debug is True:
                     input()
-                self.step(model, X, Y)
+                
+                norm_g = self.step(model, X, Y, verbose)
 
             end_time = (time.time() - start_time)
             
@@ -200,7 +201,7 @@ class Optimizer(object):
             history = self.get_epoch_history(model, X_train, Y_train, validation_data, end_time)
             model.append_history(history, is_validation_set)
 
-            if verbose and (self.epoch + 1) % verbose == 0:
+            if verbose and (self.epoch + 1) % verbose >= 0:
                 print("Epoch: {} - time: {:4.4f} - loss_train: {} - loss_val: {}".format(self.epoch + 1, history["time"], history["mse_train"], history["mse_val"]))
 
             # Check Early Stopping 1: avoid overfitting
@@ -209,6 +210,20 @@ class Optimizer(object):
             
             # Check Early Stopping 2: no change on training error
             if self.tol and self.__no_change_in_training(model, self.epoch, is_validation_set, es, verbose):
+                return 0
+            
+            # Check Early Stopping 3: L < l_eps
+            if self.l_eps and history["mse_train"] < self.l_eps:
+                if verbose >= 1:
+                    print("loss_train: {} < {}".format(history["mse_train"], self.l_eps))
+                    print("Training stopped")
+                return 0
+
+            # Check Early Stopping 4: norm_g < norm_g_eps
+            if self.norm_g_eps and norm_g < self.norm_g_eps:
+                if verbose >= 1:
+                    print("Norm g: {} < {}".format(norm_g, self.norm_g_eps))
+                    print("Training stopped")
                 return 0
 
             self.epoch+=1
@@ -290,8 +305,8 @@ class Optimizer(object):
         
         return g 
 
-    def step(self, model, X, Y):
-        pass
+    def step(self, model, X, Y, verbose):
+        raise NotImplementedError
 
     def get_batch(self, X_train, Y_train, batch_size):
         """ 

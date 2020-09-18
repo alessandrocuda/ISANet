@@ -1,16 +1,16 @@
 import numpy as np
 
-def l_norm(g):
+def l_norm(l_v):
     # compute the norm of a list of numpy array
-    return np.sqrt(np.sum([np.sum(np.square(g[i])) for i in range(0, len(g))]))
+    return np.sqrt(np.sum([np.sum(np.square(l_v[i])) for i in range(0, len(l_v))]))
 
-def l_scalar_product(g, d):
+def l_scalar_product(l_v, l_w):
     # compute the scalar product between two list of numpy array
-    return np.sum([np.sum(np.multiply(g[i], d[i])) for i in range(0, len(g))])
+    return np.sum([np.sum(np.multiply(l_v[i], l_w[i])) for i in range(0, len(l_v))])
 
-def make_vector(w):
+def make_vector(l_v):
     #take a list of numpy array and return a collum vector
-    row_vector = [w[l].flatten() for l in range(len(w))]
+    row_vector = [l_v[l].flatten() for l in range(len(l_v))]
     return np.concatenate(row_vector).reshape(-1, 1)
 
 def restore_w_to_model(model, w):
