@@ -10,7 +10,7 @@ from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class NCG(Optimizer):
 
-    def __init__(self, beta_method = "hs", c1=1e-4, c2=.9, restart = None, 
+    def __init__(self, beta_method = "hs+", c1=1e-4, c2=.9, restart = None, 
                  sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None, 
                  norm_g_eps = None, l_eps = None, debug = False):
         super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
@@ -26,6 +26,16 @@ class NCG(Optimizer):
         self.restart = 0
         self.max_restart = restart
         self.ln_maxiter = ln_maxiter
+
+        self.history = {"beta":         [],
+                        "alpha":        [],
+                        "norm_g":      [],
+                        "ls_conv":      [],
+                        "ls_it":        [],
+                        "ls_time":      [],
+                        "zoom_used":    [],
+                        "zoom_conv":    [],
+                        "zoom_it":      []} 
 
     def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
         self.model = model
@@ -58,7 +68,7 @@ class NCG(Optimizer):
         self.past_d = d
 
         phi = phi_function(model, self, w, X, Y, d)
-        alpha = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
+        alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
                                   phi0 = phi0, old_phi0 = self.old_phi0, 
                                   c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter)
         #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
@@ -68,7 +78,10 @@ class NCG(Optimizer):
         model.weights = restore_w_to_model(model, w)
 
         if verbose >= 2:
-            print("Opt start -> | beta: {} | alpha: {} | norm_g: {} |".format(beta, alpha, norm_g)) 
+            print("| beta: {} | alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
+                    beta, alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],
+                    ls_log["zoom_used"], ls_log["zoom_conv"], ls_log["zoom_it"])) 
+        append_history(self, beta, alpha, norm_g, ls_log)
         return norm_g
 
 
@@ -110,3 +123,14 @@ class NCG(Optimizer):
     def beta_hs_plus(self, g, past_g, past_norm_g, past_d):
         beta = self.beta_hs(g, past_g, past_norm_g, past_d)
         return max(0, beta)
+
+def append_history(self, beta, alpha, norm_g, ls_log):
+    self.history["beta"].append(beta)
+    self.history["alpha"].append(alpha)
+    self.history["norm_g"].append(norm_g)
+    self.history["ls_conv"].append(ls_log["ls_conv"])
+    self.history["ls_it"].append(ls_log["ls_it"])
+    self.history["ls_time"].append(ls_log["ls_time"])
+    self.history["zoom_used"].append(ls_log["zoom_used"])
+    self.history["zoom_conv"].append(ls_log["zoom_conv"])
+    self.history["zoom_it"].append(ls_log["zoom_it"])

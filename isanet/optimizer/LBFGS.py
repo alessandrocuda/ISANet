@@ -28,6 +28,15 @@ class LBFGS(Optimizer):
         self.m = m
         self.ln_maxiter = ln_maxiter
 
+        self.history = {"alpha":        [],
+                        "norm_g":       [],
+                        "ls_conv":      [],
+                        "ls_it":        [],
+                        "ls_time":      [],
+                        "zoom_used":    [],
+                        "zoom_conv":    [],
+                        "zoom_it":      []} 
+
     def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
         self.model = model
         for i in range(len(model.weights)):
@@ -54,7 +63,7 @@ class LBFGS(Optimizer):
             phi0 = model.history["loss_mse"][-1]
 
         phi = phi_function(model, self, w0, X, Y, d)
-        alpha = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, old_phi0 = self.old_phi0, c1=self.c1, c2=self.c2)
+        alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, old_phi0 = self.old_phi0, c1=self.c1, c2=self.c2)
         #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 
         self.old_phi0 = phi0
@@ -66,7 +75,10 @@ class LBFGS(Optimizer):
         self.s.append(w1 - w0)
         self.y.append(g)
         if verbose >= 2:
-            print("Opt start -> | m: {} | alpha: {} | norm_g: {} |".format(len(self.s), alpha, norm_g)) 
+            print("| alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
+                    alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],
+                    ls_log["zoom_used"], ls_log["zoom_conv"], ls_log["zoom_it"])) 
+        append_history(self, alpha, norm_g, ls_log)
         return 
 
 
@@ -85,3 +97,14 @@ class LBFGS(Optimizer):
             b = p*np.dot(y_i.T,r)
             r += s_i*(a_i -b)
         return r
+
+
+def append_history(self, alpha, norm_g, ls_log):
+    self.history["alpha"].append(alpha)
+    self.history["norm_g"].append(norm_g)
+    self.history["ls_conv"].append(ls_log["ls_conv"])
+    self.history["ls_it"].append(ls_log["ls_it"])
+    self.history["ls_time"].append(ls_log["ls_time"])
+    self.history["zoom_used"].append(ls_log["zoom_used"])
+    self.history["zoom_conv"].append(ls_log["zoom_conv"])
+    self.history["zoom_it"].append(ls_log["zoom_it"])
