@@ -79,6 +79,21 @@ class phi_function(object):
         phips = np.asscalar(np.dot(g_a.T, self.d))
         return phips
 
+class LineSearch(object):
+
+    def __init__(self, phi = None):
+        if phi is None:
+            raise Exception("A Phi object must be provided")
+        self.phi = phi
+
+    def set_phi(self):
+        pass
+
+    def strong_wolfe(self, phi0=None,
+                         old_phi0=None, derphi0=None,
+                         c1=1e-4, c2=0.9, amax=None, maxiter=10):
+        pass
+
 
 def line_search_wolfe(phi, derphi, phi0=None,
                          old_phi0=None, derphi0=None,
@@ -115,6 +130,15 @@ def line_search_wolfe(phi, derphi, phi0=None,
     conditions. See Wright and Nocedal, 'Numerical Optimization',
     1999, pp. 59-61.
     """
+    
+    # data struct used to log the behavior of the line search
+    ls_log = {"ls_conv": "y",
+              "ls_it": 0,
+              "ls_time": 0,
+              "zoom_used": "n",
+              "zoom_conv": "-",
+              "zoom_it": "-" } 
+
 
     if phi0 is None:
         phi0 = phi(0.)
@@ -138,13 +162,20 @@ def line_search_wolfe(phi, derphi, phi0=None,
     derphi_a0 = derphi0
 
 
-    for i in range(maxiter):
+    # for i in range(maxiter):
+    start_time = time.time()
+
+    i = 0
+    while i < maxiter:
 
         if (phi_a1 > phi0 + c1 * alpha1 * derphi0) or \
            ((phi_a1 >= phi_a0) and (i > 1)):
-            alpha_star = _zoom(alpha0, alpha1, phi_a0,
-                              phi_a1, derphi_a0, phi, derphi,
-                              phi0, derphi0, c1, c2)
+            alpha_star, zoom_log = _zoom(alpha0, alpha1, phi_a0,
+                                         phi_a1, derphi_a0, phi, derphi,
+                                         phi0, derphi0, c1, c2)
+            ls_log["zoom_used"] = "y"
+            ls_log["zoom_conv"] = zoom_log["zoom_conv"]
+            ls_log["zoom_it"] = zoom_log["zoom_it"]
             break
 
         derphi_a1 = derphi(alpha1)
@@ -153,9 +184,12 @@ def line_search_wolfe(phi, derphi, phi0=None,
             break
 
         if (derphi_a1 >= 0):
-            alpha_star = _zoom(alpha1, alpha0, phi_a1,
-                              phi_a0, derphi_a1, phi, derphi,
-                              phi0, derphi0, c1, c2)
+            alpha_star, zoom_log = _zoom(alpha1, alpha0, phi_a1,
+                                         phi_a0, derphi_a1, phi, derphi,
+                                         phi0, derphi0, c1, c2)
+            ls_log["zoom_used"] = "y"
+            ls_log["zoom_conv"] = zoom_log["zoom_conv"]
+            ls_log["zoom_it"] = zoom_log["zoom_it"]
             break
 
         alpha0 = alpha1
@@ -165,13 +199,16 @@ def line_search_wolfe(phi, derphi, phi0=None,
         phi_a0 = phi_a1
         phi_a1 = phi(alpha1)
         derphi_a0 = derphi_a1
+        
+        i += 1
 
     else:
         # stopping test maxiter reached
         alpha_star = alpha1
-        print('The line search algorithm did not converge')
-
-    return alpha_star
+        ls_log["ls_conv"] = "n"
+    ls_log["ls_it"] = i
+    ls_log["ls_time"] = (time.time() - start_time)
+    return alpha_star, ls_log
 
 
 def _cubicmin(a, fa, fpa, b, fb, c, fc):
@@ -238,6 +275,8 @@ def _zoom(a_lo, a_hi, phi_lo, phi_hi, derphi_lo,
     'Numerical Optimization', 1999, pp. 61.
     """
 
+    zoom_log = {}
+
     maxiter = 10
     i = 0
     delta1 = 0.2  # cubic interpolant check
@@ -287,7 +326,9 @@ def _zoom(a_lo, a_hi, phi_lo, phi_hi, derphi_lo,
         else:
             derphi_aj = derphi(a_j)
             if abs(derphi_aj) <= -c2*derphi0:
-                return a_j
+                zoom_log["zoom_conv"] = "y"
+                zoom_log["zoom_it"] = i
+                return a_j, zoom_log
             if derphi_aj*(a_hi - a_lo) >= 0:
                 phi_rec = phi_hi
                 a_rec = a_hi
@@ -302,4 +343,6 @@ def _zoom(a_lo, a_hi, phi_lo, phi_hi, derphi_lo,
         i += 1
     # Failed to find a conforming step size
     # return last a_j
-    return a_j
+    zoom_log["zoom_conv"] = "y"
+    zoom_log["zoom_it"] = i
+    return a_j, zoom_log
