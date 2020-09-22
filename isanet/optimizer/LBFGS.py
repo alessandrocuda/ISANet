@@ -58,7 +58,7 @@ class LBFGS(Optimizer):
             d = -self.compute_search_dir(g, H0, self.s, self.y)
             curvature_condition = np.dot(self.s[-1].T, self.y[-1])
             if(curvature_condition < 0):
-                print("curvatur condition: {}".format(curvature_condition))
+                print("curvature condition: {}".format(curvature_condition))
                 raise Exception("Curvature condition is negative")
             phi0 = model.history["loss_mse"][-1]
 
