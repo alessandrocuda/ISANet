@@ -81,7 +81,7 @@ class NCG(Optimizer):
             print("| beta: {} | alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
                     beta, alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],
                     ls_log["zoom_used"], ls_log["zoom_conv"], ls_log["zoom_it"])) 
-        append_history(self, beta, alpha, norm_g, ls_log)
+        self.append_history(beta, alpha, norm_g, ls_log)
         return norm_g
 
 
@@ -124,13 +124,13 @@ class NCG(Optimizer):
         beta = self.beta_hs(g, past_g, past_norm_g, past_d)
         return max(0, beta)
 
-def append_history(self, beta, alpha, norm_g, ls_log):
-    self.history["beta"].append(beta)
-    self.history["alpha"].append(alpha)
-    self.history["norm_g"].append(norm_g)
-    self.history["ls_conv"].append(ls_log["ls_conv"])
-    self.history["ls_it"].append(ls_log["ls_it"])
-    self.history["ls_time"].append(ls_log["ls_time"])
-    self.history["zoom_used"].append(ls_log["zoom_used"])
-    self.history["zoom_conv"].append(ls_log["zoom_conv"])
-    self.history["zoom_it"].append(ls_log["zoom_it"])
+    def append_history(self, beta, alpha, norm_g, ls_log):
+        self.history["beta"].append(beta)
+        self.history["alpha"].append(alpha)
+        self.history["norm_g"].append(norm_g)
+        self.history["ls_conv"].append(ls_log["ls_conv"])
+        self.history["ls_it"].append(ls_log["ls_it"])
+        self.history["ls_time"].append(ls_log["ls_time"])
+        self.history["zoom_used"].append(ls_log["zoom_used"])
+        self.history["zoom_conv"].append(ls_log["zoom_conv"])
+        self.history["zoom_it"].append(ls_log["zoom_it"])
