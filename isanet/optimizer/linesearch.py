@@ -98,8 +98,12 @@ class LineSearch(object):
 def line_search_wolfe(phi, derphi, phi0=None,
                          old_phi0=None, derphi0=None,
                          c1=1e-4, c2=0.9, amax=None, maxiter=10):
-    """Find alpha that satisfies strong Wolfe conditions.
-    alpha > 0 is assumed to be a descent direction.
+    """Return alpha > 0 that satisfies strong Wolfe conditions in order
+    to get a descent direction or the last alpha found if the line search 
+    algorithm did not converge.
+    For major details on the implementation refer to Wright and Nocedal,
+    'Numerical Optimization', 1999, pp. 59-61.
+
     Parameters
     ----------
     phi : callable phi(alpha)
@@ -122,13 +126,8 @@ def line_search_wolfe(phi, derphi, phi0=None,
         Maximum number of iterations to perform.
     Returns
     -------
-    alpha_star : float or None
+    alpha_star : float
         Best alpha, or last alpha if the line search algorithm did not converge.
-    Notes
-    -----
-    Uses the line search algorithm to enforce strong Wolfe
-    conditions. See Wright and Nocedal, 'Numerical Optimization',
-    1999, pp. 59-61.
     """
     
     # data struct used to log the behavior of the line search
@@ -137,7 +136,7 @@ def line_search_wolfe(phi, derphi, phi0=None,
               "ls_time": 0,
               "zoom_used": "n",
               "zoom_conv": "-",
-              "zoom_it": "-" } 
+              "zoom_it": 0 } 
 
 
     if phi0 is None:
@@ -168,8 +167,7 @@ def line_search_wolfe(phi, derphi, phi0=None,
     i = 0
     while i < maxiter:
 
-        if (phi_a1 > phi0 + c1 * alpha1 * derphi0) or \
-           ((phi_a1 >= phi_a0) and (i > 1)):
+        if (phi_a1 > phi0 + c1 * alpha1 * derphi0) or ((phi_a1 >= phi_a0) and (i > 1)):
             alpha_star, zoom_log = _zoom(alpha0, alpha1, phi_a0,
                                          phi_a1, derphi_a0, phi, derphi,
                                          phi0, derphi0, c1, c2)
@@ -205,6 +203,8 @@ def line_search_wolfe(phi, derphi, phi0=None,
     else:
         # stopping test maxiter reached
         alpha_star = alpha1
+        ls_log["ls_conv"] = "n"
+    if ls_log["zoom_conv"] is "n":
         ls_log["ls_conv"] = "n"
     ls_log["ls_it"] = i
     ls_log["ls_time"] = (time.time() - start_time)
@@ -265,14 +265,10 @@ def _quadmin(a, fa, fpa, b, fb):
 
 def _zoom(a_lo, a_hi, phi_lo, phi_hi, derphi_lo,
           phi, derphi, phi0, derphi0, c1, c2):
-    """Zoom stage of approximate linesearch satisfying strong Wolfe conditions.
-    
-    Part of the optimization algorithm in `scalar_search_wolfe2`.
-    
-    Notes
-    -----
-    Implements Algorithm 3.6 (zoom) in Wright and Nocedal,
-    'Numerical Optimization', 1999, pp. 61.
+    """Zoom function of linesearch satisfying strong Wolfe conditions.
+    For major details on the implementation refer to Wright and Nocedal,
+    'Numerical Optimization', 1999, pp. 59-61. For the interpolation step
+    refer to scipy.
     """
 
     zoom_log = {}
@@ -284,6 +280,7 @@ def _zoom(a_lo, a_hi, phi_lo, phi_hi, derphi_lo,
     phi_rec = phi0
     a_rec = 0
     while i < maxiter:
+        
         # interpolate to find a trial step length between a_lo and
         # a_hi Need to choose interpolation here. Use cubic
         # interpolation and then if the result is within delta *
@@ -343,6 +340,6 @@ def _zoom(a_lo, a_hi, phi_lo, phi_hi, derphi_lo,
         i += 1
     # Failed to find a conforming step size
     # return last a_j
-    zoom_log["zoom_conv"] = "y"
+    zoom_log["zoom_conv"] = "n"
     zoom_log["zoom_it"] = i
     return a_j, zoom_log
