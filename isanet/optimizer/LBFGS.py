@@ -41,7 +41,7 @@ class LBFGS(Optimizer):
         self.model = model
         for i in range(len(model.weights)):
             self.n_vars += model.weights[i].shape[0]*model.weights[i].shape[1]
-        self.H0 = np.eye(self.n_vars)
+        # self.H0 = np.eye(self.n_vars)
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
     def step(self, model, X, Y, verbose):
@@ -54,7 +54,8 @@ class LBFGS(Optimizer):
         else:
             self.y[-1] = g - self.y[-1]
             gamma = np.dot(self.s[-1].T, self.y[-1])/np.dot(self.y[-1].T, self.y[-1])
-            H0 = gamma*np.eye(self.n_vars)
+            # H0 = gamma*np.eye(self.n_vars)
+            H0 = gamma
             d = -self.compute_search_dir(g, H0, self.s, self.y)
             curvature_condition = np.dot(self.s[-1].T, self.y[-1])
             if(curvature_condition < 0):
@@ -78,8 +79,8 @@ class LBFGS(Optimizer):
             print("| alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
                     alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],
                     ls_log["zoom_used"], ls_log["zoom_conv"], ls_log["zoom_it"])) 
-        append_history(self, alpha, norm_g, ls_log)
-        return 
+        self.append_history(alpha, norm_g, ls_log)
+        return norm_g
 
 
     def compute_search_dir(self, g, H0, s, y):
@@ -91,7 +92,7 @@ class LBFGS(Optimizer):
             a.append(alpha)
             q -= alpha*y_i
     
-        r = np.dot(H0, q)
+        r = H0*q
         for s_i, y_i, a_i in zip(s, y, reversed(a)):
             p = 1/(np.dot(y_i.T, s_i))
             b = p*np.dot(y_i.T,r)
@@ -99,12 +100,12 @@ class LBFGS(Optimizer):
         return r
 
 
-def append_history(self, alpha, norm_g, ls_log):
-    self.history["alpha"].append(alpha)
-    self.history["norm_g"].append(norm_g)
-    self.history["ls_conv"].append(ls_log["ls_conv"])
-    self.history["ls_it"].append(ls_log["ls_it"])
-    self.history["ls_time"].append(ls_log["ls_time"])
-    self.history["zoom_used"].append(ls_log["zoom_used"])
-    self.history["zoom_conv"].append(ls_log["zoom_conv"])
-    self.history["zoom_it"].append(ls_log["zoom_it"])
+    def append_history(self, alpha, norm_g, ls_log):
+        self.history["alpha"].append(alpha)
+        self.history["norm_g"].append(norm_g)
+        self.history["ls_conv"].append(ls_log["ls_conv"])
+        self.history["ls_it"].append(ls_log["ls_it"])
+        self.history["ls_time"].append(ls_log["ls_time"])
+        self.history["zoom_used"].append(ls_log["zoom_used"])
+        self.history["zoom_conv"].append(ls_log["zoom_conv"])
+        self.history["zoom_it"].append(ls_log["zoom_it"])
