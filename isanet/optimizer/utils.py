@@ -21,5 +21,5 @@ def restore_w_to_model(model, w):
         n_cols = model.weights[i].shape[1]
         end = n_rows*n_cols
         weights[i] = w[start:start + end].reshape(n_rows,n_cols)
-        start = start = start + end  
+        start = start + end  
     return weights
