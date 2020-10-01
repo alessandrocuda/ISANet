@@ -89,6 +89,7 @@ class Mlp():
         self.kernel_regularizer = []
         self.n_layers = 0  #hidden + out
         self.history = {"loss_mse":     [],
+                        "loss_mse_reg": [],
                         "loss_mee":     [], 
                         "val_loss_mse": [], 
                         "val_loss_mee": [], 
@@ -177,6 +178,7 @@ class Mlp():
             True to append validation history, False do not.
         """
         self.history["loss_mse"].append(history["mse_train"])
+        self.history["loss_mse_reg"].append(history["mse_reg_train"])
         self.history["loss_mee"].append(history["mee_train"])
         self.history["acc"].append(history["acc_train"])
         if is_validation_set:
