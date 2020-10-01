@@ -44,13 +44,22 @@ class LBFGS(Optimizer):
         # self.H0 = np.eye(self.n_vars)
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
+    def backpropagation(self, model, weights, X, Y):
+        g = super().backpropagation(model, weights, X, Y)
+        for i in range(len(g)):
+            g[i]  = (2/X.shape[0])*g[i] + (2*model.kernel_regularizer[0])*weights[i]
+        return g
+
     def step(self, model, X, Y, verbose):
+        current_batch_size = X.shape[0]
+
         w0 = make_vector(model.weights)
         g = make_vector(self.backpropagation(model, model.weights, X, Y))
         norm_g = np.linalg.norm(g)
+        phi0 = metrics.mse_reg(Y, model.predict(X), model, model.weights)
+
         if ~model.is_fitted and self.epoch == 0:
             d = - g
-            phi0 = metrics.mse(Y, model.predict(X))
         else:
             self.y[-1] = g - self.y[-1]
             gamma = np.dot(self.s[-1].T, self.y[-1])/np.dot(self.y[-1].T, self.y[-1])
@@ -61,15 +70,23 @@ class LBFGS(Optimizer):
             if(curvature_condition < 0):
                 print("curvature condition: {}".format(curvature_condition))
                 raise Exception("Curvature condition is negative")
-            phi0 = model.history["loss_mse"][-1]
 
         phi = phi_function(model, self, w0, X, Y, d)
-        alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, old_phi0 = self.old_phi0, c1=self.c1, c2=self.c2)
+        ls_verbose = False
+        if verbose >=3:
+            ls_verbose = True
+        alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, old_phi0 = self.old_phi0, c1=self.c1, c2=self.c2, verbose = ls_verbose)
         #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 
         self.old_phi0 = phi0
         w1 = w0 + alpha*d
-        model.weights = restore_w_to_model(model, w1)
+        l_w1 = restore_w_to_model(model, w1)
+        for i in range(0, len(model.weights)):
+            regularizer = model.kernel_regularizer[i]*current_batch_size/self.tot_n_patterns
+            weights_decay = 2*regularizer*model.weights[i]
+            # weights_decay[0,:] = 0 # In ML the bias should not be regularized
+            model.weights[i] = l_w1[i] - weights_decay
+        
         if( len(self.s) == self.m and len(self.y) == self.m):
             self.s.pop(0)
             self.y.pop(0)

@@ -202,7 +202,7 @@ class Optimizer(object):
             model.append_history(history, is_validation_set)
 
             if verbose and (self.epoch + 1) % verbose >= 0:
-                print("Epoch: {} - time: {:4.4f} - loss_train: {} - loss_val: {}".format(self.epoch + 1, history["time"], history["mse_train"], history["mse_val"]))
+                print("Epoch: {} - time: {:4.4f} - loss_train: {} - loss_val: {}".format(self.epoch + 1, history["time"], history["mse_reg_train"], history["mse_val"]))
 
             # Check Early Stopping 1: avoid overfitting
             if  is_validation_set and es and es.check_early_stop(model, self.epoch, history):
@@ -213,9 +213,9 @@ class Optimizer(object):
                 return 0
             
             # Check Early Stopping 3: L < l_eps
-            if self.l_eps and history["mse_train"] < self.l_eps:
+            if self.l_eps and history["mse_reg_train"] < self.l_eps:
                 if verbose >= 1:
-                    print("loss_train: {} < {}".format(history["mse_train"], self.l_eps))
+                    print("loss_train: {} < {}".format(history["mse_reg_train"], self.l_eps))
                     print("Training stopped")
                 return 0
 
@@ -246,7 +246,7 @@ class Optimizer(object):
         return a
 
     def backpropagation(self, model, weights, X, Y):
-        """
+        """ Compute the derivative of 1/2 sum_n (y_i -y_i')
         Parameters
         ----------
         model : isanet.model.MLP
@@ -379,10 +379,12 @@ class Optimizer(object):
             acc_val =  metrics.accuracy_binary(validation_data[1], out)
         out = model.predict(X_train)
         mse_train =  metrics.mse(Y_train, out)
+        mse_reg_train = metrics.mse_reg(Y_train, out, model, model.weights)
         mee_train =  metrics.mee(Y_train, out)
         acc_train =  metrics.accuracy_binary(Y_train, out)
         
         return {"mse_train": mse_train,
+                "mse_reg_train": mse_reg_train,
                 "mee_train": mee_train, 
                 "acc_train": acc_train,
                 "mse_val": mse_val,

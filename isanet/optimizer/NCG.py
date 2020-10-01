@@ -41,15 +41,22 @@ class NCG(Optimizer):
         self.model = model
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
+    def backpropagation(self, model, weights, X, Y):
+        g = super().backpropagation(model, weights, X, Y)
+        for i in range(len(g)):
+            g[i]  = (2/X.shape[0])*g[i] + (2*model.kernel_regularizer[0])*weights[i]
+        return g
+
     def step(self, model, X, Y, verbose):
+        current_batch_size = X.shape[0]
         w = make_vector(model.weights)
         g = make_vector(self.backpropagation(model, model.weights, X, Y))
         norm_g = np.linalg.norm(g)
-        
+
         if ~model.is_fitted and self.epoch == 0:
             beta = 0
             d = -g
-            phi0 = metrics.mse(Y, model.predict(X))
+            phi0 = metrics.mse_reg(Y, model.predict(X), model, model.weights)
         else:
             # calcolo del beta
             beta = self.fbeta(g, self.past_g, self.past_ng, self.past_d)
@@ -61,22 +68,26 @@ class NCG(Optimizer):
                 d = - g + beta*self.past_d 
             else:
                 d = - g
-            phi0 = model.history["loss_mse"][-1]
+            phi0 = model.history["loss_mse_reg"][-1]
 
         self.past_ng = norm_g
         self.past_g = g
         self.past_d = d
 
         phi = phi_function(model, self, w, X, Y, d)
+        ls_verbose = False
+        if verbose >=3:
+            ls_verbose = True
         alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
-                                  phi0 = phi0, old_phi0 = self.old_phi0, 
-                                  c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter)
+                                  phi0 = phi0, old_phi0 = self.old_phi0, derphi0 = np.asscalar(np.dot(g.T, d)),
+                                  c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter, verbose = ls_verbose)
         #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 
         self.old_phi0 = phi0
+
         w += alpha*d
         model.weights = restore_w_to_model(model, w)
-
+        
         if verbose >= 2:
             print("| beta: {} | alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
                     beta, alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],
