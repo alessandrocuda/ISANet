@@ -2,6 +2,12 @@
 """
 
 import numpy as np
+from isanet.optimizer.utils import l_norm
+
+
+def mse_reg(y_true, y_pred, model, weights):
+    return np.mean(np.square(y_true - y_pred)) \
+        + model.kernel_regularizer[0]*np.square(l_norm(weights))
 
 def mse(y_true, y_pred):
     """Mean squared error regression loss
