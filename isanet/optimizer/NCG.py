@@ -73,13 +73,14 @@ class NCG(Optimizer):
         self.past_ng = norm_g
         self.past_g = g
         self.past_d = d
+        derphi0 = np.asscalar(np.dot(g.T, d))
 
         phi = phi_function(model, self, w, X, Y, d)
         ls_verbose = False
         if verbose >=3:
             ls_verbose = True
         alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
-                                  phi0 = phi0, old_phi0 = self.old_phi0, derphi0 = np.asscalar(np.dot(g.T, d)),
+                                  phi0 = phi0, old_phi0 = self.old_phi0, derphi0 = derphi0,
                                   c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter, verbose = ls_verbose)
         #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 

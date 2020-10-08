@@ -67,7 +67,7 @@ class LBFGS(Optimizer):
             H0 = gamma
             d = -self.compute_search_dir(g, H0, self.s, self.y)
             curvature_condition = np.dot(self.s[-1].T, self.y[-1])
-            if(curvature_condition < 0):
+            if curvature_condition <= 1e-8: #0:
                 print("curvature condition: {}".format(curvature_condition))
                 raise Exception("Curvature condition is negative")
 
@@ -75,7 +75,9 @@ class LBFGS(Optimizer):
         ls_verbose = False
         if verbose >=3:
             ls_verbose = True
-        alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, old_phi0 = self.old_phi0, c1=self.c1, c2=self.c2, verbose = ls_verbose)
+        alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
+                                          phi0 = phi0, old_phi0 = self.old_phi0, 
+                                          c1=self.c1, c2=self.c2, verbose = ls_verbose)
         #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 
         self.old_phi0 = phi0
