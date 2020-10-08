@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="isanet.model" href="isanet.model.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> IsaNet ML Lib
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> IsaNet ML Lib
           
 
           
@@ -73,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -95,6 +97,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -133,7 +136,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>isanet.metrics</li>
     
@@ -157,9 +160,9 @@
   <div class="section" id="module-isanet.metrics">
 <span id="isanet-metrics"></span><h1>isanet.metrics<a class="headerlink" href="#module-isanet.metrics" title="Permalink to this headline">¶</a></h1>
 <p>Metrics Module.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="isanet.metrics.accuracy_binary">
-<code class="sig-prename descclassname">isanet.metrics.</code><code class="sig-name descname">accuracy_binary</code><span class="sig-paren">(</span><em class="sig-param">y_true</em>, <em class="sig-param">y_pred</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.metrics.accuracy_binary" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">isanet.metrics.</code><code class="sig-name descname">accuracy_binary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.metrics.accuracy_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accuracy classification score.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -177,9 +180,9 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="isanet.metrics.mee">
-<code class="sig-prename descclassname">isanet.metrics.</code><code class="sig-name descname">mee</code><span class="sig-paren">(</span><em class="sig-param">y_true</em>, <em class="sig-param">y_pred</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.metrics.mee" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">isanet.metrics.</code><code class="sig-name descname">mee</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.metrics.mee" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mean Euclidean error regression loss</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -197,9 +200,9 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="isanet.metrics.mse">
-<code class="sig-prename descclassname">isanet.metrics.</code><code class="sig-name descname">mse</code><span class="sig-paren">(</span><em class="sig-param">y_true</em>, <em class="sig-param">y_pred</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.metrics.mse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">isanet.metrics.</code><code class="sig-name descname">mse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.metrics.mse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mean squared error regression loss</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -216,6 +219,11 @@
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt id="isanet.metrics.mse_reg">
+<code class="sig-prename descclassname">isanet.metrics.</code><code class="sig-name descname">mse_reg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.metrics.mse_reg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 
@@ -239,11 +247,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Alessandro Cudazzo, Giulia Volpi
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -254,7 +270,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

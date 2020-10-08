@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="isanet.model_selection" href="isanet.model_selection.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> IsaNet ML Lib
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> IsaNet ML Lib
           
 
           
@@ -73,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -95,6 +97,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -133,7 +136,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>isanet.model</li>
     
@@ -156,12 +159,12 @@
             
   <div class="section" id="module-isanet.model">
 <span id="isanet-model"></span><h1>isanet.model<a class="headerlink" href="#module-isanet.model" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="isanet.model.Mlp">
 <em class="property">class </em><code class="sig-prename descclassname">isanet.model.</code><code class="sig-name descname">Mlp</code><a class="headerlink" href="#isanet.model.Mlp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class implements the Multi-layer Perceptron.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="isanet.model.Mlp.weights">
 <code class="sig-name descname">weights</code><a class="headerlink" href="#isanet.model.Mlp.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of arrays, the ith array represents all the
@@ -173,7 +176,7 @@ weights of each neuron in the ith layer.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="isanet.model.Mlp.activations">
 <code class="sig-name descname">activations</code><a class="headerlink" href="#isanet.model.Mlp.activations" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of Activation class, the ith Activation represents
@@ -185,7 +188,7 @@ the activation function for that layer.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="isanet.model.Mlp.kernel_regularizer">
 <code class="sig-name descname">kernel_regularizer</code><a class="headerlink" href="#isanet.model.Mlp.kernel_regularizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of float value where ith element represents the
@@ -197,7 +200,7 @@ l2 norm regularitation term for the ith layer.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="isanet.model.Mlp.n_layers">
 <code class="sig-name descname">n_layers</code><a class="headerlink" href="#isanet.model.Mlp.n_layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents the total number of layers - 1
@@ -209,7 +212,7 @@ l2 norm regularitation term for the ith layer.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="isanet.model.Mlp.history">
 <code class="sig-name descname">history</code><a class="headerlink" href="#isanet.model.Mlp.history" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save for each epoch the values of mse, mee and accuracy for
@@ -255,9 +258,9 @@ For instance the below given table:</p>
 <p>Mlp trains iteratively since at each time step the partial derivatives of the loss function with
 respect to the model parameters are computed to update the parameters. It can also have a regularization
 term added to the loss function that shrinks model parameters to prevent overfitting.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="isanet.model.Mlp.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">n_units</em>, <em class="sig-param">input=None</em>, <em class="sig-param">activation='sigmoid'</em>, <em class="sig-param">kernel_initializer=0.6</em>, <em class="sig-param">kernel_regularizer=0</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_units</span></em>, <em class="sig-param"><span class="n">input</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">activation</span><span class="o">=</span><span class="default_value">'sigmoid'</span></em>, <em class="sig-param"><span class="n">kernel_initializer</span><span class="o">=</span><span class="default_value">0.6</span></em>, <em class="sig-param"><span class="n">kernel_regularizer</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a hidden layer to the Multi-layer Perceptron.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -286,9 +289,9 @@ distribution used to generate the weights of that layer.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="isanet.model.Mlp.append_history">
-<code class="sig-name descname">append_history</code><span class="sig-paren">(</span><em class="sig-param">history</em>, <em class="sig-param">is_validation_set</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.append_history" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">append_history</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">history</span></em>, <em class="sig-param"><span class="n">is_validation_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.append_history" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds results on the training and validation sets to the history.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -301,9 +304,9 @@ training and validation and the time taken to compute that epoch.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="isanet.model.Mlp.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">epochs=0</em>, <em class="sig-param">batch_size=None</em>, <em class="sig-param">validation_data=None</em>, <em class="sig-param">es=False</em>, <em class="sig-param">verbose=0</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">Y_train</span></em>, <em class="sig-param"><span class="n">epochs</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validation_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">es</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit the model to data matrix X_train and target(s) Y_train and evaluates it on the validation set (if there is one).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -332,9 +335,9 @@ See docs in optimizier module.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="isanet.model.Mlp.predict">
-<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.predict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict using the multi-layer perceptron classifier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -349,9 +352,9 @@ See docs in optimizier module.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="isanet.model.Mlp.set_optimizer">
-<code class="sig-name descname">set_optimizer</code><span class="sig-paren">(</span><em class="sig-param">optimizer</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.set_optimizer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_optimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">optimizer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.set_optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the optimizer of the ‘Mlp’ used in the learning phase.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -362,9 +365,9 @@ See docs in optimizier module.</p></li>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="isanet.model.random_weights_layer">
-<code class="sig-prename descclassname">isanet.model.</code><code class="sig-name descname">random_weights_layer</code><span class="sig-paren">(</span><em class="sig-param">size</em>, <em class="sig-param">std=0.06</em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.random_weights_layer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">isanet.model.</code><code class="sig-name descname">random_weights_layer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">std</span><span class="o">=</span><span class="default_value">0.06</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.random_weights_layer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes neural net weights with a uniformly
 distributed over the half-open interval [-std, std)</p>
 <dl class="field-list simple">
@@ -407,11 +410,19 @@ of input at that level and ‘n_units’ is the number of neurons in that level.
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Alessandro Cudazzo, Giulia Volpi
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -422,7 +433,6 @@ of input at that level and ‘n_units’ is the number of neurons in that level.
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
