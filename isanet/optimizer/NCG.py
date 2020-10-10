@@ -9,7 +9,7 @@ from isanet.optimizer.linesearch import line_search_wolfe, line_search_wolfe_f, 
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class NCG(Optimizer):
-    """Nonlinear Conjugate Gradient (NCG)
+    """Nonlinear Conjugate Gradient (NCG).
 
     Parameters
     ----------
@@ -55,12 +55,14 @@ class NCG(Optimizer):
         fitting of the model (it stops if the loss function reaches 
         'l_eps'). 
 
+    debug : boolean, default=False
+        If True, allows you to perform iterations one at a time, pressing the Enter key.
+
     Methods
     -------
 
-    optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
-
     backpropagation(self, model, weights, X, Y)
+        Computes the derivative of 1/2 sum_n (y_i -y_i')
        
     step(self, model, X, Y, verbose)
         L-BFGS algorithm.
@@ -100,7 +102,7 @@ class NCG(Optimizer):
         self.past_d = 0
         self.past_ng = 0
         self.w = 0
-        self.fbeta = self.get_beta_function(beta_method)
+        self.fbeta = self.__get_beta_function(beta_method)
         self.restart = 0
         self.max_restart = restart
         self.ln_maxiter = ln_maxiter
@@ -166,50 +168,50 @@ class NCG(Optimizer):
             print("| beta: {} | alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
                     beta, alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],
                     ls_log["zoom_used"], ls_log["zoom_conv"], ls_log["zoom_it"])) 
-        self.append_history(beta, alpha, norm_g, ls_log)
+        self.__append_history(beta, alpha, norm_g, ls_log)
         return norm_g
 
 
-    def get_beta_function(self, beta_method):
+    def __get_beta_function(self, beta_method):
         if beta_method == "fr":
-            return self.beta_fr
+            return self.__beta_fr
         if beta_method == "pr":
-            return self.beta_pr
+            return self.__beta_pr
         if beta_method == "hs":
-            return self.beta_hs
+            return self.__beta_hs
         if beta_method == "pr+":
-            return self.beta_pr_plus
+            return self.__beta_pr_plus
         if beta_method == "hs+":
-            return self.beta_hs_plus
+            return self.__beta_hs_plus
 
-    def beta_fr(self, g, past_g, past_norm_g, past_d):
+    def __beta_fr(self, g, past_g, past_norm_g, past_d):
         A = np.dot(g.T,g)
         B = np.dot(past_g.T,past_g)
         beta = np.asscalar(A/B)
         return beta
 
-    def beta_pr(self, g, past_g, past_norm_g, past_d):
+    def __beta_pr(self, g, past_g, past_norm_g, past_d):
         A = g.T
         B = g-past_g
         C = np.square(past_norm_g)
         beta = np.asscalar(np.dot(A,B)/C)
         return beta
 
-    def beta_hs(self, g, past_g, past_norm_g, past_d):
+    def __beta_hs(self, g, past_g, past_norm_g, past_d):
         A = g.T
         B = g-past_g
         beta = np.asscalar(np.dot(A,B)/(np.dot(B.T, past_d)))
         return beta 
 
-    def beta_pr_plus(self, g, past_g, past_norm_g, past_d):
-        beta = self.beta_pr(g, past_g, past_norm_g, past_d)
+    def __beta_pr_plus(self, g, past_g, past_norm_g, past_d):
+        beta = self.__beta_pr(g, past_g, past_norm_g, past_d)
         return max(0, beta)
     
-    def beta_hs_plus(self, g, past_g, past_norm_g, past_d):
-        beta = self.beta_hs(g, past_g, past_norm_g, past_d)
+    def __beta_hs_plus(self, g, past_g, past_norm_g, past_d):
+        beta = self.__beta_hs(g, past_g, past_norm_g, past_d)
         return max(0, beta)
 
-    def append_history(self, beta, alpha, norm_g, ls_log):
+    def __append_history(self, beta, alpha, norm_g, ls_log):
         self.history["beta"].append(beta)
         self.history["alpha"].append(alpha)
         self.history["norm_g"].append(norm_g)

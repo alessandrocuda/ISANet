@@ -114,6 +114,39 @@ class EarlyStopping():
         
 
 class Optimizer(object):
+    """This class implemets the general optimizer. 
+        It must be extended to be used, since method 'step' must be implemented. 
+
+    Parameters
+    ----------
+    epoch : integer, default=0
+        Total number of iterations performed by the optimizer.
+
+    model : isanet.model.MLP
+            Specify the Multilayer Perceptron object to optimize
+
+    tol : float, default=None
+        Tolerance for the optimization. When the loss on training is
+        not improving by at least tol for 'n_iter_no_change' consecutive 
+        iterations convergence is considered to be reached and training stops.
+
+    n_iter_no_change : integer, default=None
+        Maximum number of epochs with no improvements > tol.
+
+    norm_g_eps : float, optional      
+        Threshold that is used to decide whether to stop the 
+        fitting of the model (it stops if the norm of the gradient reaches 
+        'norm_g_eps').
+
+    l_eps : float, optional       
+        Threshold that is used to decide whether to stop the 
+        fitting of the model (it stops if the loss function reaches 
+        'l_eps').
+
+    debug : boolean, default=False
+        If True, allows you to perform iterations one at a time, pressing the Enter key.
+
+    """
 
     def __init__(self, tol = None, n_iter_no_change = None, norm_g_eps = None, l_eps = None, debug = False):
         self.epoch = 0
@@ -228,6 +261,23 @@ class Optimizer(object):
             self.epoch+=1
 
     def forward(self, weights, X):
+        """Uses the weights passed to the function to make the Feed-Forward step.
+
+        Parameters
+        ----------
+        weights : list
+            List of arrays, the ith array represents all the 
+            weights of each neuron in the ith layer.
+
+        X : array-like of shape (n_samples, n_features)
+            The input data. 
+
+        Returns
+        -------
+        array-like
+            Output of all neurons for input X.
+
+        """
         a = X.copy()
         for layer in range(self.model.n_layers):
             z = np.dot(np.insert(a, 0, 1, 1), weights[layer])
@@ -235,11 +285,15 @@ class Optimizer(object):
         return a
 
     def backpropagation(self, model, weights, X, Y):
-        """ Compute the derivative of 1/2 sum_n (y_i -y_i')
+        """Computes the derivative of 1/2 sum_n (y_i -y_i')
         Parameters
         ----------
         model : isanet.model.MLP
             Specify the Multilayer Perceptron object to optimize
+
+        weights : list
+            List of arrays, the ith array represents all the 
+            weights of each neuron in the ith layer.
 
         X : array-like of shape (n_samples, n_features)
             The input data.
@@ -295,7 +349,7 @@ class Optimizer(object):
         return g 
 
     def step(self, model, X, Y, verbose):
-        """Step of the optimization method chosen (SGD/NCG/LBFGS).
+        """It must be implemented by the derived class (SGD/NCG/LBFGS).
 
         Parameters
         ----------
@@ -373,6 +427,7 @@ class Optimizer(object):
         that contains: 
 
                 {"mse_train": mse_train,
+                 "mse_reg_train": mse_reg_train,
                  "mee_train": mee_train, 
                  "acc_train": acc_train,
                  "mse_val": mse_val,
