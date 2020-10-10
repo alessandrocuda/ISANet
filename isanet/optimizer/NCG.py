@@ -31,9 +31,6 @@ class NCG(Optimizer):
     restart : integer, optional
         Every 'restart' iterations Beta is set to 0.
 
-    sfgrd : float, default=0.01
-        Safeguard parameter for the line search.
-
     ln_maxiter : integer, default=10
         Maximum number of iterations of the Line Search.
 
@@ -58,45 +55,51 @@ class NCG(Optimizer):
     debug : boolean, default=False
         If True, allows you to perform iterations one at a time, pressing the Enter key.
 
+    history : dict
+        Save for each iteration some interesting values.
+
+        Dictionary's keys:
+            ``beta``
+                Beta value. 
+            ``alpha``
+                Step size chosen by the line search.
+            ``norm_g``
+                Gradient norm.
+            ``ls_conv``
+                Specifies whether the line search was able to find an alpha.
+            ``ls_it``
+                Number of iterations of the line search.
+            ``ls_time``
+                Computational time of the line search 
+                (includes the computational time of the zoom method, if used).
+            ``zoom_used``
+                Specifies whether the zoom method has been used.
+            ``zoom_conv``
+                Specifies whether the zoom method was able to find an alpha.
+            ``zoom_it``
+                Number of iterations of the zoom method.
+
     Methods
     -------
+    optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
+
+    forward(self, weights, X)
+        Uses the weights passed to the function to make the Feed-Forward step.
 
     backpropagation(self, model, weights, X, Y)
-        Computes the derivative of 1/2 sum_n (y_i -y_i')
+        Computes the derivative of 1/n sum_n (y_i -y_i') + L2 regularization.
        
     step(self, model, X, Y, verbose)
-        L-BFGS algorithm.
-
-    get_beta_function(self, beta_method)
-        Returns the Beta according to the formula specified by 'beta_method'.
-
-    beta_fr(self, g, past_g, past_norm_g, past_d)
-        Computes Beta according to the Fletcher-Reeves formula.
-
-    beta_pr(self, g, past_g, past_norm_g, past_d)
-        Computes Beta according to the Polak-Ribière formula.
-
-    beta_hs(self, g, past_g, past_norm_g, past_d)
-        Computes Beta according to the Fletcher-Reeves formula.
-
-    beta_pr_plus(self, g, past_g, past_norm_g, past_d)
-        Computes Beta according to the Fletcher-Reeves formula.
-
-    beta_hs_plus(self, g, past_g, past_norm_g, past_d)
-        Computes Beta according to the Fletcher-Reeves formula.
-
-    append_history(self, alpha, norm_g, ls_log)
-        Adds results to the history.
+        NCG algorithm.
 
     """
 
-    def __init__(self, beta_method = "hs+", c1=1e-4, c2=.9, restart = None, 
-                 sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None, 
+    def __init__(self, beta_method = "hs+", c1=1e-4, c2=.9, restart = None,
+                 ln_maxiter = 10, tol = None, n_iter_no_change = None, 
                  norm_g_eps = None, l_eps = None, debug = False):
         super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
         self.c1 = c1
         self.c2 = c2
-        self.sfgrd = sfgrd
         self.old_phi0 = None
         self.past_g = 0
         self.past_d = 0
