@@ -9,7 +9,7 @@ from isanet.optimizer.linesearch import line_search_wolfe, line_search_wolfe_f, 
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class LBFGS(Optimizer):
-    """Limited-memory LBFGS (L-BFGS)
+    """Limited-memory BFGS (L-BFGS)
     
     Parameters
     ----------
@@ -44,21 +44,46 @@ class LBFGS(Optimizer):
         fitting of the model (it stops if the loss function reaches 
         'l_eps'). 
 
+    debug : boolean, default=False
+        If True, allows you to perform iterations one at a time, pressing the Enter key.
+
+    history : dict
+        Save for each iteration some interesting values.
+
+        Dictionary's keys:
+            ``alpha``
+                Step size chosen by the line search.
+            ``norm_g``
+                Gradient norm.
+            ``ls_conv``
+                Specifies whether the line search was able to find an alpha.
+            ``ls_it``
+                Number of iterations of the line search.
+            ``ls_time``
+                Computational time of the line search 
+                (includes the computational time of the zoom method, if used).
+            ``zoom_used``
+                Specifies whether the zoom method has been used.
+            ``zoom_conv``
+                Specifies whether the zoom method was able to find an alpha.
+            ``zoom_it``
+                Number of iterations of the zoom method.
+
+
     Methods
     -------
 
     optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
+        Optimizes the Multilayer Perceptron object specified by model.
+
+    forward(self, weights, X)
+        Uses the weights passed to the function to make the Feed-Forward step.
 
     backpropagation(self, model, weights, X, Y)
+        Computes the derivative of 1/n sum_n (y_i -y_i') + L2 regularization.
        
     step(self, model, X, Y, verbose)
-        L-BFGS algorithm.
-
-    compute_search_dir(self, g, H0, s, y)
-        Computes the search direction.
-
-    append_history(self, alpha, norm_g, ls_log)
-        Adds results to the history.
+        LBFGS algorithm.
 
     """
     def __init__(self, m = 3, c1=1e-4, c2=.9, ln_maxiter = 10, tol = None, 
@@ -107,7 +132,7 @@ class LBFGS(Optimizer):
             self.y[-1] = g - self.y[-1]
             gamma = np.dot(self.s[-1].T, self.y[-1])/np.dot(self.y[-1].T, self.y[-1])
             H0 = gamma
-            d = -self.compute_search_dir(g, H0, self.s, self.y)
+            d = -self.__compute_search_dir(g, H0, self.s, self.y)
             curvature_condition = np.dot(self.s[-1].T, self.y[-1])
             if curvature_condition <= 1e-8:
                 print("curvature condition: {}".format(curvature_condition))
@@ -139,11 +164,11 @@ class LBFGS(Optimizer):
             print("| alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
                     alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],
                     ls_log["zoom_used"], ls_log["zoom_conv"], ls_log["zoom_it"])) 
-        self.append_history(alpha, norm_g, ls_log)
+        self.__append_history(alpha, norm_g, ls_log)
         return norm_g
 
 
-    def compute_search_dir(self, g, H0, s, y):
+    def __compute_search_dir(self, g, H0, s, y):
         q = copy.deepcopy(g)
         a = []
         for s_i, y_i in zip(reversed(s), reversed(y)):
@@ -160,7 +185,7 @@ class LBFGS(Optimizer):
         return r
 
 
-    def append_history(self, alpha, norm_g, ls_log):
+    def __append_history(self, alpha, norm_g, ls_log):
         self.history["alpha"].append(alpha)
         self.history["norm_g"].append(norm_g)
         self.history["ls_conv"].append(ls_log["ls_conv"])

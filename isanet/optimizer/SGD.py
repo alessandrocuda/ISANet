@@ -10,7 +10,8 @@ from isanet.optimizer.utils import l_norm
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class SGD(Optimizer):
-    """
+    """Stochastic Gradient Descent (SGD)
+
     Parameters
     ----------
     lr : float, default=0.1
@@ -46,10 +47,27 @@ class SGD(Optimizer):
         fitting of the model (it stops if the loss function reaches 
         'l_eps').
 
+    debug : boolean, default=False
+        If True, allows you to perform iterations one at a time, pressing the Enter key.
+
+    history : dict
+        Save for each iteration some interesting values.
+
+        Dictionary's keys:
+            ``norm_g``
+                Gradient norm. 
+
     Methods
     -------
 
     optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
+        Optimizes the Multilayer Perceptron object specified by model.
+
+    forward(self, weights, X)
+        Uses the weights passed to the function to make the Feed-Forward step.
+
+    backpropagation(self, model, weights, X, Y)
+        Computes the derivative of 1/2 sum_n (y_i -y_i').
        
     step(self, model, X, Y, verbose)
         SGD algorithm.

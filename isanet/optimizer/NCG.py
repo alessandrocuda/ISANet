@@ -82,6 +82,7 @@ class NCG(Optimizer):
     Methods
     -------
     optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
+        Optimizes the Multilayer Perceptron object specified by model.
 
     forward(self, weights, X)
         Uses the weights passed to the function to make the Feed-Forward step.
@@ -188,12 +189,14 @@ class NCG(Optimizer):
             return self.__beta_hs_plus
 
     def __beta_fr(self, g, past_g, past_norm_g, past_d):
+        #Computes Beta according to the Fletcher-Reeves formula.
         A = np.dot(g.T,g)
         B = np.dot(past_g.T,past_g)
         beta = np.asscalar(A/B)
         return beta
 
     def __beta_pr(self, g, past_g, past_norm_g, past_d):
+        #Computes Beta according to the Polak-Ribière formula.
         A = g.T
         B = g-past_g
         C = np.square(past_norm_g)
@@ -201,6 +204,7 @@ class NCG(Optimizer):
         return beta
 
     def __beta_hs(self, g, past_g, past_norm_g, past_d):
+        #Computes Beta according to the Hestenes-Stiefel formula.
         A = g.T
         B = g-past_g
         beta = np.asscalar(np.dot(A,B)/(np.dot(B.T, past_d)))
