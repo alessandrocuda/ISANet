@@ -35,6 +35,25 @@ class SGD(Optimizer):
 
     n_iter_no_change : integer, default=None
         Maximum number of epochs with no improvements > tol. 
+
+    norm_g_eps : float, optional      
+        Threshold that is used to decide whether to stop the 
+        fitting of the model (it stops if the norm of the gradient reaches 
+        'norm_g_eps').
+
+    l_eps : float, optional       
+        Threshold that is used to decide whether to stop the 
+        fitting of the model (it stops if the loss function reaches 
+        'l_eps').
+
+    Methods
+    -------
+
+    optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
+       
+    step(self, model, X, Y, verbose)
+        SGD algorithm.
+
     """
     def __init__(self, lr=0.1, momentum=0, nesterov=False, sigma = None, 
                  tol = None, n_iter_no_change = None, norm_g_eps = None, 

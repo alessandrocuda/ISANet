@@ -306,6 +306,27 @@ class Optimizer(object):
         return g 
 
     def step(self, model, X, Y, verbose):
+        """Step of the optimization method chosen (SGD/NCG/LBFGS).
+
+        Parameters
+        ----------
+        model : isanet.model.MLP
+            Specify the Multilayer Perceptron object to optimize
+
+         X : array-like of shape (n_samples, n_features)
+            The input data.
+
+        Y : array-like of shape (n_samples, n_output)
+            The target values.
+
+        verbose : integer, default=0
+            Controls the verbosity: the higher, the more messages.
+
+        Raises
+        ------
+            NotImplementedError
+
+        """
         raise NotImplementedError
 
     def get_batch(self, X_train, Y_train, batch_size):

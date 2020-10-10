@@ -9,7 +9,58 @@ from isanet.optimizer.linesearch import line_search_wolfe, line_search_wolfe_f, 
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class LBFGS(Optimizer):
+    """Limited-memory LBFGS (L-BFGS)
+    
+    Parameters
+    ----------
+    m : integer, default=3
+        The Hessian approximation will keep the curvature information from the 'm' 
+        most recent iterations.
 
+    c1 : float, default=1e-4
+        Parameter for the Armijo-Wolfe line search.
+
+    c2 : float, default=0.9
+        Parameter for the Armijo-Wolfe line search.
+
+    ln_maxiter : integer, default=10
+        Maximum number of iterations of the Line Search.
+
+    tol : float, optional
+        Tolerance for the optimization. When the loss on training is
+        not improving by at least tol for 'n_iter_no_change' consecutive 
+        iterations convergence is considered to be reached and training stops.
+
+    n_iter_no_change : integer, optional
+        Maximum number of iterations with no improvements > tol.
+
+    norm_g_eps : float, optional      
+        Threshold that is used to decide whether to stop the 
+        fitting of the model (it stops if the norm of the gradient reaches 
+        'norm_g_eps').
+
+    l_eps : float, optional       
+        Threshold that is used to decide whether to stop the 
+        fitting of the model (it stops if the loss function reaches 
+        'l_eps'). 
+
+    Methods
+    -------
+
+    optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
+
+    backpropagation(self, model, weights, X, Y)
+       
+    step(self, model, X, Y, verbose)
+        L-BFGS algorithm.
+
+    compute_search_dir(self, g, H0, s, y)
+        Computes the search direction.
+
+    append_history(self, alpha, norm_g, ls_log)
+        Adds results to the history.
+
+    """
     def __init__(self, m = 3, c1=1e-4, c2=.9, ln_maxiter = 10, tol = None, 
                  n_iter_no_change = None, norm_g_eps = None, l_eps = None, 
                  debug = False):

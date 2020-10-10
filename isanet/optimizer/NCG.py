@@ -9,7 +9,85 @@ from isanet.optimizer.linesearch import line_search_wolfe, line_search_wolfe_f, 
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class NCG(Optimizer):
+    """Nonlinear Conjugate Gradient (NCG)
 
+    Parameters
+    ----------
+    beta_method : string, default="hs+"
+        Beta formulas available for the NCG.
+
+        - 'fr', Fletcher-Reeves formula.
+        - 'pr', Polak-Ribière formula.
+        - 'hs', Hestenes-Stiefel formula.
+        - 'pr+', modified Polak-Ribière formula.
+        - 'hs+', modified Hestenes-Stiefel formula.
+
+    c1 : float, default=1e-4
+        Parameter for the Armijo-Wolfe line search.
+
+    c2 : float, default=0.9
+        Parameter for the Armijo-Wolfe line search.
+
+    restart : integer, optional
+        Every 'restart' iterations Beta is set to 0.
+
+    sfgrd : float, default=0.01
+        Safeguard parameter for the line search.
+
+    ln_maxiter : integer, default=10
+        Maximum number of iterations of the Line Search.
+
+    tol : float, optional
+        Tolerance for the optimization. When the loss on training is
+        not improving by at least tol for 'n_iter_no_change' consecutive 
+        iterations convergence is considered to be reached and training stops.
+
+    n_iter_no_change : integer, optional
+        Maximum number of iterations with no improvements > tol.
+
+    norm_g_eps : float, optional      
+        Threshold that is used to decide whether to stop the 
+        fitting of the model (it stops if the norm of the gradient reaches 
+        'norm_g_eps').
+
+    l_eps : float, optional       
+        Threshold that is used to decide whether to stop the 
+        fitting of the model (it stops if the loss function reaches 
+        'l_eps'). 
+
+    Methods
+    -------
+
+    optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
+
+    backpropagation(self, model, weights, X, Y)
+       
+    step(self, model, X, Y, verbose)
+        L-BFGS algorithm.
+
+    get_beta_function(self, beta_method)
+        Returns the Beta according to the formula specified by 'beta_method'.
+
+    beta_fr(self, g, past_g, past_norm_g, past_d)
+        Computes Beta according to the Fletcher-Reeves formula.
+
+    beta_pr(self, g, past_g, past_norm_g, past_d)
+        Computes Beta according to the Polak-Ribière formula.
+
+    beta_hs(self, g, past_g, past_norm_g, past_d)
+        Computes Beta according to the Fletcher-Reeves formula.
+
+    beta_pr_plus(self, g, past_g, past_norm_g, past_d)
+        Computes Beta according to the Fletcher-Reeves formula.
+
+    beta_hs_plus(self, g, past_g, past_norm_g, past_d)
+        Computes Beta according to the Fletcher-Reeves formula.
+
+    append_history(self, alpha, norm_g, ls_log)
+        Adds results to the history.
+
+    """
+    
     def __init__(self, beta_method = "hs+", c1=1e-4, c2=.9, restart = None, 
                  sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None, 
                  norm_g_eps = None, l_eps = None, debug = False):
