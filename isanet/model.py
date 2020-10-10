@@ -89,7 +89,7 @@ class Mlp():
         self.kernel_regularizer = []
         self.n_layers = 0  #hidden + out
         self.history = {"loss_mse":     [],
-                        "loss_mse_reg": [],
+                        "loss_mse_reg": [], # manca nella doc questa
                         "loss_mee":     [], 
                         "val_loss_mse": [], 
                         "val_loss_mee": [], 
@@ -97,9 +97,7 @@ class Mlp():
                         "val_acc":      [], 
                         "epoch_time":   []}
         self.is_fitted = False              # da commentare
-        self.n_vars = 0
-        for i in range(len(model.weights)):
-            self.n_vars += model.weights[i].shape[0]*model.weights[i].shape[1]
+        self.n_vars = 0                     # da commentare
         self.__optimizer = optimizer.SGD()
         self.__is_input_layer_set = False
 
@@ -272,6 +270,7 @@ class Mlp():
         self.activations.append(actf)
         self.kernel_regularizer.append(kernel_regularizer)
         self.n_layers += 1
+        self.n_vars += self.weights[-1].shape[0]*self.weights[-1].shape[1]
 
     def __get_activation_f(self, act):
         """Returns the activation function."""
