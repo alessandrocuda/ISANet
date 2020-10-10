@@ -52,6 +52,8 @@ class Mlp():
         Dictionary's keys:
             ``loss_mse``
                 The mean square error on training for each epochs. 
+            ``loss_mse_reg``
+                The mean square error on training for each epochs plus the L2 regularization.
             ``loss_mee``
                 The mean euclidean error on training for each epochs. 
             ``val_loss_mse``
@@ -68,13 +70,19 @@ class Mlp():
         A dict with keys as column headers and values as columns, that can be imported into a pandas DataFrame.                   
         For instance the below given table::
 
-                +-------------------------+---------------+----------------+---------------+---+-----------------+
-                |         loss_mse        |   loss_mee    |  val_loss_mse  | val_loss_mee  |...|   epoch_time    |
-                +=========================+===============+================+===============+===+=================+
-                |          0.985          |     0.992     |      1.00      |      1.00     |...|     0.0030      |   
-                +-------------------------+---------------+----------------+---------------+---+-----------------+
-                |          0.984          |     0.991     |      1.00      |      1.00     |...|     0.0029      |
-                +-------------------------+---------------+----------------+---------------+---+-----------------+
+                +-----------------+--------------------+---------------+----------------+---------------+---+-----------------+
+                |     loss_mse    |    loss_mse_reg    |    loss_mee   |  val_loss_mse  | val_loss_mee  |...|   epoch_time    |
+                +=================+====================+===============+================+===============+===+=================+
+                |      0.985      |       1.00         |     0.992     |      1.00      |      1.00     |...|     0.0030      |   
+                +-----------------+--------------------+---------------+----------------+---------------+---+-----------------+
+                |      0.984      |        1.10        |     0.991     |      1.00      |      1.00     |...|     0.0029      |
+                +-----------------+--------------------+---------------+----------------+---------------+---+-----------------+
+
+    is_fitted : boolean, default=False
+        if True, a fit has already been done.
+
+    n_vars : integer, default=0
+        Number of model variables.
 
     Notes
     -----
@@ -89,15 +97,15 @@ class Mlp():
         self.kernel_regularizer = []
         self.n_layers = 0  #hidden + out
         self.history = {"loss_mse":     [],
-                        "loss_mse_reg": [], # manca nella doc questa
+                        "loss_mse_reg": [], 
                         "loss_mee":     [], 
                         "val_loss_mse": [], 
                         "val_loss_mee": [], 
                         "acc":          [], 
                         "val_acc":      [], 
                         "epoch_time":   []}
-        self.is_fitted = False              # da commentare
-        self.n_vars = 0                     # da commentare
+        self.is_fitted = False              
+        self.n_vars = 0                     
         self.__optimizer = optimizer.SGD()
         self.__is_input_layer_set = False
 
