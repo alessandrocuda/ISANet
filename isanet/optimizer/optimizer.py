@@ -168,7 +168,7 @@ class Optimizer(object):
         Parameters
         ----------
         model : isanet.model.MLP
-            Specify the Multilayer Perceptron object to optimize
+            Specify the Multilayer Perceptron object to optimize.
 
         epochs : integer
             Maximum number of epochs.
@@ -303,9 +303,9 @@ class Optimizer(object):
 
         Returns
         -------
-        dict
+        list
             contains the gradients for each layer to be used in the delta rule. 
-            Each key in the dictionary represents the ith layer. (from the first
+            Each index in the list represents the ith layer. (from the first
             hidden layer to the output layer).::
 
                 E.g. 0 -> first hidden layer, ..., n+1 -> output layer
@@ -313,7 +313,7 @@ class Optimizer(object):
         """
         A = [0]*(model.n_layers+1)   # outputs after the activation functions of all layers ( input to output)
         Z = [0]*(model.n_layers)                       # outputs before the activation functions of all layers ( hidden layers to output)
-        g = [0]*model.n_layers                 # dictionary of gradient for each layer (hidden to output)
+        g = [0]*model.n_layers                 # list of gradient for each layer (hidden to output)
 
         #####################
         # Feed Forward Phase

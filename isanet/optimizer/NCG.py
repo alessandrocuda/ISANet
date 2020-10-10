@@ -122,13 +122,60 @@ class NCG(Optimizer):
                         "zoom_it":      []} 
 
     def backpropagation(self, model, weights, X, Y):
+        """Computes the derivative of 1/n sum_n (y_i -y_i') + L2 regularization
+        Parameters
+        ----------
+        model : isanet.model.MLP
+            Specify the Multilayer Perceptron object to optimize
+
+        weights : list
+            List of arrays, the ith array represents all the 
+            weights of each neuron in the ith layer.
+
+        X : array-like of shape (n_samples, n_features)
+            The input data.
+
+        Y : array-like of shape (n_samples, n_output)
+            The target values.
+
+        Returns
+        -------
+        list
+            contains the gradients norm for each layer to be used in the delta rule. 
+            Each index in the list represents the ith layer. (from the first
+            hidden layer to the output layer).::
+
+                E.g. 0 -> first hidden layer, ..., n+1 -> output layer
+                where n is the number of hidden layer in the net.
+        """
         g = super().backpropagation(model, weights, X, Y)
         for i in range(len(g)):
             g[i]  = (2/X.shape[0])*g[i] + (2*model.kernel_regularizer[0])*weights[i]
         return g
 
     def step(self, model, X, Y, verbose):
-        current_batch_size = X.shape[0]
+        """Implements the NCG algorithm.
+
+        Parameters
+        ----------
+        model : isanet.model.MLP
+            Specify the Multilayer Perceptron object to optimize
+
+         X : array-like of shape (n_samples, n_features)
+            The input data.
+
+        Y : array-like of shape (n_samples, n_output)
+            The target values.
+
+        verbose : integer, default=0
+            Controls the verbosity: the higher, the more messages.
+
+        Returns
+        -------
+            float
+                The gradient norm.
+
+        """
         w = make_vector(model.weights)
         g = make_vector(self.backpropagation(model, model.weights, X, Y))
         norm_g = np.linalg.norm(g)
@@ -211,10 +258,12 @@ class NCG(Optimizer):
         return beta 
 
     def __beta_pr_plus(self, g, past_g, past_norm_g, past_d):
+        #Returns max(0, beta), where beta is computed according to the Polak-Ribière formula.
         beta = self.__beta_pr(g, past_g, past_norm_g, past_d)
         return max(0, beta)
     
     def __beta_hs_plus(self, g, past_g, past_norm_g, past_d):
+        #Returns max(0, beta), where beta is computed according to the Hestenes-Stiefel formula.
         beta = self.__beta_hs(g, past_g, past_norm_g, past_d)
         return max(0, beta)
 

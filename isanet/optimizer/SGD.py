@@ -88,12 +88,70 @@ class SGD(Optimizer):
 
         
     def optimize(self, model, epochs, X_train, Y_train, validation_data=None, batch_size=None, es=None, verbose=0):
+        """
+        Parameters
+        ----------
+        model : isanet.model.MLP
+            Specify the Multilayer Perceptron object to optimize.
+
+        epochs : integer
+            Maximum number of epochs.
+
+        X_train : array-like of shape (n_samples, n_features)
+            The input data.
+
+        Y_train : array-like of shape (n_samples, n_output)
+            The target values.
+
+        validation_data : list of arrays-like, [X_val, Y_val], optional
+            Validation set.
+
+        batch_size : integer, optional
+            Size of minibatches for the optimizer.
+            When set to "none", the optimizer will performe a full batch.
+
+        es : isanet.callbacks.EarlyStopping, optional
+            When set to None it will only use the ``epochs`` to finish training.
+            Otherwise, an EarlyStopping type object has been passed and will stop 
+            training if the model goes overfitting after a number of consecutive iterations.
+            See docs in optimizier module for the EarlyStopping Class.
+
+        verbose : integer, default=0
+            Controls the verbosity: the higher, the more messages.
+
+        Returns
+        -------
+        integer
+
+        """
         if ~model.is_fitted:
             self.delta_w = [0]*len(model.weights)
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
 
     def step(self, model, X, Y, verbose):
+        """Implements the SGD algorithm.
+
+        Parameters
+        ----------
+        model : isanet.model.MLP
+            Specify the Multilayer Perceptron object to optimize
+
+         X : array-like of shape (n_samples, n_features)
+            The input data.
+
+        Y : array-like of shape (n_samples, n_output)
+            The target values.
+
+        verbose : integer, default=0
+            Controls the verbosity: the higher, the more messages.
+
+        Returns
+        -------
+            float
+                The gradient norm.
+
+        """
 
         current_batch_size = X.shape[0]
         lr = self.lr/current_batch_size
