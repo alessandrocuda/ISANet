@@ -97,7 +97,9 @@ class Mlp():
                         "val_acc":      [], 
                         "epoch_time":   []}
         self.is_fitted = False              # da commentare
-
+        self.n_vars = 0
+        for i in range(len(model.weights)):
+            self.n_vars += model.weights[i].shape[0]*model.weights[i].shape[1]
         self.__optimizer = optimizer.SGD()
         self.__is_input_layer_set = False
 

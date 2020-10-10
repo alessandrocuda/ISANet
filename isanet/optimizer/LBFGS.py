@@ -68,7 +68,6 @@ class LBFGS(Optimizer):
         self.c1 = c1
         self.c2 = c2
         self.old_phi0 = None
-        self.n_vars = 0
         self.past_g = 0
         self.past_d = 0
         self.past_ng = 0
@@ -87,13 +86,6 @@ class LBFGS(Optimizer):
                         "zoom_used":    [],
                         "zoom_conv":    [],
                         "zoom_it":      []} 
-
-    def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
-        self.model = model
-        for i in range(len(model.weights)):
-            self.n_vars += model.weights[i].shape[0]*model.weights[i].shape[1]
-        # self.H0 = np.eye(self.n_vars)
-        super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
     def backpropagation(self, model, weights, X, Y):
         g = super().backpropagation(model, weights, X, Y)
@@ -114,11 +106,10 @@ class LBFGS(Optimizer):
         else:
             self.y[-1] = g - self.y[-1]
             gamma = np.dot(self.s[-1].T, self.y[-1])/np.dot(self.y[-1].T, self.y[-1])
-            # H0 = gamma*np.eye(self.n_vars)
             H0 = gamma
             d = -self.compute_search_dir(g, H0, self.s, self.y)
             curvature_condition = np.dot(self.s[-1].T, self.y[-1])
-            if curvature_condition <= 1e-8: #0:
+            if curvature_condition <= 1e-8:
                 print("curvature condition: {}".format(curvature_condition))
                 raise Exception("Curvature condition is negative")
 
@@ -129,7 +120,6 @@ class LBFGS(Optimizer):
         alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
                                           phi0 = phi0, old_phi0 = self.old_phi0, 
                                           c1=self.c1, c2=self.c2, verbose = ls_verbose)
-        #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 
         self.old_phi0 = phi0
         w1 = w0 + alpha*d

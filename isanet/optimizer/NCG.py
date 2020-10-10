@@ -87,7 +87,7 @@ class NCG(Optimizer):
         Adds results to the history.
 
     """
-    
+
     def __init__(self, beta_method = "hs+", c1=1e-4, c2=.9, restart = None, 
                  sfgrd = 0.01, ln_maxiter = 10, tol = None, n_iter_no_change = None, 
                  norm_g_eps = None, l_eps = None, debug = False):
@@ -114,10 +114,6 @@ class NCG(Optimizer):
                         "zoom_used":    [],
                         "zoom_conv":    [],
                         "zoom_it":      []} 
-
-    def optimize(self, model, epochs, X_train, Y_train, validation_data = None, batch_size = None, es = None, verbose = 0):
-        self.model = model
-        super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
     def backpropagation(self, model, weights, X, Y):
         g = super().backpropagation(model, weights, X, Y)
@@ -160,7 +156,6 @@ class NCG(Optimizer):
         alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
                                   phi0 = phi0, old_phi0 = self.old_phi0, derphi0 = derphi0,
                                   c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter, verbose = ls_verbose)
-        #alpha = line_search_wolfe_f(phi = phi.phi, derphi= phi.derphi, phi0 = phi0, c1=self.c1, c2=self.c2)
 
         self.old_phi0 = phi0
 
