@@ -118,8 +118,6 @@ class Optimizer(object):
     def __init__(self, tol = None, n_iter_no_change = None, norm_g_eps = None, l_eps = None, debug = False):
         self.epoch = 0
         self.model = None
-        self.X_part = None
-        self.Y_part = None
         self.tol = tol
         self.n_iter_no_change = n_iter_no_change
         if n_iter_no_change is None:
@@ -169,6 +167,7 @@ class Optimizer(object):
         integer
 
         """
+        self.model = model
         self.tot_n_patterns = X_train.shape[0]
         self.__batch_size = batch_size
 
@@ -227,16 +226,6 @@ class Optimizer(object):
                 return 0
 
             self.epoch+=1
-
-    # def phi(self, w):
-    #     weights = restore_w_to_model(model, w)
-    #     y_pred = self.forward(weights, self.X_part)
-    #     return metrics.mse(self.Y_part, y_pred)
-
-    # def derphi(self, w):
-    #     weights = restore_w_to_model(model, w)
-    #     g = make_vector(self.backpropagation(model, weights, self.X_part, self.Y_part))
-    #     derphi_a1 = np.asscalar(np.dot(g.T, self.d))
 
     def forward(self, weights, X):
         a = X.copy()
