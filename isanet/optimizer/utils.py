@@ -48,7 +48,7 @@ def make_vector(l_v):
     return np.concatenate(row_vector).reshape(-1, 1)
 
 def restore_w_to_model(model, w):
-    """Takes an array of weights and transforms them into a list 
+    """Takes an array of weights and transforms it into a list 
        of matrices with dimensions taken from the model passed.
 
     Parameters
