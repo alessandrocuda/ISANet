@@ -237,6 +237,49 @@
 <span class="n">outputNet</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>An example with the <strong>low level api (keras-like)</strong> with NCG or LBFGS optimizer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">isanet.model</span> <span class="kn">import</span> <span class="n">Mlp</span>
+<span class="kn">from</span> <span class="nn">isanet.optimizer</span> <span class="kn">import</span> <span class="n">NCG</span><span class="p">,</span> <span class="n">LBFGS</span>
+<span class="kn">from</span> <span class="nn">isanet.optimizer.utils</span> <span class="kn">import</span> <span class="n">l_norm</span>
+<span class="kn">from</span> <span class="nn">isanet.datasets.monk</span> <span class="kn">import</span> <span class="n">load_monk</span>
+<span class="kn">from</span> <span class="nn">isanet.utils.model_utils</span> <span class="kn">import</span> <span class="n">printMSE</span><span class="p">,</span> <span class="n">printAcc</span><span class="p">,</span> <span class="n">plotHistory</span>
+<span class="kn">import</span> <span class="nn">isanet.metrics</span> <span class="k">as</span> <span class="nn">metrics</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span> <span class="o">=</span> <span class="n">load_monk</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">)</span>
+<span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">load_monk</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+
+<span class="c1">#create the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Mlp</span><span class="p">()</span>
+<span class="c1"># Specify the range for the weights and lambda for regularization</span>
+<span class="c1"># Of course can be different for each layer</span>
+<span class="n">kernel_initializer</span> <span class="o">=</span> <span class="mf">0.003</span>
+<span class="n">kernel_regularizer</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="c1"># Add many layers with different number of units</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span> <span class="mi">17</span><span class="p">,</span> <span class="n">kernel_initializer</span><span class="p">,</span> <span class="n">kernel_regularizer</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">kernel_initializer</span><span class="p">,</span> <span class="n">kernel_regularizer</span><span class="p">)</span>
+
+<span class="n">es</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="mf">0.00009</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span> <span class="c1"># eps_GL and s_UP</span>
+
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">NCG</span><span class="p">(</span><span class="n">beta_method</span><span class="o">=</span><span class="s2">&quot;hs+&quot;</span><span class="p">,</span> <span class="n">c1</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">c2</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_maxiter</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">norm_g_eps</span> <span class="o">=</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="n">l_eps</span> <span class="o">=</span> <span class="mf">1e-9</span><span class="p">)</span>
+<span class="c1"># or you can choose the LBFGS optimizer</span>
+<span class="c1">#optimizer = LBFGS(m = 30, c1=1e-4, c2=0.9, ln_maxiter = 100, norm_g_eps = 1e-9, l_eps = 1e-9)</span>
+
+<span class="c1">#start the learning phase</span>
+<span class="c1"># no batch with NCG or LBFGS optimizer</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span>
+          <span class="n">Y_train</span><span class="p">,</span>
+          <span class="n">epochs</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+          <span class="n">validation_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">],</span>
+          <span class="n">es</span> <span class="o">=</span> <span class="n">es</span><span class="p">,</span>
+          <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># after trained the model the prediction operation can be</span>
+<span class="c1"># perform with the predict method</span>
+<span class="n">outputNet</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>An example with the <strong>high level API (sklearn like)</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">isanet.neural_network</span> <span class="kn">import</span> <span class="n">MLPClassifier</span>
 <span class="kn">from</span> <span class="nn">isanet.datasets.monk</span> <span class="kn">import</span> <span class="n">load_monk</span>

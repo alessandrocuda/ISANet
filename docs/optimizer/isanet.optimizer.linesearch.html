@@ -169,23 +169,6 @@
             
   <div class="section" id="module-isanet.optimizer.linesearch">
 <span id="isanet-optimizer-linesearch"></span><h1>isanet.optimizer.linesearch<a class="headerlink" href="#module-isanet.optimizer.linesearch" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="isanet.optimizer.linesearch.LineSearch">
-<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.linesearch.</code><code class="sig-name descname">LineSearch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">phi</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.linesearch.LineSearch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Not implemented</p>
-<dl class="py method">
-<dt id="isanet.optimizer.linesearch.LineSearch.set_phi">
-<code class="sig-name descname">set_phi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.linesearch.LineSearch.set_phi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="isanet.optimizer.linesearch.LineSearch.strong_wolfe">
-<code class="sig-name descname">strong_wolfe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">phi0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">old_phi0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">derphi0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">c1</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">c2</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">amax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maxiter</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.linesearch.LineSearch.strong_wolfe" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt id="isanet.optimizer.linesearch.line_search_wolfe">
 <code class="sig-prename descclassname">isanet.optimizer.linesearch.</code><code class="sig-name descname">line_search_wolfe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">phi</span></em>, <em class="sig-param"><span class="n">derphi</span></em>, <em class="sig-param"><span class="n">phi0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">old_phi0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">derphi0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">c1</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">c2</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">amax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maxiter</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.linesearch.line_search_wolfe" title="Permalink to this definition">¶</a></dt>
@@ -227,15 +210,46 @@ For major details on the implementation refer to Wright and Nocedal,
 <dt id="isanet.optimizer.linesearch.phi_function">
 <em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.linesearch.</code><code class="sig-name descname">phi_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">optimizer</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.linesearch.phi_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A wrapper for the phi function which provides phi()
+and derphi() methods used in the line search function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – Specify the Multilayer Perceptron object to the phi objcet</p></li>
+<li><p><strong>optimizer</strong> (<em>isanet.optimizer.Optimizer</em>) – Specify the optimizer that provides the evaluation function
+and the gradient evaluation</p></li>
+<li><p><strong>w</strong> (<em>arrays-like of shape</em><em> (</em><em>n_variables</em><em>, </em><em>1</em><em>)</em>) – column vector specifying the current point</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+<li><p><strong>Y</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_output</em><em>)</em>) – The target values.</p></li>
+<li><p><strong>d</strong> (<em>array-like of shape</em><em> (</em><em>n_variables</em><em>, </em><em>1</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="isanet.optimizer.linesearch.phi_function.derphi">
 <code class="sig-name descname">derphi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.linesearch.phi_function.derphi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute the dot producte between the gradient and
+the direction when an alpha ‘a’ parameter is passed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">phips</span> <span class="o">=</span> <span class="n">g_a</span><span class="o">^</span><span class="n">T</span><span class="o">*</span><span class="n">d</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>a</strong> (<em>scalar</em>) – alpha parameter</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="isanet.optimizer.linesearch.phi_function.phi">
 <code class="sig-name descname">phi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.linesearch.phi_function.phi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute the phi value when an alpha ‘a’ parameter is passed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>a</strong> (<em>scalar</em>) – alpha parameter</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

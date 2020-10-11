@@ -5,6 +5,29 @@ import isanet.metrics as metrics
 from isanet.optimizer.utils import make_vector, restore_w_to_model
 
 class phi_function(object):
+    """A wrapper for the phi function which provides phi()
+    and derphi() methods used in the line search function.
+
+    Parameters
+    ----------
+    model : isanet.model.MLP
+        Specify the Multilayer Perceptron object to the phi objcet
+
+    optimizer : isanet.optimizer.Optimizer
+        Specify the optimizer that provides the evaluation function
+        and the gradient evaluation
+    
+    w : arrays-like of shape (n_variables, 1)
+        column vector specifying the current point
+
+    X : array-like of shape (n_samples, n_features)
+        The input data.
+
+    Y : array-like of shape (n_samples, n_output)
+        The target values.
+    
+    d : array-like of shape (n_variables, 1)
+    """
     def __init__(self, model, optimizer, w, X, Y, d):
         self.optimizer = optimizer
         self.model = model
@@ -14,11 +37,28 @@ class phi_function(object):
         self.d = d
 
     def phi(self, a):
+        """Compute the phi value when an alpha 'a' parameter is passed
+
+        Parameters
+        ----------
+        a : scalar
+            alpha parameter
+        """
         w_a = restore_w_to_model(self.model, self.w+a*self.d)
         phia = metrics.mse_reg(self.Y, self.optimizer.forward(w_a, self.X), self.model, w_a)
         return phia
         
     def derphi(self, a):
+        """Compute the dot producte between the gradient and 
+        the direction when an alpha 'a' parameter is passed::
+
+                phips = g_a^T*d
+
+        Parameters
+        ----------
+        a : scalar
+            alpha parameter
+        """
         w_a = self.w+a*self.d
         l_w_a = restore_w_to_model(self.model, w_a)
         g_a = make_vector(self.optimizer.backpropagation(self.model, l_w_a, self.X, self.Y))
@@ -349,19 +389,3 @@ def line_search_wolfe_f(phi, derphi, phi0=None, c1=1e-4, c2=0.9):
         exit
     else:
         return a
-
-class LineSearch(object):
-    """Not implemented
-    """
-    def __init__(self, phi = None):
-        if phi is None:
-            raise Exception("A Phi object must be provided")
-        self.phi = phi
-
-    def set_phi(self):
-        pass
-
-    def strong_wolfe(self, phi0=None,
-                         old_phi0=None, derphi0=None,
-                         c1=1e-4, c2=0.9, amax=None, maxiter=10):
-        pass
