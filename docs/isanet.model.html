@@ -227,6 +227,8 @@ training and validation and the time taken to compute that epoch.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">val_loss_mse</span></code></dt><dd><p>The mean square error on validation for each epochs.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">val_loss_mse_reg</span></code></dt><dd><p>The mean square error on validation for each epochs plus the L2 regularization.</p>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">val_loss_mee</span></code></dt><dd><p>The mean euclidean error on validation for each epochs.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">acc</span></code></dt><dd><p>The accuracy on training for each epochs.</p>
@@ -357,6 +359,25 @@ See docs in optimizier module.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="isanet.model.Mlp.get_epoch_history">
+<code class="sig-name descname">get_epoch_history</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">Y_train</span></em>, <em class="sig-param"><span class="n">validation_data</span></em>, <em class="sig-param"><span class="n">epoch_time</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.model.Mlp.get_epoch_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the model, training data, validation data and time returns a dictionary
+that contains:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;loss_mse&quot;</span><span class="p">:</span> <span class="n">loss_mse</span><span class="p">,</span>
+ <span class="s2">&quot;loss_mse_reg&quot;</span><span class="p">:</span> <span class="n">loss_mse_reg</span><span class="p">,</span>
+ <span class="s2">&quot;loss_mee&quot;</span><span class="p">:</span> <span class="n">loss_mee</span><span class="p">,</span>
+ <span class="s2">&quot;acc&quot;</span><span class="p">:</span> <span class="n">acc</span><span class="p">,</span>
+ <span class="s2">&quot;val_loss_mse&quot;</span><span class="p">:</span> <span class="n">val_loss_mse</span><span class="p">,</span>
+ <span class="s2">&quot;val_loss_mse_reg&quot;</span><span class="p">:</span> <span class="n">val_loss_mse_reg</span><span class="p">,</span>
+ <span class="s2">&quot;val_loss_mee&quot;</span><span class="p">:</span> <span class="n">val_loss_mee</span><span class="p">,</span>
+ <span class="s2">&quot;val_acc&quot;</span><span class="p">:</span> <span class="n">val_acc</span><span class="p">,</span>
+ <span class="s2">&quot;epoch_time&quot;</span><span class="p">:</span> <span class="n">epoch_time</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

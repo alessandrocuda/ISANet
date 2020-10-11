@@ -172,7 +172,7 @@
 <p>Optimizer Module.</p>
 <dl class="py class">
 <dt id="isanet.optimizer.optimizer.EarlyStopping">
-<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.optimizer.</code><code class="sig-name descname">EarlyStopping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eps</span></em>, <em class="sig-param"><span class="n">patience</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.optimizer.EarlyStopping" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.optimizer.</code><code class="sig-name descname">EarlyStopping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">monitor</span><span class="o">=</span><span class="default_value">'val_loss_mse'</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-13</span></em>, <em class="sig-param"><span class="n">patience</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.optimizer.EarlyStopping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Stop training when a the MSE (Mean squared error) on validation
 (generalization error) is increasing and exceeds a certain threshold
@@ -191,7 +191,8 @@ a certain thresold for a finite number of epochs:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>eps</strong> (<em>float</em>) – Threshold that is used to decide whether to stop the
+<li><p><strong>monitor</strong> (<em>String</em>) – Quantity to be monitored.</p></li>
+<li><p><strong>eps</strong> (<em>float  - E.g. 'val_loss_mse'</em>) – Threshold that is used to decide whether to stop the
 fitting of the model (it stops if this is true and after
 a number of epoch &gt; ‘patience’).</p></li>
 <li><p><strong>patience</strong> (<em>integer</em>) – Number of epochs that mse should be worse after which training
@@ -258,7 +259,7 @@ has been reached after overfitting.</p>
 
 <dl class="py class">
 <dt id="isanet.optimizer.optimizer.Optimizer">
-<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.optimizer.</code><code class="sig-name descname">Optimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_iter_no_change</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm_g_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.optimizer.Optimizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.optimizer.</code><code class="sig-name descname">Optimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">loss</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_iter_no_change</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm_g_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.optimizer.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="simple">
 <dt>This class implemets the general optimizer.</dt><dd><p>It must be extended to be used, since method ‘step’ must be implemented.</p>
@@ -267,6 +268,7 @@ has been reached after overfitting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>loss</strong> (<em>String</em><em>, </em><em>e.g. 'loss_mse'</em><em> or </em><em>'loss_mse_reg'</em>) – When implement this class, a loss to monitor must be specified: MSE or MLE+REG</p></li>
 <li><p><strong>epoch</strong> (<em>integer</em><em>, </em><em>default=0</em>) – Total number of iterations performed by the optimizer.</p></li>
 <li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – Specify the Multilayer Perceptron object to optimize</p></li>
 <li><p><strong>tol</strong> (<em>float</em><em>, </em><em>default=None</em>) – Tolerance for the optimization. When the loss on training is
@@ -356,24 +358,6 @@ for the training.</p>
 <dd class="field-odd"><p>dict of dict</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="isanet.optimizer.optimizer.Optimizer.get_epoch_history">
-<code class="sig-name descname">get_epoch_history</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">Y_train</span></em>, <em class="sig-param"><span class="n">validation_data</span></em>, <em class="sig-param"><span class="n">time</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.optimizer.Optimizer.get_epoch_history" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given the model, training data, validation data and time returns a dictionary
-that contains:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;mse_train&quot;</span><span class="p">:</span> <span class="n">mse_train</span><span class="p">,</span>
- <span class="s2">&quot;mse_reg_train&quot;</span><span class="p">:</span> <span class="n">mse_reg_train</span><span class="p">,</span>
- <span class="s2">&quot;mee_train&quot;</span><span class="p">:</span> <span class="n">mee_train</span><span class="p">,</span>
- <span class="s2">&quot;acc_train&quot;</span><span class="p">:</span> <span class="n">acc_train</span><span class="p">,</span>
- <span class="s2">&quot;mse_val&quot;</span><span class="p">:</span> <span class="n">mse_val</span><span class="p">,</span>
- <span class="s2">&quot;mee_val&quot;</span><span class="p">:</span> <span class="n">mee_val</span><span class="p">,</span>
- <span class="s2">&quot;acc_val&quot;</span><span class="p">:</span> <span class="n">acc_val</span><span class="p">,</span>
- <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">time</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py method">
