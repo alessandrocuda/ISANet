@@ -18,9 +18,9 @@ Some test with the MONK Datasets and shallow nets divided by optimizer:
 - [monk3_test.py](sgd/monk3_test.py)
 
 ### NCG
-- [monk1_test.py](ncg/monk1_test_fr.py)
-- [monk2_test.py](ncg/monk2_test_pr.py)
-- [monk3_test.py](ncg/monk3_test_hs.py)
+- [monk1_test_fr.py](ncg/monk1_test_fr.py)
+- [monk2_test_pr.py](ncg/monk2_test_pr.py)
+- [monk3_test_hs.py](ncg/monk3_test_hs.py)
 
 ### L-BFGS
 - [monk1_test.py](lbfgs/monk1_test.py)
