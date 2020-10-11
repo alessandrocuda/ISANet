@@ -26,7 +26,7 @@
 
 
 
-ISANet library provides a flexible and modular neural network library. It was entirely developed in Python using Numpy as a package for scientific computation. This library has been developed to work on the following projects at [Department of Computer Science](https://www.di.unipi.it/en/) of [University of Pisa](https://www.unipi.it/index.php/english):
+ISANet library provides a flexible and modular neural network library. It was entirely developed in Python using Numpy as a package for scientific computation. This library has been developed during the following projects at [Department of Computer Science](https://www.di.unipi.it/en/) of [University of Pisa](https://www.unipi.it/index.php/english):
 
   - <a href="https://github.com/alessandrocuda/ML_Project_19_20">ML_Project_19_20</a>: developed during the machine learning (ML) course held by Professor Alessio Micheli. The aims were to implement an ML model simulator (Neural Network, SVM, ...), understand the hyper-parameters effect on the model and solve a supervised regression learning task by using your own library and the CUP dataset provided in the course. 
    - <a href="https://github.com/alessandrocuda/CM_Project_19_20">CM_Project_19_20</a>: developed during the Computational Mathematics for learning and data analysis course held by Professor Antonio Frangioni and Federico Poloni. The aims were to extend ISANet lib in order to include the NCG FR/PR/HS and beta+ variants, and the L-BFGS methods (as new optimizer) and study the objective function used during the learning phase and study it from a mathematical and optimisation point of view.
