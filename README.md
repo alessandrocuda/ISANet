@@ -47,6 +47,16 @@ For more details about the library <a href="https://alessandrocudazzo.it/ISANet"
 - [License](#license)
 
 ## Usage
+This code requires Python 3.5 or later, to download the repository:
+
+`git clone https://github.com/alessandrocuda/ISANet`
+
+Then you need to install the basic dependencies to run the project on your system:
+
+```
+cd ISANet
+pip install -r requirements.txt
+```
 
 An example with the **low level api (keras-like)**:
 
