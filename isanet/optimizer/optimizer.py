@@ -25,7 +25,10 @@ class EarlyStopping():
 
     Parameters
     ----------
-    eps : float       
+    monitor : String
+        Quantity to be monitored.
+
+    eps : float  - E.g. 'val_loss_mse'
         Threshold that is used to decide whether to stop the 
         fitting of the model (it stops if this is true and after
         a number of epoch > 'patience').
@@ -37,7 +40,8 @@ class EarlyStopping():
     verbose : boolean, default=False
         Whether to print progress messages to stdout.
     """
-    def __init__(self, eps, patience, verbose = False):
+    def __init__(self, monitor = "val_loss_mse", eps=1e-13, patience=0, verbose = False):
+        self.monitor = monitor
         self.eps = eps
         self.patience = patience
         self.verbose = verbose
@@ -73,14 +77,14 @@ class EarlyStopping():
         boolean
             True if the Early stopping has occurred, else False
         """
-        if epoch == 0 or history["mse_val"] <= self.__min_val:
-            self.__min_val = history["mse_val"]
+        if epoch == 0 or history[self.monitor] <= self.__min_val:
+            self.__min_val = history[self.monitor]
             self.__weights_backup = copy.deepcopy(model.weights)
             self.__es_count = 0
             return False
         else:
             self.__es_count += 1
-            gl = 100*(history["mse_val"]/self.__min_val  - 1)
+            gl = 100*(history[self.monitor]/self.__min_val  - 1)
             if self.verbose: 
                 print(" - ES Info: going in overfitting, gl_value: {} count: {}".format(gl, self.__es_count))
             if gl > self.eps and self.__es_count >=  self.patience:
@@ -119,6 +123,9 @@ class Optimizer(object):
 
     Parameters
     ----------
+    loss : String, e.g. 'loss_mse' or 'loss_mse_reg'
+        When implement this class, a loss to monitor must be specified: MSE or MLE+REG
+
     epoch : integer, default=0
         Total number of iterations performed by the optimizer.
 
@@ -148,7 +155,10 @@ class Optimizer(object):
 
     """
 
-    def __init__(self, tol = None, n_iter_no_change = None, norm_g_eps = None, l_eps = None, debug = False):
+    def __init__(self, loss=None, tol = None, n_iter_no_change = None, norm_g_eps = None, l_eps = None, debug = False):
+        if loss is None:
+            raise Exception("When implement this class, a loss to monitor must be specified: MSE or MLE+REG")
+        self.loss = loss
         self.epoch = 0
         self.model = None
         self.tol = tol
@@ -230,11 +240,14 @@ class Optimizer(object):
             end_time = (time.time() - start_time)
             
             # Update history with MSE, MEE, Accuracy, Time after each Epoach 
-            history = self.get_epoch_history(model, X_train, Y_train, validation_data, end_time)
+            history = model.get_epoch_history(model, X_train, Y_train, validation_data, end_time)
             model.append_history(history, is_validation_set)
 
             if verbose and (self.epoch + 1) % verbose >= 0:
-                print("Epoch: {} - time: {:4.4f} - loss_train: {} - loss_val: {}".format(self.epoch + 1, history["time"], history["mse_reg_train"], history["mse_val"]))
+                print("Epoch: {} - time: {:4.4f} - loss_train: {} - loss_val: {}".format(self.epoch + 1, 
+                                                                                         history["epoch_time"], 
+                                                                                         history[self.loss], 
+                                                                                         history["val_"+self.loss]))
 
             # Check Early Stopping 1: avoid overfitting
             if  is_validation_set and es and es.check_early_stop(model, self.epoch, history):
@@ -245,9 +258,9 @@ class Optimizer(object):
                 return 0
             
             # Check Early Stopping 3: L < l_eps
-            if self.l_eps and history["mse_reg_train"] < self.l_eps:
+            if self.l_eps and history[self.loss] < self.l_eps:
                 if verbose >= 1:
-                    print("loss_train: {} < {}".format(history["mse_reg_train"], self.l_eps))
+                    print("loss_train: {} < {}".format(history[self.loss], self.l_eps))
                     print("Training stopped")
                 return 0
 
@@ -421,42 +434,6 @@ class Optimizer(object):
                     batchs[i] = {"batch_x_train": batchsX[i], "batch_y_train": batchsY[i]}
                 batchs[mb] = {"batch_x_train": xbr, "batch_y_train": ybr}
             return batchs
-
-    def get_epoch_history(self, model, X_train, Y_train, validation_data, time):
-        """Given the model, training data, validation data and time returns a dictionary
-        that contains:: 
-
-                {"mse_train": mse_train,
-                 "mse_reg_train": mse_reg_train,
-                 "mee_train": mee_train, 
-                 "acc_train": acc_train,
-                 "mse_val": mse_val,
-                 "mee_val": mee_val,
-                 "acc_val": acc_val,
-                 "time": time
-                }
-        """
-        mse_val = mee_val = acc_val = 0
-        if validation_data is not None:
-            out = model.predict(validation_data[0])
-            mse_val =  metrics.mse(validation_data[1], out)
-            mee_val =  metrics.mee(validation_data[1], out)
-            acc_val =  metrics.accuracy_binary(validation_data[1], out)
-        out = model.predict(X_train)
-        mse_train =  metrics.mse(Y_train, out)
-        mse_reg_train = metrics.mse_reg(Y_train, out, model, model.weights)
-        mee_train =  metrics.mee(Y_train, out)
-        acc_train =  metrics.accuracy_binary(Y_train, out)
-        
-        return {"mse_train": mse_train,
-                "mse_reg_train": mse_reg_train,
-                "mee_train": mee_train, 
-                "acc_train": acc_train,
-                "mse_val": mse_val,
-                "mee_val": mee_val,
-                "acc_val": acc_val,
-                "time": time
-                }
 
     def __no_change_in_training(self, model, epoch, is_validation_set, es, verbose):
         """Check if there are no improvements in optimizations for a given 

@@ -85,7 +85,7 @@ class NCG(Optimizer):
     def __init__(self, beta_method = "hs+", c1=1e-4, c2=.9, restart = None,
                  ln_maxiter = 10, tol = None, n_iter_no_change = None, 
                  norm_g_eps = None, l_eps = None, debug = False):
-        super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
+        super().__init__(loss="loss_mse_reg", tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
         self.c1 = c1
         self.c2 = c2
         self.restart = 0

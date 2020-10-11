@@ -58,6 +58,8 @@ class Mlp():
                 The mean euclidean error on training for each epochs. 
             ``val_loss_mse``
                 The mean square error on validation for each epochs. 
+            ``val_loss_mse_reg``
+                The mean square error on validation for each epochs plus the L2 regularization.
             ``val_loss_mee``
                 The mean euclidean error on validation for each epochs.  
             ``acc``
@@ -96,14 +98,15 @@ class Mlp():
         self.activations = []
         self.kernel_regularizer = []
         self.n_layers = 0  #hidden + out
-        self.history = {"loss_mse":     [],
-                        "loss_mse_reg": [], 
-                        "loss_mee":     [], 
-                        "val_loss_mse": [], 
-                        "val_loss_mee": [], 
-                        "acc":          [], 
-                        "val_acc":      [], 
-                        "epoch_time":   []}
+        self.history = {"loss_mse":         [],
+                        "loss_mse_reg":     [], 
+                        "loss_mee":         [], 
+                        "val_loss_mse":     [], 
+                        "val_loss_mse_reg": [],
+                        "val_loss_mee":     [], 
+                        "acc":              [], 
+                        "val_acc":          [], 
+                        "epoch_time":       []}
         self.is_fitted = False              
         self.n_vars = 0                     
         self.__optimizer = optimizer.SGD()
@@ -173,6 +176,46 @@ class Mlp():
         z = np.dot(np.insert(input, 0, 1, 1) ,self.weights[layer])
         return self.activations[layer].f(z)
 
+    def get_epoch_history(self, model, X_train, Y_train, validation_data, epoch_time):
+        """Given the model, training data, validation data and time returns a dictionary
+        that contains:: 
+
+                {"loss_mse": loss_mse,
+                 "loss_mse_reg": loss_mse_reg,
+                 "loss_mee": loss_mee, 
+                 "acc": acc,
+                 "val_loss_mse": val_loss_mse,
+                 "val_loss_mse_reg": val_loss_mse_reg,
+                 "val_loss_mee": val_loss_mee,
+                 "val_acc": val_acc,
+                 "epoch_time": epoch_time
+                }
+        """
+
+        val_loss_mse = val_loss_mse_reg = val_loss_mee = val_acc = 0
+        if validation_data is not None:
+            out              = model.predict(validation_data[0])
+            val_loss_mse     = metrics.mse(validation_data[1], out)
+            val_loss_mse_reg = metrics.mse_reg(validation_data[1], out, model, model.weights)
+            val_loss_mee     = metrics.mee(validation_data[1], out)
+            val_acc          = metrics.accuracy_binary(validation_data[1], out)
+        out                  = model.predict(X_train)
+        loss_mse             = metrics.mse(Y_train, out)
+        loss_mse_reg         = metrics.mse_reg(Y_train, out, model, model.weights)
+        loss_mee             = metrics.mee(Y_train, out)
+        acc                  = metrics.accuracy_binary(Y_train, out)
+        
+        return {"loss_mse":         loss_mse,
+                "loss_mse_reg":     loss_mse_reg,
+                "loss_mee":         loss_mee, 
+                "acc":              acc,
+                "val_loss_mse":     val_loss_mse,
+                "val_loss_mse_reg": val_loss_mse_reg,
+                "val_loss_mee":     val_loss_mee,
+                "val_acc":          val_acc,
+                "epoch_time":       epoch_time
+                }
+
     def append_history(self, history, is_validation_set):
         """Adds results on the training and validation sets to the history.
 
@@ -185,15 +228,16 @@ class Mlp():
         validation : boolean
             True to append validation history, False do not.
         """
-        self.history["loss_mse"].append(history["mse_train"])
-        self.history["loss_mse_reg"].append(history["mse_reg_train"])
-        self.history["loss_mee"].append(history["mee_train"])
-        self.history["acc"].append(history["acc_train"])
+
+        self.history["loss_mse"].append(history["loss_mse"])
+        self.history["loss_mse_reg"].append(history["loss_mse_reg"])
+        self.history["loss_mee"].append(history["loss_mee"])
+        self.history["acc"].append(history["acc"])
         if is_validation_set:
-            self.history["val_loss_mse"].append(history["mse_val"])
-            self.history["val_loss_mee"].append(history["mee_val"])
-            self.history["val_acc"].append(history["acc_val"])
-        self.history["epoch_time"].append(history["time"])
+            self.history["val_loss_mse"].append(history["val_loss_mse"])
+            self.history["val_loss_mee"].append(history["val_loss_mee"])
+            self.history["val_acc"].append(history["val_acc"])
+        self.history["epoch_time"].append(history["epoch_time"])
     
     
     def predict(self, inputs):
