@@ -14,18 +14,18 @@ Some test with the MONK Datasets and shallow nets divided by optimizer:
 
 ### SGD
 - [monk1_test.py](sgd/monk1_test.py)
-- [monk2_test.py](sgd/monk1_test.py)
-- [monk3_test.py](sgd/monk1_test.py)
+- [monk2_test.py](sgd/monk2_test.py)
+- [monk3_test.py](sgd/monk3_test.py)
 
 ### NCG
-- [monk1_test.py](ncg/monk1_test.py)
-- [monk2_test.py](ncg/monk1_test.py)
-- [monk3_test.py](ncg/monk1_test.py)
+- [monk1_test.py](ncg/monk1_test_fr.py)
+- [monk2_test.py](ncg/monk2_test_pr.py)
+- [monk3_test.py](ncg/monk3_test_hs.py)
 
 ### L-BFGS
 - [monk1_test.py](lbfgs/monk1_test.py)
-- [monk2_test.py](lbfgs/monk1_test.py)
-- [monk3_test.py](lbfgs/monk1_test.py)
+- [monk2_test.py](lbfgs/monk2_test.py)
+- [monk3_test.py](lbfgs/monk3_test.py)
 
 Some test with the MONK Datasets and deep nets:
 - [monk1_deep_test.py](deep/monk1_deep_test.py)
