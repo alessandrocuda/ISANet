@@ -26,9 +26,15 @@
 
 
 
-ISANet library provides a flexible and modular neural network library. It was entirely developed in Python using Numpy as a package for scientific computation and it is the result of the machine learning course held by Professor Alessio Micheli at [Department of Computer Science](https://www.di.unipi.it/en/) of [University of Pisa](https://www.unipi.it/index.php/english). ISANet is composed of low (Keras-like) and high-level (Scikit-learn-like) APIs divided into modules. The idea is to provide an easy but powerfull implementation of a Neural Network library to allow everyone to understand it from the theory to practice. More importat, the library leave open any kind of future work: extend to [JAX](https://github.com/google/jax), CNN layer or optimizer, and so on. In addition the library provides some datasets and a module for model selection (Grid Search and Cross Validation API).
+ISANet library provides a flexible and modular neural network library. It was entirely developed in Python using Numpy as a package for scientific computation. This library has been developed to work on the following projects at [Department of Computer Science](https://www.di.unipi.it/en/) of [University of Pisa](https://www.unipi.it/index.php/english):
 
-NOTE: ISANet only support SGD with MSE (Mean Square Error) as LOSS function.
+  - <a href="https://github.com/alessandrocuda/ML_Project_19_20">ML_Project_19_20</a>: developed during the machine learning (ML) course held by Professor Alessio Micheli. The aims were to implement an ML model simulator (Neural Network, SVM, ...), understand the hyper-parameters effect on the model and solve a supervised regression learning task by using your own library and the CUP dataset provided in the course. 
+   - <a href="https://github.com/alessandrocuda/CM_Project_19_20">CM_Project_19_20</a>: developed during the Computational Mathematics for learning and data analysis course held by Professor Antonio Frangioni and Federico Poloni. The aims were to extend ISANet lib in order to include the NCG FR/PR/HS and beta+ variants, and the L-BFGS methods (as new optimizer) and study the objective function used during the learning phase and study it from a mathematical and optimisation point of view.
+
+
+ISANet is composed of low (Keras-like) and high-level (Scikit-learn-like) APIs divided into modules. The idea is to provide an easy but powerfull implementation of a Neural Network library to allow everyone to understand it from the theory to practice. More importat, the library leave open any kind of future work: extend to [JAX](https://github.com/google/jax), CNN layer or optimizer, and so on. In addition the library provides some datasets and a module for model selection (Grid Search and Cross Validation API).
+
+NOTE: ISANet only support SGD, NCG and LBFGS with (Mean Square Error + regularization) as LOSS function in the gradient computation.
 
 ## Details
 For more details about the library <a href="https://alessandrocudazzo.it/ISANet"><strong>explore the docs</strong></a>.
@@ -95,8 +101,6 @@ what's next? look to [USE_CASES.md](https://github.com/alessandrocuda/ISANet/blo
 ## TODO
 - [ ] Separate bias from the weight matrix for more clarity.
 - [ ] Extend with JAX for GPU support.
-- [ ] Add Conjugate Gradient Method.
-- [ ] Add Quasi Newton method. 
 
 ## Contributing
  

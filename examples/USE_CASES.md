@@ -45,6 +45,51 @@ model.fit(X_train,
 outputNet = model.predict(X_test)
 ```
 
+An example with the **low level api (keras-like)** with NCG or LBFGS optimizer:
+```python
+from isanet.model import Mlp
+from isanet.optimizer import NCG, LBFGS
+from isanet.optimizer.utils import l_norm
+from isanet.datasets.monk import load_monk
+from isanet.utils.model_utils import printMSE, printAcc, plotHistory
+import isanet.metrics as metrics
+import numpy as np
+
+X_train, Y_train = load_monk("1", "train")
+X_test, Y_test = load_monk("1", "test")
+
+#create the model
+model = Mlp()
+# Specify the range for the weights and lambda for regularization
+# Of course can be different for each layer
+kernel_initializer = 0.003 
+kernel_regularizer = 0.001
+
+# Add many layers with different number of units
+model.add(4, input= 17, kernel_initializer, kernel_regularizer)
+model.add(1, kernel_initializer, kernel_regularizer)
+
+es = EarlyStopping(0.00009, 20) # eps_GL and s_UP
+
+optimizer = NCG(beta_method="hs+", c1=1e-4, c2=0.1, restart=None, ln_maxiter = 100, norm_g_eps = 1e-9, l_eps = 1e-9)
+# or you can choose the LBFGS optimizer
+#optimizer = LBFGS(m = 30, c1=1e-4, c2=0.9, ln_maxiter = 100, norm_g_eps = 1e-9, l_eps = 1e-9)
+
+#start the learning phase
+# no batch with NCG or LBFGS optimizer
+model.fit(X_train,
+          Y_train, 
+          epochs=600,  
+          validation_data = [X_test, Y_test],
+          es = es,
+          verbose=0) 
+            
+# after trained the model the prediction operation can be
+# perform with the predict method
+outputNet = model.predict(X_test)
+```
+
+
 An example with the **high level API (sklearn like)**:
 
 ```python
