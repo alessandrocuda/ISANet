@@ -351,7 +351,8 @@ def line_search_wolfe_f(phi, derphi, phi0=None, c1=1e-4, c2=0.9):
         return a
 
 class LineSearch(object):
-
+    """Not implemented
+    """
     def __init__(self, phi = None):
         if phi is None:
             raise Exception("A Phi object must be provided")

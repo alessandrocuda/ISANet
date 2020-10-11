@@ -221,6 +221,8 @@ training and validation and the time taken to compute that epoch.</p>
 <dt>Dictionary’s keys:</dt><dd><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">loss_mse</span></code></dt><dd><p>The mean square error on training for each epochs.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">loss_mse_reg</span></code></dt><dd><p>The mean square error on training for each epochs plus the L2 regularization.</p>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">loss_mee</span></code></dt><dd><p>The mean euclidean error on training for each epochs.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">val_loss_mse</span></code></dt><dd><p>The mean square error on validation for each epochs.</p>
@@ -238,18 +240,40 @@ training and validation and the time taken to compute that epoch.</p>
 </dl>
 <p>A dict with keys as column headers and values as columns, that can be imported into a pandas DataFrame.
 For instance the below given table:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-------------------------+---------------+----------------+---------------+---+-----------------+</span>
-<span class="o">|</span>         <span class="n">loss_mse</span>        <span class="o">|</span>   <span class="n">loss_mee</span>    <span class="o">|</span>  <span class="n">val_loss_mse</span>  <span class="o">|</span> <span class="n">val_loss_mee</span>  <span class="o">|...|</span>   <span class="n">epoch_time</span>    <span class="o">|</span>
-<span class="o">+=========================+===============+================+===============+===+=================+</span>
-<span class="o">|</span>          <span class="mf">0.985</span>          <span class="o">|</span>     <span class="mf">0.992</span>     <span class="o">|</span>      <span class="mf">1.00</span>      <span class="o">|</span>      <span class="mf">1.00</span>     <span class="o">|...|</span>     <span class="mf">0.0030</span>      <span class="o">|</span>
-<span class="o">+-------------------------+---------------+----------------+---------------+---+-----------------+</span>
-<span class="o">|</span>          <span class="mf">0.984</span>          <span class="o">|</span>     <span class="mf">0.991</span>     <span class="o">|</span>      <span class="mf">1.00</span>      <span class="o">|</span>      <span class="mf">1.00</span>     <span class="o">|...|</span>     <span class="mf">0.0029</span>      <span class="o">|</span>
-<span class="o">+-------------------------+---------------+----------------+---------------+---+-----------------+</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-----------------+--------------------+---------------+----------------+---------------+---+-----------------+</span>
+<span class="o">|</span>     <span class="n">loss_mse</span>    <span class="o">|</span>    <span class="n">loss_mse_reg</span>    <span class="o">|</span>    <span class="n">loss_mee</span>   <span class="o">|</span>  <span class="n">val_loss_mse</span>  <span class="o">|</span> <span class="n">val_loss_mee</span>  <span class="o">|...|</span>   <span class="n">epoch_time</span>    <span class="o">|</span>
+<span class="o">+=================+====================+===============+================+===============+===+=================+</span>
+<span class="o">|</span>      <span class="mf">0.985</span>      <span class="o">|</span>       <span class="mf">1.00</span>         <span class="o">|</span>     <span class="mf">0.992</span>     <span class="o">|</span>      <span class="mf">1.00</span>      <span class="o">|</span>      <span class="mf">1.00</span>     <span class="o">|...|</span>     <span class="mf">0.0030</span>      <span class="o">|</span>
+<span class="o">+-----------------+--------------------+---------------+----------------+---------------+---+-----------------+</span>
+<span class="o">|</span>      <span class="mf">0.984</span>      <span class="o">|</span>        <span class="mf">1.10</span>        <span class="o">|</span>     <span class="mf">0.991</span>     <span class="o">|</span>      <span class="mf">1.00</span>      <span class="o">|</span>      <span class="mf">1.00</span>     <span class="o">|...|</span>     <span class="mf">0.0029</span>      <span class="o">|</span>
+<span class="o">+-----------------+--------------------+---------------+----------------+---------------+---+-----------------+</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="isanet.model.Mlp.is_fitted">
+<code class="sig-name descname">is_fitted</code><a class="headerlink" href="#isanet.model.Mlp.is_fitted" title="Permalink to this definition">¶</a></dt>
+<dd><p>if True, a fit has already been done.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boolean, default=False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="isanet.model.Mlp.n_vars">
+<code class="sig-name descname">n_vars</code><a class="headerlink" href="#isanet.model.Mlp.n_vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of model variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>integer, default=0</p>
 </dd>
 </dl>
 </dd></dl>

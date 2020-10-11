@@ -8,18 +8,6 @@ class Activation:
     
     Warning: This class should not be used directly.
     Use derived classes instead.
-    
-    Methods
-    -------
-    f(x)
-        return the value of activation function on x.
-
-        Warning: empty method.
-    
-    derivative(x)
-        return the derivative of the activation function on x.
-
-        Warning: empty method.
     """
     def f(self, x):
         """Compute the activation function on x.
@@ -52,28 +40,20 @@ class Activation:
 class Sigmoid(Activation):
     """This class provide the logistic sigmoid function and its derivative.
 
-    Parameters
+    Attributes
     ----------
+    a : float
+        A value usede to dilate and shrink the sigmoid::
 
-    a : float,
-        a value usede to dilate and shrink the sigmoid:
                 1 / (1 + exp(-a*x)).
-
-    Methods
-    -------
-    f(x)
-        return the value of activation function on x:
-        f(x) = 1 / (1 + exp(-a*x)).
-    
-    derivative(x)
-        return the derivative of the activation function on x:
-        f'(x) = a*f(x)*(1-f(x)).
     """
     def __init__(self, a=1):
         self.a = a
     
     def f(self, x):
-        """Compute the activation function on x.
+        """Return the value of activation function on x::
+            
+                f(x) = 1 / (1 + exp(-a*x)).        
         
         Parameters
         ----------
@@ -89,7 +69,9 @@ class Sigmoid(Activation):
         return 1 / ( 1 + np.exp(-self.a*x))
 
     def derivative(self, x):
-        """Compute the derivative of an activation function on x.
+        """Return the derivative of the activation function on x::
+
+                    f'(x) = a*f(x)*(1-f(x)).
 
         Parameters
         ----------
@@ -105,18 +87,11 @@ class Sigmoid(Activation):
 
 class Identity(Activation):
     """This class provide the identity function and its derivative.
-
-    Methods
-    -------
-    f(x)
-        return the value of activation function on x: f(x)=x.
-    
-    derivative(x)
-        return the derivative of the activation function on x: 
-        f'(x) = 1.
     """
     def f(self, x):
-        """Compute the activation function on x.
+        """Return the value of activation function on x::
+
+                            f(x)=x.
         
         Parameters
         ----------
@@ -132,7 +107,9 @@ class Identity(Activation):
         return x
 
     def derivative(self, x):
-        """Compute the derivative of an activation function on x.
+        """Return the derivative of the activation function on x::
+
+                                f'(x) = 1.
 
         Parameters
         ----------
@@ -148,21 +125,13 @@ class Identity(Activation):
 class Tanh(Activation):
     """This class provide the hyperbolic tan function and its derivative.
 
-    Parameters
+    Attributes
     ----------
-
     a : float,
-        a value usede to dilate and shrink the tanh: tanh(a*x/2).
-
-    Methods
-    -------
-    f(x)
-        return the value of activation function on x:
-        f(x) = tanh(a*x/2).
-    
-    derivative(x)
-        return the derivative of the activation function on x:
-        f'(x) = 1 - tanh(a*x/2)^2
+        a value usede to dilate and shrink the tanh::
+                
+                     tanh(a*x/2).
+        
     """
     def __init__(self, a=2):
         """Compute the activation function on x.
@@ -181,7 +150,9 @@ class Tanh(Activation):
         self.a = a
 
     def f(self, x):
-        """Compute the activation function on x.
+        """Return the value of activation function on x::
+
+                    f(x) = tanh(a*x/2).
         
         Parameters
         ----------
@@ -197,7 +168,9 @@ class Tanh(Activation):
         return np.tanh(self.a*x/2)
 
     def derivative(self, x):
-        """Compute the derivative of an activation function on x.
+        """Return the derivative of the activation function on x::
+
+                    f'(x) = 1 - tanh(a*x/2)^2
 
         Parameters
         ----------
@@ -213,19 +186,11 @@ class Tanh(Activation):
 
 class Relu(Activation):
     """This class provide the rectified linear unit function and its derivative.
-
-    Methods
-    -------
-    f(x)
-        return the value of activation function on x:
-        f(x) = max(0,x)
-    
-    derivative(x)
-        return the derivative of the activation function on x:
-        if x > 0 return 1 else 0
     """
     def f(self, x):
-        """Compute the activation function on x.
+        """Return the value of activation function on x::
+
+                    f(x) = max(0,x)
         
         Parameters
         ----------
@@ -241,7 +206,9 @@ class Relu(Activation):
         return np.maximum(0,x)
 
     def derivative(self, x):
-        """Compute the derivative of an activation function on x.
+        """Return the derivative of the activation function on x::
+        
+                    if x > 0 return 1 else 0
 
         Parameters
         ----------

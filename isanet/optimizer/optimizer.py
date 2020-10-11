@@ -268,7 +268,6 @@ class Optimizer(object):
         weights : list
             List of arrays, the ith array represents all the 
             weights of each neuron in the ith layer.
-
         X : array-like of shape (n_samples, n_features)
             The input data. 
 
@@ -286,6 +285,7 @@ class Optimizer(object):
 
     def backpropagation(self, model, weights, X, Y):
         """Computes the derivative of 1/2 sum_n (y_i -y_i')
+
         Parameters
         ----------
         model : isanet.model.MLP
@@ -311,9 +311,9 @@ class Optimizer(object):
                 E.g. 0 -> first hidden layer, ..., n+1 -> output layer
                 where n is the number of hidden layer in the net.
         """
-        A = [0]*(model.n_layers+1)   # outputs after the activation functions of all layers ( input to output)
-        Z = [0]*(model.n_layers)                       # outputs before the activation functions of all layers ( hidden layers to output)
-        g = [0]*model.n_layers                 # list of gradient for each layer (hidden to output)
+        A = [0]*(model.n_layers+1)   # outputs after the activation functions of all layers (input to output)
+        Z = [0]*(model.n_layers)     # outputs before the activation functions of all layers (hidden layers to output)
+        g = [0]*model.n_layers       # list of gradient for each layer (hidden to output)
 
         #####################
         # Feed Forward Phase
@@ -424,7 +424,7 @@ class Optimizer(object):
 
     def get_epoch_history(self, model, X_train, Y_train, validation_data, time):
         """Given the model, training data, validation data and time returns a dictionary
-        that contains: 
+        that contains:: 
 
                 {"mse_train": mse_train,
                  "mse_reg_train": mse_reg_train,

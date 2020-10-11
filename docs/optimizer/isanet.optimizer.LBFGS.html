@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>isanet.optimizer.LBFGS &mdash; IsaNet ML Lib 0.1 beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="isanet.optimizer.linesearch" href="isanet.optimizer.linesearch.html" />
+    <link rel="prev" title="isanet.optimizer.NCG" href="isanet.optimizer.NCG.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> IsaNet ML Lib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Package Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../isanet.activation.html">isanet.activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../isanet.datasets.html">isanet.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../isanet.metrics.html">isanet.metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../isanet.model.html">isanet.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../isanet.model_selection.html">isanet.model_selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../isanet.neural_network.html">isanet.neural_network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../isanet.optimizer.html">isanet.optimizer</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="isanet.optimizer.optimizer.html">isanet.optimizer.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isanet.optimizer.SGD.html">isanet.optimizer.SGD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isanet.optimizer.NCG.html">isanet.optimizer.NCG</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">isanet.optimizer.LBFGS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isanet.optimizer.linesearch.html">isanet.optimizer.linesearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isanet.optimizer.utils.html">isanet.optimizer.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../isanet.utils.html">isanet.utils</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">IsaNet ML Lib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../isanet.optimizer.html">isanet.optimizer</a> &raquo;</li>
+        
+      <li>isanet.optimizer.LBFGS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/optimizer/isanet.optimizer.LBFGS.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-isanet.optimizer.LBFGS">
+<span id="isanet-optimizer-lbfgs"></span><h1>isanet.optimizer.LBFGS<a class="headerlink" href="#module-isanet.optimizer.LBFGS" title="Permalink to this headline">¶</a></h1>
+<p>Optimizer Module.</p>
+<dl class="py class">
+<dt id="isanet.optimizer.LBFGS.LBFGS">
+<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.LBFGS.</code><code class="sig-name descname">LBFGS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">c1</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">c2</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">ln_maxiter</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_iter_no_change</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm_g_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.LBFGS.LBFGS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="isanet.optimizer.optimizer.html#isanet.optimizer.optimizer.Optimizer" title="isanet.optimizer.optimizer.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.optimizer.optimizer.Optimizer</span></code></a></p>
+<p>Limited-memory BFGS (L-BFGS)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> (<em>integer</em><em>, </em><em>default=3</em>) – The Hessian approximation will keep the curvature information from the ‘m’
+most recent iterations.</p></li>
+<li><p><strong>c1</strong> (<em>float</em><em>, </em><em>default=1e-4</em>) – Parameter for the Armijo-Wolfe line search.</p></li>
+<li><p><strong>c2</strong> (<em>float</em><em>, </em><em>default=0.9</em>) – Parameter for the Armijo-Wolfe line search.</p></li>
+<li><p><strong>ln_maxiter</strong> (<em>integer</em><em>, </em><em>default=10</em>) – Maximum number of iterations of the Line Search.</p></li>
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>optional</em>) – Tolerance for the optimization. When the loss on training is
+not improving by at least tol for ‘n_iter_no_change’ consecutive
+iterations convergence is considered to be reached and training stops.</p></li>
+<li><p><strong>n_iter_no_change</strong> (<em>integer</em><em>, </em><em>optional</em>) – Maximum number of iterations with no improvements &gt; tol.</p></li>
+<li><p><strong>norm_g_eps</strong> (<em>float</em><em>, </em><em>optional</em>) – Threshold that is used to decide whether to stop the
+fitting of the model (it stops if the norm of the gradient reaches
+‘norm_g_eps’).</p></li>
+<li><p><strong>l_eps</strong> (<em>float</em><em>, </em><em>optional</em>) – Threshold that is used to decide whether to stop the
+fitting of the model (it stops if the loss function reaches
+‘l_eps’).</p></li>
+<li><p><strong>debug</strong> (<em>boolean</em><em>, </em><em>default=False</em>) – If True, allows you to perform iterations one at a time, pressing the Enter key.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="isanet.optimizer.LBFGS.LBFGS.history">
+<code class="sig-name descname">history</code><a class="headerlink" href="#isanet.optimizer.LBFGS.LBFGS.history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save for each iteration some interesting values.</p>
+<dl class="simple">
+<dt>Dictionary’s keys:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">alpha</span></code></dt><dd><p>Step size chosen by the line search.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">norm_g</span></code></dt><dd><p>Gradient norm.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ls_conv</span></code></dt><dd><p>Specifies whether the line search was able to find an alpha.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ls_it</span></code></dt><dd><p>Number of iterations of the line search.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ls_time</span></code></dt><dd><p>Computational time of the line search
+(includes the computational time of the zoom method, if used).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zoom_used</span></code></dt><dd><p>Specifies whether the zoom method has been used.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zoom_conv</span></code></dt><dd><p>Specifies whether the zoom method was able to find an alpha.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zoom_it</span></code></dt><dd><p>Number of iterations of the zoom method.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="isanet.optimizer.LBFGS.LBFGS.backpropagation">
+<code class="sig-name descname">backpropagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.LBFGS.LBFGS.backpropagation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the derivative of 1/n sum_n (y_i -y_i’)^2 + lamda*||weights||^2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – Specify the Multilayer Perceptron object to optimize</p></li>
+<li><p><strong>weights</strong> (<em>list</em>) – List of arrays, the ith array represents all the
+weights of each neuron in the ith layer.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+<li><p><strong>Y</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_output</em><em>)</em>) – The target values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>contains the gradients norm for each layer to be used in the delta rule.
+Each index in the list represents the ith layer. (from the first
+hidden layer to the output layer).:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">first</span> <span class="n">hidden</span> <span class="n">layer</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="n">output</span> <span class="n">layer</span>
+<span class="n">where</span> <span class="n">n</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">hidden</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">net</span><span class="o">.</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="isanet.optimizer.LBFGS.LBFGS.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">verbose</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.LBFGS.LBFGS.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the LBFGS step update method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – <p>Specify the Multilayer Perceptron object to optimize</p>
+<dl class="simple">
+<dt>X<span class="classifier">array-like of shape (n_samples, n_features)</span></dt><dd><p>The input data.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>Y</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_output</em><em>)</em>) – The target values.</p></li>
+<li><p><strong>verbose</strong> (<em>integer</em><em>, </em><em>default=0</em>) – Controls the verbosity: the higher, the more messages.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The gradient norm.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="isanet.optimizer.linesearch.html" class="btn btn-neutral float-right" title="isanet.optimizer.linesearch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="isanet.optimizer.NCG.html" class="btn btn-neutral float-left" title="isanet.optimizer.NCG" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Alessandro Cudazzo, Giulia Volpi
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

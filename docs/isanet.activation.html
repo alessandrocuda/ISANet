@@ -168,22 +168,8 @@
 <p>Warning: This class should not be used directly.
 Use derived classes instead.</p>
 <dl class="py method">
-<dt id="isanet.activation.Activation.f">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Activation.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the value of activation function on x.</p>
-<p>Warning: empty method.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt id="isanet.activation.Activation.derivative">
 <code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Activation.derivative" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the derivative of the activation function on x.</p>
-<p>Warning: empty method.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="id0">
-<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the derivative of an activation function on x.</p>
 <p>Warning: Overrides this method in order to
 implement the derivative of an activation function.</p>
@@ -195,8 +181,8 @@ implement the derivative of an activation function.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="id1">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dt id="isanet.activation.Activation.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Activation.f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the activation function on x.</p>
 <p>Warning: Overrides this method in order to
 implement the activation function.</p>
@@ -217,22 +203,12 @@ and W is the weight matrix.</p>
 <dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
 <p>This class provide the identity function and its derivative.</p>
 <dl class="py method">
-<dt id="isanet.activation.Identity.f">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Identity.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the value of activation function on x: f(x)=x.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt id="isanet.activation.Identity.derivative">
 <code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Identity.derivative" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the derivative of the activation function on x:
-f’(x) = 1.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="id2">
-<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the derivative of an activation function on x.</p>
+<dd><p>Return the derivative of the activation function on x:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sa">f</span><span class="s1">&#39;(x) = 1.</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
@@ -247,9 +223,12 @@ f’(x) = 1.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="id3">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the activation function on x.</p>
+<dt id="isanet.activation.Identity.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Identity.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of activation function on x:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">=</span><span class="n">x</span><span class="o">.</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
@@ -273,23 +252,12 @@ and W is the weight matrix.</p>
 <dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
 <p>This class provide the rectified linear unit function and its derivative.</p>
 <dl class="py method">
-<dt id="isanet.activation.Relu.f">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Relu.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the value of activation function on x:
-f(x) = max(0,x)</p>
-</dd></dl>
-
-<dl class="py method">
 <dt id="isanet.activation.Relu.derivative">
 <code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Relu.derivative" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the derivative of the activation function on x:
-if x &gt; 0 return 1 else 0</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="id4">
-<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the derivative of an activation function on x.</p>
+<dd><p>Return the derivative of the activation function on x:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">return</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
@@ -304,9 +272,12 @@ if x &gt; 0 return 1 else 0</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="id5">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the activation function on x.</p>
+<dt id="isanet.activation.Relu.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Relu.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of activation function on x:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
@@ -329,33 +300,27 @@ and W is the weight matrix.</p>
 <em class="property">class </em><code class="sig-prename descclassname">isanet.activation.</code><code class="sig-name descname">Sigmoid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Sigmoid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
 <p>This class provide the logistic sigmoid function and its derivative.</p>
+<dl class="py attribute">
+<dt id="isanet.activation.Sigmoid.a">
+<code class="sig-name descname">a</code><a class="headerlink" href="#isanet.activation.Sigmoid.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>A value usede to dilate and shrink the sigmoid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">))</span><span class="o">.</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>a</strong> (<em>float</em><em>,</em>) – <dl class="simple">
-<dt>a value usede to dilate and shrink the sigmoid:</dt><dd><p>1 / (1 + exp(-a*x)).</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
-</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="isanet.activation.Sigmoid.f">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Sigmoid.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the value of activation function on x:
-f(x) = 1 / (1 + exp(-a*x)).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="isanet.activation.Sigmoid.derivative">
 <code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Sigmoid.derivative" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the derivative of the activation function on x:
-f’(x) = a*f(x)*(1-f(x)).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="id6">
-<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the derivative of an activation function on x.</p>
+<dd><p>Return the derivative of the activation function on x:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sa">f</span><span class="s1">&#39;(x) = a*f(x)*(1-f(x)).</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
@@ -370,9 +335,12 @@ f’(x) = a*f(x)*(1-f(x)).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="id7">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the activation function on x.</p>
+<dt id="isanet.activation.Sigmoid.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Sigmoid.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of activation function on x:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">))</span><span class="o">.</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:
@@ -431,29 +399,27 @@ and W is the weight matrix.</p>
 <em class="property">class </em><code class="sig-prename descclassname">isanet.activation.</code><code class="sig-name descname">Tanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Tanh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#isanet.activation.Activation" title="isanet.activation.Activation"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.activation.Activation</span></code></a></p>
 <p>This class provide the hyperbolic tan function and its derivative.</p>
+<dl class="py attribute">
+<dt id="isanet.activation.Tanh.a">
+<code class="sig-name descname">a</code><a class="headerlink" href="#isanet.activation.Tanh.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>a value usede to dilate and shrink the tanh:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tanh</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>a</strong> (<em>float</em><em>,</em>) – a value usede to dilate and shrink the tanh: tanh(a*x/2).</p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float,</p>
 </dd>
 </dl>
-<dl class="py method">
-<dt id="isanet.activation.Tanh.f">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Tanh.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the value of activation function on x:
-f(x) = tanh(a*x/2).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="isanet.activation.Tanh.derivative">
 <code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Tanh.derivative" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the derivative of the activation function on x:
-f’(x) = 1 - tanh(a*x/2)^2</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="id8">
-<code class="sig-name descname">derivative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the derivative of an activation function on x.</p>
+<dd><p>Return the derivative of the activation function on x:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sa">f</span><span class="s1">&#39;(x) = 1 - tanh(a*x/2)^2</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>array-like</em>) – It will performe the derivative on x</p>
@@ -468,9 +434,12 @@ f’(x) = 1 - tanh(a*x/2)^2</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="id9">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id9" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the activation function on x.</p>
+<dt id="isanet.activation.Tanh.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.activation.Tanh.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of activation function on x:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">tanh</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>out_layer_dim</em><em>]</em>) – The output of a layer, usually correspond to:

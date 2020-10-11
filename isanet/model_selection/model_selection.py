@@ -8,7 +8,7 @@ import copy
 
 
 from isanet.model import Mlp
-from isanet.optimizer import SGD
+from isanet.optimizer import SGD, NCG, LBFGS
 from isanet.optimizer import EarlyStopping
 from isanet.metrics import mse, mee, accuracy_binary
 

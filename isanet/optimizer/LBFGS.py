@@ -47,6 +47,8 @@ class LBFGS(Optimizer):
     debug : boolean, default=False
         If True, allows you to perform iterations one at a time, pressing the Enter key.
 
+    Attributes
+    ----------
     history : dict
         Save for each iteration some interesting values.
 
@@ -68,23 +70,6 @@ class LBFGS(Optimizer):
                 Specifies whether the zoom method was able to find an alpha.
             ``zoom_it``
                 Number of iterations of the zoom method.
-
-
-    Methods
-    -------
-
-    optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
-        Optimizes the Multilayer Perceptron object specified by model.
-
-    forward(self, weights, X)
-        Uses the weights passed to the function to make the Feed-Forward step.
-
-    backpropagation(self, model, weights, X, Y)
-        Computes the derivative of 1/n sum_n (y_i -y_i') + L2 regularization.
-       
-    step(self, model, X, Y, verbose)
-        LBFGS algorithm.
-
     """
     def __init__(self, m = 3, c1=1e-4, c2=.9, ln_maxiter = 10, tol = None, 
                  n_iter_no_change = None, norm_g_eps = None, l_eps = None, 
@@ -92,17 +77,9 @@ class LBFGS(Optimizer):
         super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
         self.c1 = c1
         self.c2 = c2
-        self.old_phi0 = None
-        self.past_g = 0
-        self.past_d = 0
-        self.past_ng = 0
-        self.w = 0
-        self.restart = 0
-        self.s = []
-        self.y = []
         self.m = m
+        self.restart = 0
         self.ln_maxiter = ln_maxiter
-
         self.history = {"alpha":        [],
                         "norm_g":       [],
                         "ls_conv":      [],
@@ -112,8 +89,14 @@ class LBFGS(Optimizer):
                         "zoom_conv":    [],
                         "zoom_it":      []} 
 
+        self.__old_phi0 = None
+        self.__s = []
+        self.__y = []
+
+
     def backpropagation(self, model, weights, X, Y):
-        """Computes the derivative of 1/2 sum_n (y_i -y_i')
+        """Computes the derivative of 1/n sum_n (y_i -y_i')^2 + lamda*||weights||^2.
+
         Parameters
         ----------
         model : isanet.model.MLP
@@ -145,7 +128,7 @@ class LBFGS(Optimizer):
         return g
 
     def step(self, model, X, Y, verbose):
-        """Implements the LBFGS algorithm.
+        """Implements the LBFGS step update method.
 
         Parameters
         ----------
@@ -170,7 +153,7 @@ class LBFGS(Optimizer):
 
         current_batch_size = X.shape[0]
 
-        w0 = make_vector(model.weights)
+        w = make_vector(model.weights)
         g = make_vector(self.backpropagation(model, model.weights, X, Y))
         norm_g = np.linalg.norm(g)
         phi0 = metrics.mse_reg(Y, model.predict(X), model, model.weights)
@@ -178,37 +161,41 @@ class LBFGS(Optimizer):
         if ~model.is_fitted and self.epoch == 0:
             d = - g
         else:
-            self.y[-1] = g - self.y[-1]
-            gamma = np.dot(self.s[-1].T, self.y[-1])/np.dot(self.y[-1].T, self.y[-1])
+            self.__y[-1] = g - self.__y[-1]
+            gamma = np.dot(self.__s[-1].T, self.__y[-1])/np.dot(self.__y[-1].T, self.__y[-1])
             H0 = gamma
-            d = -self.__compute_search_dir(g, H0, self.s, self.y)
-            curvature_condition = np.dot(self.s[-1].T, self.y[-1])
+            d = -self.__compute_search_dir(g, H0, self.__s, self.__y)
+            curvature_condition = np.dot(self.__s[-1].T, self.__y[-1])
             if curvature_condition <= 1e-8:
                 print("curvature condition: {}".format(curvature_condition))
                 raise Exception("Curvature condition is negative")
 
-        phi = phi_function(model, self, w0, X, Y, d)
+        phi = phi_function(model, self, w, X, Y, d)
         ls_verbose = False
         if verbose >=3:
             ls_verbose = True
         alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
-                                          phi0 = phi0, old_phi0 = self.old_phi0, 
+                                          phi0 = phi0, old_phi0 = self.__old_phi0, 
                                           c1=self.c1, c2=self.c2, verbose = ls_verbose)
 
-        self.old_phi0 = phi0
-        w1 = w0 + alpha*d
-        l_w1 = restore_w_to_model(model, w1)
-        for i in range(0, len(model.weights)):
-            regularizer = model.kernel_regularizer[i]*current_batch_size/self.tot_n_patterns
-            weights_decay = 2*regularizer*model.weights[i]
-            # weights_decay[0,:] = 0 # In ML the bias should not be regularized
-            model.weights[i] = l_w1[i] - weights_decay
+        self.__old_phi0 = phi0
+        delta = alpha*d
+        w += delta
+        model.weights = restore_w_to_model(model, w)
+
+        # l_w1 = restore_w_to_model(model, w1)
+        # for i in range(0, len(model.weights)):
+        #     regularizer = model.kernel_regularizer[i]*current_batch_size/self.tot_n_patterns
+        #     weights_decay = 2*regularizer*model.weights[i]
+        #     # weights_decay[0,:] = 0 # In ML the bias should not be regularized
+        #     model.weights[i] = l_w1[i] - weights_decay
         
-        if( len(self.s) == self.m and len(self.y) == self.m):
-            self.s.pop(0)
-            self.y.pop(0)
-        self.s.append(w1 - w0)
-        self.y.append(g)
+        if( len(self.__s) == self.m and len(self.__y) == self.m):
+            self.__s.pop(0)
+            self.__y.pop(0)
+        # w_new - w_old = w_old + alpha*d - w_old = alpha*d = delta
+        self.__s.append(delta) # delta = w_new - w_old
+        self.__y.append(g)
         if verbose >= 2:
             print("| alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
                     alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],

@@ -1,7 +1,7 @@
 import numpy as np
 
 from isanet.model import Mlp
-from isanet.optimizer import SGD
+from isanet.optimizer import SGD, NCG, LBFGS
 from isanet.optimizer import EarlyStopping
 from isanet.metrics import mse, mee, accuracy_binary
 
@@ -176,7 +176,7 @@ class MLPClassifier(__BaseMLP):
         It will set the Maximum number of Epoch for the SGD optimizer.
         The solver iterates until convergence (determined by 'tol') or this number of iterations. 
 
-    early_stopping : bool or isanet.callbacks.EarlyStopping, default=False
+    early_stopping : bool or isanet.optimizer.EarlyStopping, default=False
         When set to False it will only use the ``max_epoch`` to finish training.
         Otherwise, an EarlyStopping type object has been passed and will stop 
         training if the model goes overfitting after a number of consecutive iterations.
@@ -291,7 +291,7 @@ class MLPRegressor(__BaseMLP):
         It will set the Maximum number of Epoch for the SGD optimizer.
         The solver iterates until convergence (determined by 'tol') or this number of iterations. 
 
-    early_stopping : bool or isanet.callbacks.EarlyStopping, default=False
+    early_stopping : bool or isanet.optimizer.EarlyStopping, default=False
         When set to False it will only use the ``max_epoch`` to finish training.
         Otherwise, an EarlyStopping type object has been passed and will stop 
         training if the model goes overfitting after a number of consecutive iterations.

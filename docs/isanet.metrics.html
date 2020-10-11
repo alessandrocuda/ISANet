@@ -223,7 +223,25 @@
 <dl class="py function">
 <dt id="isanet.metrics.mse_reg">
 <code class="sig-prename descclassname">isanet.metrics.</code><code class="sig-name descname">mse_reg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.metrics.mse_reg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>MSE + L2 regularization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em>) – Ground truth (correct) target values.</p></li>
+<li><p><strong>y_pred</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em>) – Estimated target values.</p></li>
+<li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – </p></li>
+<li><p><strong>weights</strong> (<em>list</em>) – List of arrays, the ith array represents all the
+weights of each neuron in the ith layer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>loss</strong> – A non-negative floating point value (the best value is 0.0)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 

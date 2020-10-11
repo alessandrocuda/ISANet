@@ -55,6 +55,8 @@ class NCG(Optimizer):
     debug : boolean, default=False
         If True, allows you to perform iterations one at a time, pressing the Enter key.
 
+    Attributes
+    ----------
     history : dict
         Save for each iteration some interesting values.
 
@@ -78,21 +80,6 @@ class NCG(Optimizer):
                 Specifies whether the zoom method was able to find an alpha.
             ``zoom_it``
                 Number of iterations of the zoom method.
-
-    Methods
-    -------
-    optimize(self, model, epochs, X_train, Y_train, validation_data, batch_size, es, verbose)
-        Optimizes the Multilayer Perceptron object specified by model.
-
-    forward(self, weights, X)
-        Uses the weights passed to the function to make the Feed-Forward step.
-
-    backpropagation(self, model, weights, X, Y)
-        Computes the derivative of 1/n sum_n (y_i -y_i') + L2 regularization.
-       
-    step(self, model, X, Y, verbose)
-        NCG algorithm.
-
     """
 
     def __init__(self, beta_method = "hs+", c1=1e-4, c2=.9, restart = None,
@@ -101,16 +88,9 @@ class NCG(Optimizer):
         super().__init__(tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
         self.c1 = c1
         self.c2 = c2
-        self.old_phi0 = None
-        self.past_g = 0
-        self.past_d = 0
-        self.past_ng = 0
-        self.w = 0
-        self.fbeta = self.__get_beta_function(beta_method)
         self.restart = 0
         self.max_restart = restart
         self.ln_maxiter = ln_maxiter
-
         self.history = {"beta":         [],
                         "alpha":        [],
                         "norm_g":      [],
@@ -121,8 +101,17 @@ class NCG(Optimizer):
                         "zoom_conv":    [],
                         "zoom_it":      []} 
 
+        self.__old_phi0 = None
+        self.__past_g = 0
+        self.__past_d = 0
+        self.__past_ng = 0
+        self.__fbeta = self.__get_beta_function(beta_method)
+
+
+
     def backpropagation(self, model, weights, X, Y):
-        """Computes the derivative of 1/n sum_n (y_i -y_i') + L2 regularization
+        """Computes the derivative of 1/n sum_n (y_i -y_i')^2 + lamda*||weights||^2.
+
         Parameters
         ----------
         model : isanet.model.MLP
@@ -154,7 +143,7 @@ class NCG(Optimizer):
         return g
 
     def step(self, model, X, Y, verbose):
-        """Implements the NCG algorithm.
+        """Implements the NCG step update method.
 
         Parameters
         ----------
@@ -186,20 +175,20 @@ class NCG(Optimizer):
             phi0 = metrics.mse_reg(Y, model.predict(X), model, model.weights)
         else:
             # calcolo del beta
-            beta = self.fbeta(g, self.past_g, self.past_ng, self.past_d)
+            beta = self.__fbeta(g, self.__past_g, self.__past_ng, self.__past_d)
             self.restart +=1
             if self.max_restart is not None and (self.restart == self.max_restart):
                 self.restart = 0
                 beta = 0
             if beta != 0:
-                d = - g + beta*self.past_d 
+                d = - g + beta*self.__past_d 
             else:
                 d = - g
             phi0 = model.history["loss_mse_reg"][-1]
 
-        self.past_ng = norm_g
-        self.past_g = g
-        self.past_d = d
+        self.__past_ng = norm_g
+        self.__past_g = g
+        self.__past_d = d
         derphi0 = np.asscalar(np.dot(g.T, d))
 
         phi = phi_function(model, self, w, X, Y, d)
@@ -207,10 +196,10 @@ class NCG(Optimizer):
         if verbose >=3:
             ls_verbose = True
         alpha, ls_log = line_search_wolfe(phi = phi.phi, derphi= phi.derphi, 
-                                  phi0 = phi0, old_phi0 = self.old_phi0, derphi0 = derphi0,
+                                  phi0 = phi0, old_phi0 = self.__old_phi0, derphi0 = derphi0,
                                   c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter, verbose = ls_verbose)
 
-        self.old_phi0 = phi0
+        self.__old_phi0 = phi0
 
         w += alpha*d
         model.weights = restore_w_to_model(model, w)
