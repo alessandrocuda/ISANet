@@ -1,4 +1,4 @@
-""" Optimizer Module.
+""" SGD Module.
 """
 import numpy as np
 import time

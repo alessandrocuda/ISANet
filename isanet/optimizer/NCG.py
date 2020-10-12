@@ -1,4 +1,4 @@
-""" Optimizer Module.
+""" NCG Module.
 """
 import numpy as np
 import time

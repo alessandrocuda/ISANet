@@ -1,4 +1,4 @@
-""" Optimizer Module.
+""" LBFGS Module.
 """
 import numpy as np
 import time
