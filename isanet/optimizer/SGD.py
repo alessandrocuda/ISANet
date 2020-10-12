@@ -1,4 +1,29 @@
-""" SGD Module.
+""" Stochastic Gradient Descent (SGD) Module.
+This module provides the the SGD class. In this case, the backpropagation 
+compute the gradient on the following objective function (Loss) ::
+
+                Loss = 1/2 sum_k (y_i -y_i')^2
+
+So the quantity that will be monitored in the interation log will be::
+
+        loss        = loss_mse
+        val_loss    = val_loss_mse
+
+Gradient descent (with momentum) optimizer.
+Update rule for parameter w with gradient g when momentum is 0::
+
+        w = w - learning_rate * g  - kernel_regularizer*w
+
+Update rule when momentum is larger than 0::
+
+        velocity = momentum * velocity - learning_rate * g
+        w = w + velocity - kernel_regularizer*w
+
+When nesterov=True, this rule becomes::
+
+        g = g(w + sigma*velocity)
+        velocity = momentum * velocity - learning_rate * g
+        w = w - learning_rate * g - kernel_regularizer*w
 """
 import numpy as np
 import time
@@ -13,7 +38,7 @@ class SGD(Optimizer):
 
     Parameters
     ----------
-    lr : float, default=0.1
+    learning_rate : float, default=0.1
         Learning rate schedule for weight updates (delta rule).
 
     momentum : float, default=0
@@ -58,11 +83,11 @@ class SGD(Optimizer):
             ``norm_g``
                 Gradient norm. 
     """
-    def __init__(self, lr=0.1, momentum=0, nesterov=False, sigma = None, 
+    def __init__(self, learning_rate=0.1, momentum=0, nesterov=False, sigma = None, 
                  tol = None, n_iter_no_change = None, norm_g_eps = None, 
                  l_eps = None, debug = False):
-        super().__init__(loss="loss_mse_reg", tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
-        self.lr = lr
+        super().__init__(loss="loss_mse", tol = tol, n_iter_no_change = n_iter_no_change, norm_g_eps = norm_g_eps, l_eps = l_eps, debug = debug)
+        self.learning_rate = learning_rate
         self.momentum = momentum
         self.nesterov = nesterov
         self.sigma = sigma
@@ -110,7 +135,7 @@ class SGD(Optimizer):
 
         """
         if ~model.is_fitted:
-            self.delta_w = [0]*len(model.weights)
+            self.velocity = [0]*len(model.weights)
         super().optimize(model, epochs, X_train, Y_train, validation_data=validation_data, batch_size=batch_size, es=es, verbose=verbose)
 
 
@@ -139,7 +164,7 @@ class SGD(Optimizer):
         """
 
         current_batch_size = X.shape[0]
-        lr = self.lr/current_batch_size
+        learning_rate = self.learning_rate/current_batch_size
 
         weights = model.weights
         g  = self.backpropagation(model, weights, X, Y)
@@ -148,17 +173,17 @@ class SGD(Optimizer):
         if self.nesterov == True:
             weights = copy.deepcopy(model.weights)
             for i in range(0, len(model.weights)): 
-                weights[i] += self.sigma*self.delta_w[i] 
+                weights[i] += self.sigma*self.velocity[i] 
             g  = self.backpropagation(model, weights, X, Y)
 
         #      Delta Rule Update
         #  w_i = w_i + eta*nabla_W_i
         for i in range(0, len(model.weights)):
-            self.delta_w[i] = -lr*g[i] + self.momentum*self.delta_w[i]   
+            self.velocity[i] = -learning_rate*g[i] + self.momentum*self.velocity[i]   
             regularizer = model.kernel_regularizer[i]*current_batch_size/self.tot_n_patterns
             weights_decay = regularizer*model.weights[i]
             weights_decay[0,:] = 0
-            model.weights[i] += (self.delta_w[i] - weights_decay)
+            model.weights[i] += (self.velocity[i] - weights_decay)
 
         self.history["norm_g"].append(norm_g)
         if verbose >= 2:

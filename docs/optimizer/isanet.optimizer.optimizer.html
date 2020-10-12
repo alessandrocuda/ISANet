@@ -169,7 +169,18 @@
             
   <div class="section" id="module-isanet.optimizer.optimizer">
 <span id="isanet-optimizer-optimizer"></span><h1>isanet.optimizer.optimizer<a class="headerlink" href="#module-isanet.optimizer.optimizer" title="Permalink to this headline">¶</a></h1>
-<p>Optimizer Module.</p>
+<p>Optimizer Module.
+This module the module provides a basic optimizer class that can be extended
+to implement an optimizer class by specifying the operations to be performed
+during each step.</p>
+<p>The backpropagation method compute the gradient on the following objective
+function (Loss)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Loss</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="n">sum_k</span> <span class="p">(</span><span class="n">y_i</span> <span class="o">-</span><span class="n">y_i</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="s1">&#39;)^2</span>
+</pre></div>
+</div>
+<p>and the step method must be implemented.</p>
+<p>Moreover it’s provides an EarlyStopping callback that can
+be used during the fitting phase a model.</p>
 <dl class="py class">
 <dt id="isanet.optimizer.optimizer.EarlyStopping">
 <em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.optimizer.</code><code class="sig-name descname">EarlyStopping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">monitor</span><span class="o">=</span><span class="default_value">'val_loss_mse'</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-13</span></em>, <em class="sig-param"><span class="n">patience</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.optimizer.EarlyStopping" title="Permalink to this definition">¶</a></dt>

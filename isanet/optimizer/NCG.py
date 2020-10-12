@@ -1,4 +1,25 @@
 """ NCG Module.
+This module provides the the NCG class. In this case, the backpropagation 
+compute the gradient on the following objective function (Loss) ::
+
+                Loss = 1/N sum_k (y_i -y_i(w)')^2 + kernel_regularizer*||w||^2
+
+So the quantity that will be monitored in the interation log will be::
+
+        loss        = loss_mse_reg
+        val_loss    = val_loss_mse_reg
+
+Update rule for parameter w with gradient g::
+        
+        beta = a_beta_formula()
+        d = - g + beta*d
+        alpha = line_search_strong_wolfe 
+        w += alpha*d
+
+Note
+----
+For major details on the implementation refer to Wright and Nocedal,
+'Numerical Optimization', 1999, pp. 121-125.
 """
 import numpy as np
 import time

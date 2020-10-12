@@ -1,4 +1,18 @@
 """ Optimizer Module.
+This module the module provides a basic optimizer class that can be extended 
+to implement an optimizer class by specifying the operations to be performed 
+during each step.
+
+The backpropagation method compute the gradient on the following objective 
+function (Loss) ::
+
+         Loss = 1/2 sum_k (y_i -y_i(w)')^2
+
+and the step method must be implemented.
+
+Moreover it's provides an EarlyStopping callback that can 
+be used during the fitting phase a model.
+
 """
 import numpy as np
 import time

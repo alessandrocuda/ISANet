@@ -169,16 +169,42 @@
             
   <div class="section" id="module-isanet.optimizer.SGD">
 <span id="isanet-optimizer-sgd"></span><h1>isanet.optimizer.SGD<a class="headerlink" href="#module-isanet.optimizer.SGD" title="Permalink to this headline">¶</a></h1>
-<p>SGD Module.</p>
+<p>Stochastic Gradient Descent (SGD) Module.
+This module provides the the SGD class. In this case, the backpropagation
+compute the gradient on the following objective function (Loss)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Loss</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="n">sum_k</span> <span class="p">(</span><span class="n">y_i</span> <span class="o">-</span><span class="n">y_i</span><span class="s1">&#39;)^2</span>
+</pre></div>
+</div>
+<p>So the quantity that will be monitored in the interation log will be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span>        <span class="o">=</span> <span class="n">loss_mse</span>
+<span class="n">val_loss</span>    <span class="o">=</span> <span class="n">val_loss_mse</span>
+</pre></div>
+</div>
+<p>Gradient descent (with momentum) optimizer.
+Update rule for parameter w with gradient g when momentum is 0:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">g</span>  <span class="o">-</span> <span class="n">kernel_regularizer</span><span class="o">*</span><span class="n">w</span>
+</pre></div>
+</div>
+<p>Update rule when momentum is larger than 0:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">velocity</span> <span class="o">=</span> <span class="n">momentum</span> <span class="o">*</span> <span class="n">velocity</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">g</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">+</span> <span class="n">velocity</span> <span class="o">-</span> <span class="n">kernel_regularizer</span><span class="o">*</span><span class="n">w</span>
+</pre></div>
+</div>
+<p>When nesterov=True, this rule becomes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="n">sigma</span><span class="o">*</span><span class="n">velocity</span><span class="p">)</span>
+<span class="n">velocity</span> <span class="o">=</span> <span class="n">momentum</span> <span class="o">*</span> <span class="n">velocity</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">g</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">g</span> <span class="o">-</span> <span class="n">kernel_regularizer</span><span class="o">*</span><span class="n">w</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt id="isanet.optimizer.SGD.SGD">
-<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.SGD.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">momentum</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nesterov</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_iter_no_change</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm_g_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.SGD.SGD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">isanet.optimizer.SGD.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">learning_rate</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">momentum</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nesterov</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_iter_no_change</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm_g_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">l_eps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.SGD.SGD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="isanet.optimizer.optimizer.html#isanet.optimizer.optimizer.Optimizer" title="isanet.optimizer.optimizer.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">isanet.optimizer.optimizer.Optimizer</span></code></a></p>
 <p>Stochastic Gradient Descent (SGD)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>default=0.1</em>) – Learning rate schedule for weight updates (delta rule).</p></li>
+<li><p><strong>learning_rate</strong> (<em>float</em><em>, </em><em>default=0.1</em>) – Learning rate schedule for weight updates (delta rule).</p></li>
 <li><p><strong>momentum</strong> (<em>float</em><em>, </em><em>default=0</em>) – Momentum for gradient descent update.</p></li>
 <li><p><strong>nesterov</strong> (<em>boolean</em><em>, </em><em>default=False</em>) – Whether to use Nesterov’s momentum.</p></li>
 <li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>default=None</em>) – Parameter of the Super Accelerated Nesterov’s momentum.
