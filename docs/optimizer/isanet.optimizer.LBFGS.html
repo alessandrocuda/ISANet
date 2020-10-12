@@ -261,6 +261,80 @@ hidden layer to the output layer).:</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="isanet.optimizer.LBFGS.LBFGS.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.LBFGS.LBFGS.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the weights passed to the function to make the Feed-Forward step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>weights</strong> (<em>list</em>) – List of arrays, the ith array represents all the
+weights of each neuron in the ith layer.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output of all neurons for input X.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="isanet.optimizer.LBFGS.LBFGS.get_batch">
+<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">Y_train</span></em>, <em class="sig-param"><span class="n">batch_size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.LBFGS.LBFGS.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+<li><p><strong>Y_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_output</em><em>)</em>) – The target values.</p></li>
+<li><p><strong>batch_size</strong> (<em>integer</em>) – Size of minibatches for the optimizer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Each key of the dictionary is a integer value from 0 to
+number_of_batch -1 and define a batch. Each element is a
+dictionary and has two key: ‘batch_x_train’ and ‘batch_y_train’
+and refer to the portion of data and target respectively used
+for the training.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict of dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="isanet.optimizer.LBFGS.LBFGS.optimize">
+<code class="sig-name descname">optimize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">epochs</span></em>, <em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">Y_train</span></em>, <em class="sig-param"><span class="n">validation_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">es</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.LBFGS.LBFGS.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – Specify the Multilayer Perceptron object to optimize.</p></li>
+<li><p><strong>epochs</strong> (<em>integer</em>) – Maximum number of epochs.</p></li>
+<li><p><strong>X_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+<li><p><strong>Y_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_output</em><em>)</em>) – The target values.</p></li>
+<li><p><strong>validation_data</strong> (<em>list of arrays-like</em><em>, </em><em>[</em><em>X_val</em><em>, </em><em>Y_val</em><em>]</em><em>, </em><em>optional</em>) – Validation set.</p></li>
+<li><p><strong>batch_size</strong> (<em>integer</em><em>, </em><em>optional</em>) – Size of minibatches for the optimizer.
+When set to “none”, the optimizer will performe a full batch.</p></li>
+<li><p><strong>es</strong> (<em>isanet.callbacks.EarlyStopping</em><em>, </em><em>optional</em>) – When set to None it will only use the <code class="docutils literal notranslate"><span class="pre">epochs</span></code> to finish training.
+Otherwise, an EarlyStopping type object has been passed and will stop
+training if the model goes overfitting after a number of consecutive iterations.
+See docs in optimizier module for the EarlyStopping Class.</p></li>
+<li><p><strong>verbose</strong> (<em>integer</em><em>, </em><em>default=0</em>) – Controls the verbosity: the higher, the more messages.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="isanet.optimizer.LBFGS.LBFGS.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">verbose</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.LBFGS.LBFGS.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implements the LBFGS step update method.</p>

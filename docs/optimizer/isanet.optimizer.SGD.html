@@ -218,6 +218,81 @@ fitting of the model (it stops if the loss function reaches
 </dd></dl>
 
 <dl class="py method">
+<dt id="isanet.optimizer.SGD.SGD.backpropagation">
+<code class="sig-name descname">backpropagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.SGD.SGD.backpropagation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the derivative of 1/2 sum_n (y_i -y_i’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>isanet.model.MLP</em>) – Specify the Multilayer Perceptron object to optimize</p></li>
+<li><p><strong>weights</strong> (<em>list</em>) – List of arrays, the ith array represents all the
+weights of each neuron in the ith layer.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+<li><p><strong>Y</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_output</em><em>)</em>) – The target values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>contains the gradients for each layer to be used in the delta rule.
+Each index in the list represents the ith layer. (from the first
+hidden layer to the output layer).:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">first</span> <span class="n">hidden</span> <span class="n">layer</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="n">output</span> <span class="n">layer</span>
+<span class="n">where</span> <span class="n">n</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">hidden</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">net</span><span class="o">.</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="isanet.optimizer.SGD.SGD.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.SGD.SGD.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the weights passed to the function to make the Feed-Forward step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>weights</strong> (<em>list</em>) – List of arrays, the ith array represents all the
+weights of each neuron in the ith layer.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output of all neurons for input X.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="isanet.optimizer.SGD.SGD.get_batch">
+<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">Y_train</span></em>, <em class="sig-param"><span class="n">batch_size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.SGD.SGD.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data.</p></li>
+<li><p><strong>Y_train</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_output</em><em>)</em>) – The target values.</p></li>
+<li><p><strong>batch_size</strong> (<em>integer</em>) – Size of minibatches for the optimizer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Each key of the dictionary is a integer value from 0 to
+number_of_batch -1 and define a batch. Each element is a
+dictionary and has two key: ‘batch_x_train’ and ‘batch_y_train’
+and refer to the portion of data and target respectively used
+for the training.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict of dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="isanet.optimizer.SGD.SGD.optimize">
 <code class="sig-name descname">optimize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">epochs</span></em>, <em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">Y_train</span></em>, <em class="sig-param"><span class="n">validation_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">es</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#isanet.optimizer.SGD.SGD.optimize" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">

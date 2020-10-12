@@ -4,3 +4,4 @@ isanet.optimizer.NCG
     :members:
     :undoc-members:
     :show-inheritance:
+    :inherited-members:    
