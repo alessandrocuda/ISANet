@@ -110,6 +110,7 @@ class LBFGS(Optimizer):
                         "zoom_conv":    [],
                         "zoom_it":      []} 
 
+        self.__g = None
         self.__old_phi0 = None
         self.__s = []
         self.__y = []
@@ -172,24 +173,23 @@ class LBFGS(Optimizer):
 
         """
 
-        current_batch_size = X.shape[0]
-
         w = make_vector(model.weights)
-        g = make_vector(self.backpropagation(model, model.weights, X, Y))
-        norm_g = np.linalg.norm(g)
-        phi0 = metrics.mse_reg(Y, model.predict(X), model, model.weights)
 
         if ~model.is_fitted and self.epoch == 0:
-            d = - g
+            self.__g = make_vector(self.backpropagation(model, model.weights, X, Y))
+            d = - self.__g
+            phi0 = metrics.mse_reg(Y, model.predict(X), model, model.weights)
         else:
-            self.__y[-1] = g - self.__y[-1]
             gamma = np.dot(self.__s[-1].T, self.__y[-1])/np.dot(self.__y[-1].T, self.__y[-1])
             H0 = gamma
-            d = -self.__compute_search_dir(g, H0, self.__s, self.__y)
+            d = -self.__compute_search_dir(self.__g, H0, self.__s, self.__y)
+            phi0 = model.history["loss_mse_reg"][-1]
             curvature_condition = np.dot(self.__s[-1].T, self.__y[-1])
             if curvature_condition <= 1e-8:
                 print("curvature condition: {}".format(curvature_condition))
                 raise Exception("Curvature condition is negative")
+
+        norm_g = np.linalg.norm(self.__g)
 
         phi = phi_function(model, self, w, X, Y, d)
         ls_verbose = False
@@ -200,23 +200,21 @@ class LBFGS(Optimizer):
                                           c1=self.c1, c2=self.c2, verbose = ls_verbose)
 
         self.__old_phi0 = phi0
+        new_g = phi.get_last_g()
+
         delta = alpha*d
         w += delta
         model.weights = restore_w_to_model(model, w)
 
-        # l_w1 = restore_w_to_model(model, w1)
-        # for i in range(0, len(model.weights)):
-        #     regularizer = model.kernel_regularizer[i]*current_batch_size/self.tot_n_patterns
-        #     weights_decay = 2*regularizer*model.weights[i]
-        #     # weights_decay[0,:] = 0 # In ML the bias should not be regularized
-        #     model.weights[i] = l_w1[i] - weights_decay
         
         if( len(self.__s) == self.m and len(self.__y) == self.m):
             self.__s.pop(0)
             self.__y.pop(0)
         # w_new - w_old = w_old + alpha*d - w_old = alpha*d = delta
         self.__s.append(delta) # delta = w_new - w_old
-        self.__y.append(g)
+        self.__y.append(new_g - self.__g)
+        self.__g = new_g
+
         if verbose >= 2:
             print("| alpha: {} | ng: {} | ls conv: {}, it: {}, time: {:4.4f} | zoom used: {}, conv: {}, it: {}|".format(
                     alpha, norm_g, ls_log["ls_conv"], ls_log["ls_it"], ls_log["ls_time"],

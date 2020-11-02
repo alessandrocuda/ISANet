@@ -122,6 +122,7 @@ class NCG(Optimizer):
                         "zoom_conv":    [],
                         "zoom_it":      []} 
 
+        self.__g = None
         self.__old_phi0 = None
         self.__past_g = 0
         self.__past_d = 0
@@ -187,30 +188,31 @@ class NCG(Optimizer):
 
         """
         w = make_vector(model.weights)
-        g = make_vector(self.backpropagation(model, model.weights, X, Y))
-        norm_g = np.linalg.norm(g)
 
         if ~model.is_fitted and self.epoch == 0:
             beta = 0
-            d = -g
+            self.__g = make_vector(self.backpropagation(model, model.weights, X, Y))
+            d = - self.__g
             phi0 = metrics.mse_reg(Y, model.predict(X), model, model.weights)
         else:
             # calcolo del beta
-            beta = self.__fbeta(g, self.__past_g, self.__past_ng, self.__past_d)
+            beta = self.__fbeta(self.__g, self.__past_g, self.__past_ng, self.__past_d)
             self.restart +=1
             if self.max_restart is not None and (self.restart == self.max_restart):
                 self.restart = 0
                 beta = 0
             if beta != 0:
-                d = - g + beta*self.__past_d 
+                d = - self.__g + beta*self.__past_d 
             else:
-                d = - g
+                d = - self.__g
             phi0 = model.history["loss_mse_reg"][-1]
 
+        norm_g = np.linalg.norm(self.__g)
+
         self.__past_ng = norm_g
-        self.__past_g = g
+        self.__past_g = self.__g
         self.__past_d = d
-        derphi0 = np.asscalar(np.dot(g.T, d))
+        derphi0 = np.asscalar(np.dot(self.__g.T, d))
 
         phi = phi_function(model, self, w, X, Y, d)
         ls_verbose = False
@@ -221,6 +223,7 @@ class NCG(Optimizer):
                                   c1=self.c1, c2=self.c2, maxiter=self.ln_maxiter, verbose = ls_verbose)
 
         self.__old_phi0 = phi0
+        self.__g = phi.get_last_g()
 
         w += alpha*d
         model.weights = restore_w_to_model(model, w)

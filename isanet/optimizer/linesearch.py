@@ -35,6 +35,7 @@ class phi_function(object):
         self.X = X
         self.Y = Y
         self.d = d
+        self._last_g = None
 
     def phi(self, a):
         """Compute the phi value when an alpha 'a' parameter is passed
@@ -63,7 +64,11 @@ class phi_function(object):
         l_w_a = restore_w_to_model(self.model, w_a)
         g_a = make_vector(self.optimizer.backpropagation(self.model, l_w_a, self.X, self.Y))
         phips = np.asscalar(np.dot(g_a.T, self.d))
+        self._last_g = g_a
         return phips
+
+    def get_last_g(self):
+        return self._last_g
 
 
 def line_search_wolfe(phi, derphi, phi0=None,
