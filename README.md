@@ -13,7 +13,7 @@
   </a>
 
   <p align="center">
-    <a href="https://alessandrocudazzo.it/ISANet"><strong>Explore the docs »</strong></a>
+    <a href="https://alessandrocuda.github.io/ISANet/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/alessandrocuda/ISANet/blob/master/examples/README.md">View Demo</a>
